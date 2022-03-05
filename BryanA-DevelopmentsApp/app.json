@@ -29,7 +29,7 @@
   "platform": "14.0.0.0",
   "application": "14.0.0.0",
   "idRange": {
-    "from": 80000,
+    "from": 75000,
     "to": 80099
   },
   "showMyCode": true,
