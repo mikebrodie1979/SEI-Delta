@@ -1,4 +1,4 @@
-tableextension 80000 "ENC Purchase Line" extends "Purchase Line"
+tableextension 80000 "BA Purchase Line" extends "Purchase Line"
 {
     fields
     {
