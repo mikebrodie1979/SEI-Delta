@@ -1,10 +1,10 @@
 {
   "id": "d30af3a7-247a-5556-80a1-9b82e52ee5a6",
-  "name": "SEI BryanA Functionality",
+  "name": "BryanA - SEI Custom Functionality",
   "publisher": "BryanA BC Developments Inc.",
   "brief": "Provides custom functionality for SEI Delta.",
   "description": "",
-  "version": "1.52.14.0",
+  "version": "14.0.1.0",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
@@ -14,7 +14,7 @@
   "dependencies": [
     {
       "appId": "d30af3a7-247a-5555-80a1-9b82e52ee5a6",
-      "name": "SEI Library & Table Customizations",
+      "name": "BryanA - SEI Table Customizations",
       "publisher": "BryanA BC Developments Inc.",
       "version": "14.0.1.0"
     },
