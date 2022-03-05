@@ -2,11 +2,11 @@ tableextension 80000 "ENC Purchase Line" extends "Purchase Line"
 {
     fields
     {
-        field(80000; "BA Salesperson Filter Code"; Code[10])
+        field(80000; "BA Salesperson Filter Code"; Code[20])
         {
+            DataClassification = CustomerContent;
             Caption = 'Salesperson Filter Code';
             Editable = false;
-            FieldClass = FlowFilter;
         }
     }
 }
