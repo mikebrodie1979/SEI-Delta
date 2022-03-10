@@ -18,4 +18,10 @@ codeunit 75010 "BA SEI Subscibers"
         if SalesHeader."Document Type" = SalesHeader."Document Type"::Quote then
             SalesHeader.Validate("ENC Stage", SalesHeader."ENC Stage"::Open);
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnCheckItemAvailabilityInLinesOnAfterSetFilters', '', false, false)]
+    local procedure SalesHeaderOnCheckItemAvailabilityInLinesOnAfterSetFilters(var SalesLine: Record "Sales Line")
+    begin
+        SalesLine.SetFilter("Shipment Date", '<>%1', 0D);
+    end;
 }
