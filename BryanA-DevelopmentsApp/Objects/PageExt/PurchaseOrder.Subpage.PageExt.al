@@ -8,6 +8,7 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
             {
                 ApplicationArea = all;
                 TableRelation = "Dimension Value".Code where ("Dimension Code" = field ("BA Salesperson Filter Code"), "ENC Inactive" = const (false));
+                Caption = 'Sales Person Code';
 
                 trigger OnValidate()
                 begin
