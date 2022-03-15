@@ -24,4 +24,19 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         SalesLine.SetFilter("Shipment Date", '<>%1', 0D);
     end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnAfterCode', '', false, false)]
+    local procedure WhseActivityPostOnAfterCode(var WarehouseActivityLine: Record "Warehouse Activity Line")
+    var
+        SalesLine: Record "Sales Line";
+    begin
+        if (WarehouseActivityLine."Source Type" <> Database::"Sales Line")
+            or (WarehouseActivityLine."Source Subtype" <> WarehouseActivityLine."Source Subtype"::"1") then
+            exit;
+        if not SalesLine.Get(SalesLine."Document Type"::Order, WarehouseActivityLine."Source No.", WarehouseActivityLine."Source Line No.") then
+            exit;
+        SalesLine.Validate("Qty. to Invoice", WarehouseActivityLine.Quantity);
+        SalesLine.Modify(true);
+    end;
 }
