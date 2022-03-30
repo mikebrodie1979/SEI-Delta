@@ -26,17 +26,23 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnAfterCode', '', false, false)]
-    local procedure WhseActivityPostOnAfterCode(var WarehouseActivityLine: Record "Warehouse Activity Line")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnCodeOnAfterCreatePostedWhseActivDocument', '', false, false)]
+    local procedure WhseActivityPostOnAfterWhseActivLineModify(var WhseActivityHeader: Record "Warehouse Activity Header")
     var
+        WhseActivityLine: Record "Warehouse Activity Line";
         SalesLine: Record "Sales Line";
     begin
-        if (WarehouseActivityLine."Source Type" <> Database::"Sales Line")
-            or (WarehouseActivityLine."Source Subtype" <> WarehouseActivityLine."Source Subtype"::"1") then
-            exit;
-        if not SalesLine.Get(SalesLine."Document Type"::Order, WarehouseActivityLine."Source No.", WarehouseActivityLine."Source Line No.") then
-            exit;
-        SalesLine.Validate("Qty. to Invoice", WarehouseActivityLine.Quantity);
-        SalesLine.Modify(true);
+        WhseActivityLine.SetRange("Activity Type", WhseActivityHeader.Type);
+        WhseActivityLine.SetRange("No.", WhseActivityHeader."No.");
+        WhseActivityLine.SetRange("Source Type", Database::"Sales Line");
+        WhseActivityLine.SetRange("Source Subtype", WhseActivityLine."Source Subtype"::"1");
+        WhseActivityLine.SetFilter("Qty. to Handle", '>%1', 0);
+        if WhseActivityLine.FindSet() then
+            repeat
+                if SalesLine.Get(SalesLine."Document Type"::Order, WhseActivityLine."Source No.", WhseActivityLine."Source Line No.") then begin
+                    SalesLine.Validate("Qty. to Invoice", WhseActivityLine.Quantity);
+                    SalesLine.Modify(true);
+                end;
+            until WhseActivityLine.Next() = 0;
     end;
 }
