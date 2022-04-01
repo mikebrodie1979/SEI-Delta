@@ -50,6 +50,7 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure WhseActivityPostOnAfterWhseActivLineModify(var WhseActivityHeader: Record "Warehouse Activity Header")
     var
         WhseActivityLine: Record "Warehouse Activity Line";
+        SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
     begin
         WhseActivityLine.SetRange("Activity Type", WhseActivityHeader.Type);
@@ -60,12 +61,15 @@ codeunit 75010 "BA SEI Subscibers"
         WhseActivityLine.SetFilter(Quantity, '>%1', 0);
         if not WhseActivityLine.FindSet() then
             exit;
-        repeat
-            if SalesLine.Get(SalesLine."Document Type"::Order, WhseActivityLine."Source No.", WhseActivityLine."Source Line No.") then begin
-                SalesLine.Validate("Qty. to Invoice", WhseActivityLine.Quantity);
-                SalesLine.Modify(true);
-            end;
-        until WhseActivityLine.Next() = 0;
+
+        SalesHeader.Get(SalesHeader."Document Type"::Order, WhseActivityLine."Source No.");
+        if not SalesHeader.Invoice then
+            repeat
+                if SalesLine.Get(SalesLine."Document Type"::Order, WhseActivityLine."Source No.", WhseActivityLine."Source Line No.") then begin
+                    SalesLine.Validate("Qty. to Invoice", WhseActivityLine.Quantity);
+                    SalesLine.Modify(true);
+                end;
+            until WhseActivityLine.Next() = 0;
 
         SalesLine.SetRange("Document No.", WhseActivityLine."Source No.");
         if SalesLine.FindSet() then
