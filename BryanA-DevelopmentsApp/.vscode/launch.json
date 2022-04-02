@@ -1,17 +1,17 @@
 {
     "version": "1.0.0",
     "configurations": [
-        // {
-        //     "type": "al",
-        //     "request": "launch",
-        //     "name": "Dev",
-        //     "server": "http://localhost",
-        //     "port": 7059,
-        //     "serverInstance": "Dev",
-        //     "authentication": "UserPassword",
-        //     "schemaUpdateMode": "Synchronize"
-        // },
-        // Tisk Tisk....
+        {
+            "type": "al",
+            "request": "launch",
+            "name": "Dev",
+            "server": "http://localhost",
+            "port": 7119,
+            "serverInstance": "Dev",
+            "authentication": "UserPassword",
+            "schemaUpdateMode": "Synchronize"
+        }
+        ,
         {
             "type": "al",
             "request": "launch",
@@ -22,7 +22,7 @@
             "authentication": "UserPassword",
             "schemaUpdateMode": "Synchronize"
         }
-// Powershell to Production Only!
+        // ,
         // {
         //     "type": "al",
         //     "request": "launch",
