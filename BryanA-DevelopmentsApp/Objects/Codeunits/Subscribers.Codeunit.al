@@ -83,22 +83,11 @@ codeunit 75010 "BA SEI Subscibers"
             until SalesLine.Next() = 0;
     end;
 
-    // [EventSubscriber(ObjectType::Table, Database::"Assembly Line", 'OnAfterInsertEvent', '', false, false)]
-    // local procedure derp(var Rec: Record "Assembly Line")
-    // begin
-    //     if not Rec.IsTemporary then
-    //         Error(Format(Rec.RecordId()));
-    // end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Assembly Line Management", 'OnAfterTransferBOMComponent', '', false, false)]
     local procedure AssemblyLineMgtOnAfterTransferBOMComponent(var AssemblyLine: Record "Assembly Line"; BOMComponent: Record "BOM Component")
-    var
-        BOMHeader: Record "Production BOM Header";
-        BOMLine: Record "Production BOM Line";
     begin
-        if not BOMHeader.Get(BOMComponent."Parent Item No.") then
-            exit;
-        if not BOMLine.Get(BOMHeader."No.", BOMHeader."ENC Active Version No.", BOMComponent."Line No.") or not BOMLine."BA Optional" then
+        if not BOMComponent."BA Optional" then
             exit;
         AssemblyLine.Validate(Quantity, 0);
         AssemblyLine.Validate("Quantity per", 0);

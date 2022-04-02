@@ -1,4 +1,4 @@
-tableextension 80003 "BA Prod. BOM Line" extends "Production BOM Line"
+tableextension 80003 "BA BOM Component" extends "BOM Component"
 {
     fields
     {
