@@ -91,5 +91,6 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         AssemblyLine.Validate(Quantity, 0);
         AssemblyLine.Validate("Quantity per", 0);
+        AssemblyLine.Validate("BA Optional", true);
     end;
 }
