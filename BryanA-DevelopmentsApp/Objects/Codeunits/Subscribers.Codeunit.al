@@ -82,4 +82,15 @@ codeunit 75010 "BA SEI Subscibers"
                 end;
             until SalesLine.Next() = 0;
     end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Assembly Line Management", 'OnAfterTransferBOMComponent', '', false, false)]
+    local procedure AssemblyLineMgtOnAfterTransferBOMComponent(var AssemblyLine: Record "Assembly Line"; BOMComponent: Record "BOM Component")
+    begin
+        if not BOMComponent."BA Optional" then
+            exit;
+        AssemblyLine.Validate(Quantity, 0);
+        AssemblyLine.Validate("Quantity per", 0);
+        AssemblyLine.Validate("BA Optional", true);
+    end;
 }
