@@ -40,8 +40,8 @@ report 50070 "BA Production BOM"
                 column(Line_Description; Description) { }
                 column(Line_Desc2; "ENC Desc2") { }
                 column(LineDescription2; "ENC Description 2") { }
-                column(Quantity; Quantity) { }
-                column(QuantityPer; "Quantity per") { }
+                column(Quantity; Round(Quantity, 0.01)) { }
+                column(QuantityPer; Round("Quantity per", 0.01)) { }
                 column(PartNo; "ENC Part") { }
                 column(PartDescription; "ENC Part Description") { }
                 column(PartQty; "ENC Part Qty.") { }
