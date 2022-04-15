@@ -1,4 +1,4 @@
-pageextension 80006 "BA Item Card" extends "Item Card"
+pageextension 80008 "BA Item Card" extends "Item Card"
 {
     layout
     {
