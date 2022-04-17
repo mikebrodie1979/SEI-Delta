@@ -93,4 +93,37 @@ codeunit 75010 "BA SEI Subscibers"
         AssemblyLine.Validate("Quantity per", 0);
         AssemblyLine.Validate("BA Optional", true);
     end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Header", 'OnAfterGetNoSeriesCode', '', false, false)]
+    local procedure PurchaseHeaderOnAfterGetNoSeriesCode(var PurchHeader: Record "Purchase Header"; var NoSeriesCode: Code[20])
+    var
+        PurchPaySetup: Record "Purchases & Payables Setup";
+    begin
+        if not PurchHeader."BA Requisition Order" then
+            exit;
+        PurchPaySetup.Get();
+        PurchPaySetup.TestField("BA Requisition Nos.");
+        NoSeriesCode := PurchPaySetup."BA Requisition Nos.";
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnAfterInitHeaderDefaults', '', false, false)]
+    local procedure PurchaseLineOnAfterInitHeaderDefaults(var PurchLine: Record "Purchase Line"; PurchHeader: Record "Purchase Header")
+    begin
+        if PurchHeader."BA Requisition Order" then
+            PurchLine."BA Requisition Order" := true;
+    end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post (Yes/No)", 'OnBeforeConfirmPost', '', false, false)]
+    local procedure PurchPostYesNoOnBeforeConfirmPost(var PurchaseHeader: Record "Purchase Header"; var HideDialog: Boolean)
+    begin
+        if not PurchaseHeader."BA Requisition Order" then
+            exit;
+        HideDialog := true;
+        if not Confirm('Recieve Reqisition Order?') then
+            Error('');
+        PurchaseHeader.Receive := true;
+    end;
 }
