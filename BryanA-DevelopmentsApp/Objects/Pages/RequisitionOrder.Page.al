@@ -238,7 +238,7 @@ page 80001 "BA Requisition Order"
                     Visible = JobQueueUsed;
                 }
             }
-            part(PurchLines; "BA Req. Order Subform")
+            part(PurchLines; "Purchase Order Subform")
             {
                 ApplicationArea = Suite;
                 Editable = "Buy-from Vendor No." <> '';
@@ -1815,6 +1815,11 @@ page 80001 "BA Requisition Order"
         JobQueueUsed := PurchasesPayablesSetup.JobQueueActive;
         SetExtDocNoMandatoryCondition;
         ShowShippingOptionsWithLocation := ApplicationAreaMgmtFacade.IsLocationEnabled OR ApplicationAreaMgmtFacade.IsAllDisabled;
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."BA Requisition Order" := true;
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
