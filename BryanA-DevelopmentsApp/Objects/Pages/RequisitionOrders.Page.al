@@ -1,10 +1,11 @@
-page 80000 "BA Requisition List"
+page 80000 "BA Requisition Orders"
 {
-    Caption = 'Requisition List';
+    Caption = 'Requisition Orders';
     DataCaptionFields = "Document Type";
     Editable = false;
     PageType = List;
     SourceTable = "Purchase Header";
+    SourceTableView = where ("Document Type" = const (Order), "BA Requisition Order" = const (true));
     ApplicationArea = all;
     UsageCategory = Lists;
     CardPageId = "BA Requisition Order";
@@ -220,6 +221,11 @@ page 80000 "BA Requisition List"
     trigger OnOpenPage()
     begin
         CopyBuyFromVendorFilter;
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."BA Requisition Order" := true;
     end;
 }
 
