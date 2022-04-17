@@ -4,8 +4,9 @@ page 80000 "BA Requisition Orders"
     DataCaptionFields = "Document Type";
     Editable = false;
     PageType = List;
+    PromotedActionCategories = 'New,Process,Report,Posting';
     SourceTable = "Purchase Header";
-    SourceTableView = where ("Document Type" = const (Order), "BA Requisition Order" = const (true));
+    SourceTableView = where ("Document Type" = const (Order), "BA Requisition Order" = const (true), "BA Fully Rec'd. Req. Order" = const (false));
     ApplicationArea = all;
     UsageCategory = Lists;
     CardPageId = "BA Requisition Order";
@@ -174,6 +175,62 @@ page 80000 "BA Requisition Orders"
 
     actions
     {
+        area(Processing)
+        {
+            group("P&osting")
+            {
+                Caption = 'P&osting';
+                Image = Post;
+                action(Post2)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'P&ost';
+                    Ellipsis = true;
+                    Image = PostOrder;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'F9';
+                    ToolTip = 'Finalize the document or journal by posting the amounts and quantities to the related accounts in your company books.';
+
+                    trigger OnAction()
+                    begin
+                        Post(CODEUNIT::"Purch.-Post (Yes/No)");
+                    end;
+                }
+                action(Preview)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Preview Posting';
+                    Image = ViewPostedOrder;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    ToolTip = 'Review the different types of entries that will be created when you post the document or journal.';
+
+                    trigger OnAction()
+                    begin
+                        ShowPreview;
+                    end;
+                }
+                action("Post and &Print")
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Post and &Print';
+                    Ellipsis = true;
+                    Image = PostPrint;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ShortCutKey = 'Shift+F9';
+                    ToolTip = 'Finalize and prepare to print the document or journal. The values and quantities are posted to the related accounts. A report request window where you can specify what to include on the print-out.';
+
+                    trigger OnAction()
+                    begin
+                        Post(CODEUNIT::"Purch.-Post + Print");
+                    end;
+                }
+            }
+        }
         area(navigation)
         {
             group("&Line")
@@ -227,5 +284,45 @@ page 80000 "BA Requisition Orders"
     begin
         Rec."BA Requisition Order" := true;
     end;
+
+    local procedure Post(PostingCodeunitID: Integer)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        InstructionMgt: Codeunit "Instruction Mgt.";
+        ApplicationAreaMgmtFacade: Codeunit "Application Area Mgmt. Facade";
+        LinesInstructionMgt: Codeunit "Lines Instruction Mgt.";
+        IsScheduledPosting: Boolean;
+    begin
+        IF ApplicationAreaMgmtFacade.IsFoundationEnabled THEN
+            LinesInstructionMgt.PurchaseCheckAllLinesHaveQuantityAssigned(Rec);
+
+        SendToPosting(PostingCodeunitID);
+
+        IsScheduledPosting := "Job Queue Status" = "Job Queue Status"::"Scheduled for Posting";
+        DocumentIsPosted := (NOT PurchaseHeader.GET("Document Type", "No.")) OR IsScheduledPosting;
+
+        IF IsScheduledPosting THEN
+            CurrPage.CLOSE;
+        CurrPage.UPDATE(FALSE);
+
+        IF PostingCodeunitID <> CODEUNIT::"Purch.-Post (Yes/No)" THEN
+            EXIT;
+
+        // IF InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) THEN
+        //     ShowPostedConfirmationMessage;
+
+        if Rec."BA Fully Rec'd. Req. Order" then
+            CurrPage.Update(false);
+    end;
+
+    local procedure ShowPreview()
+    var
+        PurchPostYesNo: Codeunit "Purch.-Post (Yes/No)";
+    begin
+        PurchPostYesNo.Preview(Rec);
+    end;
+
+    var
+        DocumentIsPosted: Boolean;
 }
 
