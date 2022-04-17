@@ -126,4 +126,31 @@ codeunit 75010 "BA SEI Subscibers"
             Error('');
         PurchaseHeader.Receive := true;
     end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostPurchaseDoc', '', false, false)]
+    local procedure PurchPostOnAfterPostPurchLines(var PurchaseHeader: Record "Purchase Header"; PurchRcpHdrNo: Code[20])
+    var
+        PurchLine: Record "Purchase Line";
+        PurchRcptHeader: Record "Purch. Rcpt. Header";
+        PurchRcptLine: Record "Purch. Rcpt. Line";
+    begin
+        if not PurchaseHeader."BA Requisition Order" or (PurchRcpHdrNo = '') or not PurchRcptHeader.Get(PurchRcpHdrNo) then
+            exit;
+        PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+        PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurchLine.SetFilter("Qty. to Receive (Base)", '<>%1', 0);
+        if not PurchLine.IsEmpty() then
+            exit;
+        PurchLine.SetRange("Qty. to Receive (Base)");
+        if PurchLine.FindSet() then
+            repeat
+                if PurchLine."Quantity Received" <> PurchLine.Quantity then
+                    exit;
+                if not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
+                    or (PurchRcptLine.Quantity <> PurchLine.Quantity) then
+                    exit;
+            until PurchLine.Next() = 0;
+        PurchaseHeader."BA Fully Rec'd. Req. Order" := true;
+    end;
 }
