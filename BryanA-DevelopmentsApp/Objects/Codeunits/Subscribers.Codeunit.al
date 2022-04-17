@@ -152,5 +152,6 @@ codeunit 75010 "BA SEI Subscibers"
                     exit;
             until PurchLine.Next() = 0;
         PurchaseHeader."BA Fully Rec'd. Req. Order" := true;
+        PurchRcptHeader."BA Fully Rec'd. Req. Order" := PurchaseHeader."BA Fully Rec'd. Req. Order";
     end;
 }
