@@ -1,13 +1,7 @@
-tableextension 80000 "BA Purchase Line" extends "Purchase Line"
+tableextension 80010 "BA Purch. Rcpt. Line" extends "Purch. Rcpt. Line"
 {
     fields
     {
-        field(80000; "BA Salesperson Filter Code"; Code[20])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Salesperson Filter Code';
-            Editable = false;
-        }
         field(80001; "BA Requisition Order"; Boolean)
         {
             DataClassification = CustomerContent;
