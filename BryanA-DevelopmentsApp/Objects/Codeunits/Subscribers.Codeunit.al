@@ -128,6 +128,24 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostItemLine', '', false, false)]
+    local procedure PurchPostOnAfterPostItemLine(PurchaseLine: Record "Purchase Line")
+    var
+        PurchaseHeader: Record "Purchase Header";
+        Item: Record Item;
+        Currency: Record Currency;
+    begin
+        if not Currency.Get(PurchaseLine."Currency Code") or not Currency."BA Local Purchase Cost" then
+            exit;
+        PurchaseHeader.Get(PurchaseLine."Document Type", PurchaseLine."Document No.");
+        if PurchaseHeader.Invoice or (PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order") then begin
+            Item.Get(PurchaseLine."No.");
+            Item.SetLastCurrencyPurchCost(Currency.Code, PurchaseLine."Unit Cost");
+            Item.Modify(true);
+        end;
+    end;
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostPurchaseDoc', '', false, false)]
     local procedure PurchPostOnAfterPostPurchLines(var PurchaseHeader: Record "Purchase Header"; PurchRcpHdrNo: Code[20])
     var
@@ -145,13 +163,31 @@ codeunit 75010 "BA SEI Subscibers"
         PurchLine.SetRange("Qty. to Receive (Base)");
         if PurchLine.FindSet() then
             repeat
-                if PurchLine."Quantity Received" <> PurchLine.Quantity then
-                    exit;
-                if not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
-                    or (PurchRcptLine.Quantity <> PurchLine.Quantity) then
+                if (PurchLine."Quantity Received" <> PurchLine.Quantity) or not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
+                        or (PurchRcptLine.Quantity <> PurchLine.Quantity) then
                     exit;
             until PurchLine.Next() = 0;
         PurchaseHeader."BA Fully Rec'd. Req. Order" := true;
-        PurchRcptHeader."BA Fully Rec'd. Req. Order" := PurchaseHeader."BA Fully Rec'd. Req. Order";
+        PurchRcptHeader."BA Fully Rec'd. Req. Order" := true;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnAfterValidateEvent', 'No.', false, false)]
+    local procedure PurchLineOnAfterValidateNo(var Rec: Record "Purchase Line")
+    var
+        Item: Record Item;
+        PurchHeader: Record "Purchase Header";
+        Currency: Record Currency;
+        LastUnitCost: Decimal;
+    begin
+        if (Rec.Type <> Rec.Type::Item) or Rec.IsTemporary() or (Rec."No." = '') then
+            exit;
+        PurchHeader.Get(Rec."Document Type", Rec."Document No.");
+        if not Currency.Get(PurchHeader."Currency Code") or not Currency."BA Local Purchase Cost" then
+            exit;
+        Item.Get(Rec."No.");
+        LastUnitCost := Item.GetLastCurrencyPurchCost(Currency.Code);
+        if LastUnitCost = 0 then
+            exit;
+        Rec.Validate("Direct Unit Cost", LastUnitCost);
     end;
 }
