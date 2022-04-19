@@ -11,7 +11,7 @@ report 50070 "BA Production BOM"
             RequestFilterFields = "No.";
 
             column(No; "No.") { }
-            column(TotalUnitCost; "ENC Total Unit Cost") { }
+            column(TotalUnitCost; Round("ENC Total Unit Cost", 0.01)) { }
             column(ActiveVersionNo; "ENC Active Version No.") { }
             column(Description; Description) { }
             column(Description2; "Description 2") { }
