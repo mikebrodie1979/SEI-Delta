@@ -52,6 +52,7 @@ report 50070 "BA Production BOM"
                 column(Scrap; "Scrap %") { }
                 column(RoutingLinkCode; "Routing Link Code") { }
                 column(Line_UoM; "Unit of Measure Code") { }
+                column(ShowShading; ShowShading) { }
 
                 //Line
                 trigger OnPreDataItem()
@@ -60,7 +61,7 @@ report 50070 "BA Production BOM"
 
                 trigger OnAfterGetRecord()
                 begin
-
+                    ShowShading := not ShowShading;
                 end;
             }
 
@@ -80,4 +81,7 @@ report 50070 "BA Production BOM"
     {
         SaveValues = true;
     }
+
+    var
+        ShowShading: Boolean;
 }

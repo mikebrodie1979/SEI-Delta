@@ -454,6 +454,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -486,6 +487,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -518,6 +520,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -550,6 +553,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -584,6 +588,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -618,6 +623,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -650,6 +656,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -682,6 +689,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -714,6 +722,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -746,6 +755,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -778,6 +788,7 @@
                             <Border>
                               <Style>None</Style>
                             </Border>
+                            <BackgroundColor>=IIF(Fields!ShowShading.Value,"LightGrey","White")</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -2061,6 +2072,9 @@ End Function
         </Field>
         <Field Name="Line_UoM">
           <DataField>Line_UoM</DataField>
+        </Field>
+        <Field Name="ShowShading">
+          <DataField>ShowShading</DataField>
         </Field>
       </Fields>
       <Query>
