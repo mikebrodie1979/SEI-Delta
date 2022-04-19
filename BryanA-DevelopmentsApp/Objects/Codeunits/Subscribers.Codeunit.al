@@ -135,15 +135,29 @@ codeunit 75010 "BA SEI Subscibers"
         PurchaseHeader: Record "Purchase Header";
         Item: Record Item;
         Currency: Record Currency;
+        GLSetup: Record "General Ledger Setup";
+        ItemCostMgt: Codeunit ItemCostManagement;
+        TotalAmount: Decimal;
+        LastDirectCost: Decimal;
+        FullyPostedReqOrder: Boolean;
     begin
-        if not Currency.Get(PurchaseLine."Currency Code") or not Currency."BA Local Purchase Cost" then
-            exit;
         PurchaseHeader.Get(PurchaseLine."Document Type", PurchaseLine."Document No.");
-        if PurchaseHeader.Invoice or (PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order") then begin
-            Item.Get(PurchaseLine."No.");
-            Item.SetLastCurrencyPurchCost(Currency.Code, PurchaseLine."Unit Cost");
-            Item.Modify(true);
-        end;
+        FullyPostedReqOrder := PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order";
+        if not Currency.Get(PurchaseLine."Currency Code") or not Currency."BA Local Purchase Cost" then begin
+            if FullyPostedReqOrder then begin
+                Item.Get(PurchaseLine."No.");
+                GLSetup.Get();
+                TotalAmount := PurchaseLine."Unit Cost" * PurchaseLine."Qty. to Receive";
+                LastDirectCost := Round(TotalAmount / PurchaseLine."Qty. to Receive", GLSetup."Unit-Amount Rounding Precision");
+                ItemCostMgt.UpdateUnitCost(Item, PurchaseLine."Location Code", PurchaseLine."Variant Code",
+                    LastDirectCost, 0, true, true, false, 0);
+            end
+        end else
+            if PurchaseHeader.Invoice or FullyPostedReqOrder then begin
+                Item.Get(PurchaseLine."No.");
+                Item.SetLastCurrencyPurchCost(Currency.Code, PurchaseLine."Unit Cost");
+                Item.Modify(true);
+            end;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostPurchaseDoc', '', false, false)]
@@ -163,7 +177,9 @@ codeunit 75010 "BA SEI Subscibers"
         PurchLine.SetRange("Qty. to Receive (Base)");
         if PurchLine.FindSet() then
             repeat
-                if (PurchLine."Quantity Received" <> PurchLine.Quantity) or not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
+                if (PurchLine."Quantity Received" <> PurchLine.Quantity) then
+                    exit;
+                if not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
                         or (PurchRcptLine.Quantity <> PurchLine.Quantity) then
                     exit;
             until PurchLine.Next() = 0;
@@ -190,4 +206,7 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         Rec.Validate("Direct Unit Cost", LastUnitCost);
     end;
+
+
+
 }
