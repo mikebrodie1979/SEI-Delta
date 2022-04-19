@@ -11,7 +11,7 @@ report 50070 "BA Production BOM"
             RequestFilterFields = "No.";
 
             column(No; "No.") { }
-            column(TotalUnitCost; "ENC Total Unit Cost") { }
+            column(TotalUnitCost; Round("ENC Total Unit Cost", 0.01)) { }
             column(ActiveVersionNo; "ENC Active Version No.") { }
             column(Description; Description) { }
             column(Description2; "Description 2") { }
@@ -45,13 +45,14 @@ report 50070 "BA Production BOM"
                 column(PartNo; "ENC Part") { }
                 column(PartDescription; "ENC Part Description") { }
                 column(PartQty; "ENC Part Qty.") { }
-                column(UnitCost; "ENC Unit Cost") { }
+                column(UnitCost; Round("ENC Unit Cost", 0.01)) { }
                 column(VendorItemNo; "ENC Vendor Item No.") { }
                 column(VendorNo; "ENC Vendor No.") { }
                 column(VariantCode; "Variant Code") { }
                 column(Scrap; "Scrap %") { }
                 column(RoutingLinkCode; "Routing Link Code") { }
                 column(Line_UoM; "Unit of Measure Code") { }
+                column(ShowShading; ShowShading) { }
 
                 //Line
                 trigger OnPreDataItem()
@@ -60,7 +61,7 @@ report 50070 "BA Production BOM"
 
                 trigger OnAfterGetRecord()
                 begin
-
+                    ShowShading := not ShowShading;
                 end;
             }
 
@@ -80,4 +81,7 @@ report 50070 "BA Production BOM"
     {
         SaveValues = true;
     }
+
+    var
+        ShowShading: Boolean;
 }
