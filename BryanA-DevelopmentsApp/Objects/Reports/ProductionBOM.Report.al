@@ -45,7 +45,7 @@ report 50070 "BA Production BOM"
                 column(PartNo; "ENC Part") { }
                 column(PartDescription; "ENC Part Description") { }
                 column(PartQty; "ENC Part Qty.") { }
-                column(UnitCost; "ENC Unit Cost") { }
+                column(UnitCost; Round("ENC Unit Cost", 0.01)) { }
                 column(VendorItemNo; "ENC Vendor Item No.") { }
                 column(VendorNo; "ENC Vendor No.") { }
                 column(VariantCode; "Variant Code") { }
