@@ -208,4 +208,21 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         Rec.Validate("Direct Unit Cost", LastUnitCost);
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Report Selections", 'OnPrintDocumentsOnAfterSelectTempReportSelectionsToPrint', '', false, false)]
+    local procedure ReportSelectionsOnPrintDocumentsOnAfterSelectTempReportSelectionsToPrint(var TempReportSelections: Record "Report Selections"; RecordVariant: Variant)
+    var
+        PurchHeader: Record "Purchase Header";
+        RecRef: RecordRef;
+    begin
+        RecRef.GetTable(RecordVariant);
+        if RecRef.Number() <> Database::"Purchase Header" then
+            exit;
+        RecRef.SetTable(PurchHeader);
+        if PurchHeader."BA Requisition Order" then
+            TempReportSelections.Validate("Report ID", Report::"BA Requisition Order")
+        else
+            TempReportSelections.Validate("Report ID", 50007);
+        TempReportSelections.Modify(false);
+    end;
 }
