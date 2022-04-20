@@ -184,7 +184,9 @@ codeunit 75010 "BA SEI Subscibers"
                     exit;
             until PurchLine.Next() = 0;
         PurchaseHeader."BA Fully Rec'd. Req. Order" := true;
+        PurchaseHeader.Modify(false);
         PurchRcptHeader."BA Fully Rec'd. Req. Order" := true;
+        PurchRcptHeader.Modify(false);
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnAfterValidateEvent', 'No.', false, false)]

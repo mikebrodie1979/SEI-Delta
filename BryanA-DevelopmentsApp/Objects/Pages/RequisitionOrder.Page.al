@@ -159,10 +159,26 @@ page 80001 "BA Requisition Order"
                     Importance = Additional;
                     ToolTip = 'Specifies when the related purchase invoice must be paid.';
                 }
+                field("Order Date"; "Order Date")
+                {
+                    ApplicationArea = Suite;
+                    Importance = Additional;
+                    ToolTip = 'Specifies the date when the order was created.';
+                }
+                field("ENC Received Date"; "ENC Received Date")
+                {
+                    ApplicationArea = all;
+                    Importance = Additional;
+                    ShowMandatory = true;
+                }
+                field("Your Reference"; "Your Reference")
+                {
+                    ApplicationArea = all;
+                }
                 field("Vendor Invoice No."; "Vendor Invoice No.")
                 {
                     ApplicationArea = Suite;
-                    ShowMandatory = VendorInvoiceNoMandatory;
+                    // ShowMandatory = VendorInvoiceNoMandatory;
                     ToolTip = 'Specifies the document number of the original document you received from the vendor. You can require the document number for posting, or let it be optional. By default, it''s required, so that this document references the original. Making document numbers optional removes a step from the posting process. For example, if you attach the original invoice as a PDF, you might not need to enter the document number. To specify whether document numbers are required, in the Purchases & Payables Setup window, select or clear the Ext. Doc. No. Mandatory field.';
                 }
                 field("Purchaser Code"; "Purchaser Code")
@@ -182,12 +198,7 @@ page 80001 "BA Requisition Order"
                     Importance = Additional;
                     ToolTip = 'Specifies the number of archived versions for this document.';
                 }
-                field("Order Date"; "Order Date")
-                {
-                    ApplicationArea = Suite;
-                    Importance = Additional;
-                    ToolTip = 'Specifies the date when the order was created.';
-                }
+
                 field("Quote No."; "Quote No.")
                 {
                     ApplicationArea = Suite;
@@ -1873,7 +1884,6 @@ page 80001 "BA Requisition Order"
         ShipToOptions: Option "Default (Company Address)",Location,"Customer Address","Custom Address";
         PayToOptions: Option "Default (Vendor)","Another Vendor","Custom Address";
         [InDataSet]
-
         JobQueueVisible: Boolean;
         [InDataSet]
         JobQueueUsed: Boolean;
@@ -1885,7 +1895,7 @@ page 80001 "BA Requisition Order"
         ShowWorkflowStatus: Boolean;
         CanCancelApprovalForRecord: Boolean;
         DocumentIsPosted: Boolean;
-        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Purchase Invoices window.\\Do you want to open the posted invoice?', Comment = '%1 = posted document number';
+        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Purchase Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
         CanRequestApprovalForFlow: Boolean;
         CanCancelApprovalForFlow: Boolean;
         ShowShippingOptionsWithLocation: Boolean;
@@ -1922,10 +1932,10 @@ page 80001 "BA Requisition Order"
         CurrPage.UPDATE(FALSE);
 
         IF PostingCodeunitID <> CODEUNIT::"Purch.-Post (Yes/No)" THEN
-            EXIT;
+            exit;
 
         IF InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) THEN
-            ShowPostedConfirmationMessage;
+            ShowPostedConfirmationMessage();
     end;
 
     local procedure ApproveCalcInvDisc()
@@ -2017,24 +2027,22 @@ page 80001 "BA Requisition Order"
 
     local procedure ShowPostedConfirmationMessage()
     var
-        OrderPurchaseHeader: Record "Purchase Header";
-        PurchInvHeader: Record "Purch. Inv. Header";
+        PurchaseHeader: Record "Purchase Header";
+        PurchRcptHeader: Record "Purch. Rcpt. Header";
         InstructionMgt: Codeunit "Instruction Mgt.";
     begin
-        IF NOT OrderPurchaseHeader.GET("Document Type", "No.") THEN BEGIN
-            PurchInvHeader.SETRANGE("No.", "Last Posting No.");
-            IF PurchInvHeader.FINDFIRST THEN
-                IF InstructionMgt.ShowConfirm(STRSUBSTNO(OpenPostedPurchaseOrderQst, PurchInvHeader."No."),
-                     InstructionMgt.ShowPostedConfirmationMessageCode)
-                THEN
-                    PAGE.RUN(PAGE::"Posted Purchase Invoice", PurchInvHeader);
-        END;
+        if not Rec.Get(Rec.RecordId()) or not Rec."BA Fully Rec'd. Req. Order" then
+            exit;
+        PurchRcptHeader.SetRange("No.", Rec."Last Receiving No.");
+        if PurchRcptHeader.FindFirst() then
+            if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseOrderQst, PurchRcptHeader."No."),
+                             InstructionMgt.ShowPostedConfirmationMessageCode) then begin
+                Page.Run(Page::"Posted Purchase Receipt", PurchRcptHeader);
+                CurrPage.Close();
+            end;
     end;
 
-    [IntegrationEvent(false, false)]
-    local procedure OnBeforeCalculateSalesTaxStatistics(var PurchaseHeader: Record "Purchase Header"; ShowDialog: Boolean)
-    begin
-    end;
+
 
     local procedure ValidateShippingOption()
     begin

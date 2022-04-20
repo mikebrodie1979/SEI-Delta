@@ -297,22 +297,32 @@ page 80000 "BA Requisition Orders"
             LinesInstructionMgt.PurchaseCheckAllLinesHaveQuantityAssigned(Rec);
 
         SendToPosting(PostingCodeunitID);
-
         IsScheduledPosting := "Job Queue Status" = "Job Queue Status"::"Scheduled for Posting";
-        DocumentIsPosted := (NOT PurchaseHeader.GET("Document Type", "No.")) OR IsScheduledPosting;
 
         IF IsScheduledPosting THEN
             CurrPage.CLOSE;
         CurrPage.UPDATE(FALSE);
 
         IF PostingCodeunitID <> CODEUNIT::"Purch.-Post (Yes/No)" THEN
-            EXIT;
+            exit;
 
-        // IF InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) THEN
-        //     ShowPostedConfirmationMessage;
+        IF InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) THEN
+            ShowPostedConfirmationMessage();
+    end;
 
-        if Rec."BA Fully Rec'd. Req. Order" then
-            CurrPage.Update(false);
+    local procedure ShowPostedConfirmationMessage()
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurchRcptHeader: Record "Purch. Rcpt. Header";
+        InstructionMgt: Codeunit "Instruction Mgt.";
+    begin
+        if not Rec.Get(Rec.RecordId()) or not Rec."BA Fully Rec'd. Req. Order" then
+            exit;
+        PurchRcptHeader.SetRange("No.", Rec."Last Receiving No.");
+        if PurchRcptHeader.FindFirst() then
+            if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseOrderQst, PurchRcptHeader."No."),
+                             InstructionMgt.ShowPostedConfirmationMessageCode) then
+                Page.Run(Page::"Posted Purchase Receipt", PurchRcptHeader);
     end;
 
     local procedure ShowPreview()
@@ -323,6 +333,7 @@ page 80000 "BA Requisition Orders"
     end;
 
     var
-        DocumentIsPosted: Boolean;
+        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Purchase Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
+
 }
 
