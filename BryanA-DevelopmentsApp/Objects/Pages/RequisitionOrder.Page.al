@@ -359,11 +359,6 @@ page 50097 "BA Requisition Order"
                 {
                     ToolTip = 'Specifies the tax area code for self assessed Provincial Sales Tax for the company.';
                 }
-                field("Shipment Method Code"; "Shipment Method Code")
-                {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
-                }
                 field("Payment Reference"; "Payment Reference")
                 {
                     ApplicationArea = Suite;
@@ -413,8 +408,10 @@ page 50097 "BA Requisition Order"
                 Caption = 'Shipping and Payment';
                 group(G1)
                 {
+                    ShowCaption = false;
                     group(G2)
                     {
+                        ShowCaption = false;
                         field(ShippingOptionWithLocation; ShipToOptions)
                         {
                             ApplicationArea = Basic, Suite;
@@ -444,9 +441,11 @@ page 50097 "BA Requisition Order"
                         }
                         group(G3)
                         {
+                            ShowCaption = false;
                             group(G4)
                             {
                                 Visible = ShipToOptions = ShipToOptions::Location;
+                                ShowCaption = false;
                                 field("Location Code"; "Location Code")
                                 {
                                     ApplicationArea = Location;
@@ -457,6 +456,7 @@ page 50097 "BA Requisition Order"
                             group(G5)
                             {
                                 Visible = ShipToOptions = ShipToOptions::"Customer Address";
+                                ShowCaption = false;
                                 field("Sell-to Customer No."; "Sell-to Customer No.")
                                 {
                                     ApplicationArea = Suite;
@@ -508,6 +508,7 @@ page 50097 "BA Requisition Order"
                             group(G6)
                             {
                                 Visible = IsShipToCountyVisible;
+                                ShowCaption = false;
                                 field("Ship-to County"; "Ship-to County")
                                 {
                                     ApplicationArea = Basic, Suite;
@@ -560,6 +561,7 @@ page 50097 "BA Requisition Order"
                 }
                 group(G7)
                 {
+                    ShowCaption = false;
                     field(PayToOptions; PayToOptions)
                     {
                         ApplicationArea = Basic, Suite;
@@ -573,9 +575,15 @@ page 50097 "BA Requisition Order"
                                 VALIDATE("Pay-to Vendor No.", "Buy-from Vendor No.");
                         end;
                     }
+                    field("Shipment Method Code"; "Shipment Method Code")
+                    {
+                        ApplicationArea = Basic, Suite;
+                        ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
+                    }
                     group(G8)
                     {
                         Visible = NOT (PayToOptions = PayToOptions::"Default (Vendor)");
+                        ShowCaption = false;
                         field("Pay-to Name"; "Pay-to Name")
                         {
                             ApplicationArea = Basic, Suite;
@@ -618,6 +626,7 @@ page 50097 "BA Requisition Order"
                         group(G9)
                         {
                             Visible = IsPayToCountyVisible;
+                            ShowCaption = false;
                             field("Pay-to County"; "Pay-to County")
                             {
                                 ApplicationArea = Basic, Suite;
