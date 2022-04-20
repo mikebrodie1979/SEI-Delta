@@ -267,6 +267,25 @@ page 80000 "BA Requisition Orders"
                 RunObject = Report 409;
                 ToolTip = 'Print, view, or save a list of the availability of items for shipment on purchase documents, for example credit memos.';
             }
+            action("&Print")
+            {
+                ApplicationArea = Suite;
+                Caption = '&Print';
+                Ellipsis = true;
+                Image = Print;
+                Promoted = true;
+                PromotedCategory = Report;
+                ToolTip = 'Prepare to print the document. The report request window for the document opens where you can specify what to include on the print-out.';
+
+                trigger OnAction()
+                var
+                    PurchaseHeader: Record "Purchase Header";
+                begin
+                    PurchaseHeader := Rec;
+                    CurrPage.SETSELECTIONFILTER(PurchaseHeader);
+                    PurchaseHeader.PrintRecords(TRUE);
+                end;
+            }
         }
     }
 

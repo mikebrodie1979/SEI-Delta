@@ -208,7 +208,4 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         Rec.Validate("Direct Unit Cost", LastUnitCost);
     end;
-
-
-
 }
