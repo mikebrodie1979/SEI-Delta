@@ -1,4 +1,4 @@
-page 80001 "BA Requisition Order"
+page 50097 "BA Requisition Order"
 {
     Caption = 'Requisition Order';
     PageType = Document;

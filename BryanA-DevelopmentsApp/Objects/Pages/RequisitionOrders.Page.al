@@ -1,4 +1,4 @@
-page 80000 "BA Requisition Orders"
+page 50098 "BA Requisition Orders"
 {
     Caption = 'Requisition Orders';
     DataCaptionFields = "Document Type";
