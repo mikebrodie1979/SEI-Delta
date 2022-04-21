@@ -3,8 +3,6 @@ report 50008 "BA Requisition Order"
     DefaultLayout = Word;
     Caption = 'Requisition Order';
     WordLayout = '.\Objects\ReportLayouts\RequisitionOrder.docx';
-    ApplicationArea = All;
-    UsageCategory = ReportsAndAnalysis;
 
     dataset
     {
