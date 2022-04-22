@@ -136,6 +136,7 @@ codeunit 75010 "BA SEI Subscibers"
         Item: Record Item;
         Currency: Record Currency;
         GLSetup: Record "General Ledger Setup";
+        CurrencyExchageRate: Record "Currency Exchange Rate";
         ItemCostMgt: Codeunit ItemCostManagement;
         TotalAmount: Decimal;
         LastDirectCost: Decimal;
@@ -143,16 +144,17 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PurchaseHeader.Get(PurchaseLine."Document Type", PurchaseLine."Document No.");
         FullyPostedReqOrder := PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order";
-        if not Currency.Get(PurchaseLine."Currency Code") or not Currency."BA Local Purchase Cost" then begin
-            if FullyPostedReqOrder then begin
-                Item.Get(PurchaseLine."No.");
-                GLSetup.Get();
-                TotalAmount := PurchaseLine."Unit Cost" * PurchaseLine."Qty. to Receive";
-                LastDirectCost := Round(TotalAmount / PurchaseLine."Qty. to Receive", GLSetup."Unit-Amount Rounding Precision");
-                ItemCostMgt.UpdateUnitCost(Item, PurchaseLine."Location Code", PurchaseLine."Variant Code",
-                    LastDirectCost, 0, true, true, false, 0);
-            end
-        end else
+        if FullyPostedReqOrder then begin
+            Item.Get(PurchaseLine."No.");
+            GLSetup.Get();
+            TotalAmount := PurchaseLine."Unit Cost" * PurchaseLine."Qty. to Receive";
+            LastDirectCost := Round(TotalAmount / PurchaseLine."Qty. to Receive", GLSetup."Unit-Amount Rounding Precision");
+            if PurchaseHeader."Currency Code" <> '' then
+                LastDirectCost := CurrencyExchageRate.ExchangeAmount(LastDirectCost, PurchaseHeader."Currency Code", '', PurchaseHeader."Posting Date");
+            ItemCostMgt.UpdateUnitCost(Item, PurchaseLine."Location Code", PurchaseLine."Variant Code",
+                LastDirectCost, 0, true, true, false, 0);
+        end;
+        if Currency.Get(PurchaseLine."Currency Code") and Currency."BA Local Purchase Cost" then
             if PurchaseHeader.Invoice or FullyPostedReqOrder then begin
                 Item.Get(PurchaseLine."No.");
                 Item.SetLastCurrencyPurchCost(Currency.Code, PurchaseLine."Unit Cost");
