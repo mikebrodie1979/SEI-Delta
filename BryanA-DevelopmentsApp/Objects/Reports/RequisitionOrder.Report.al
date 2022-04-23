@@ -318,18 +318,15 @@ report 50008 "BA Requisition Order"
                         column(MangDept; "ENC Manufacturing Dept.") { }
                         column(RcptDate; Format("Purchase Line"."Requested Receipt Date")) { }
                         column(CRNo; "Purchase Line"."Vendor Item No.") { }
-                        column(Amt; AmountExclInvDisc) { }
-                        column(Qty; Quantity) { }
+                        column(Amt; AmountExclInvDiscText) { }
+                        column(Qty; QuantityText) { }
                         column(ItemNo; ItemNumberToPrint) { }
-                        column(Price; UnitPriceToPrint)
-                        {
-                            DecimalPlaces = 2 : 5;
-                        }
+                        column(Price; UnitPriceToPrintText) { }
 
                         trigger OnPreDataItem()
                         begin
                             CLEAR(AmountExclInvDisc);
-                            SetFilter("Buy-from Vendor No.", '<>%1', '');
+                            // SetFilter("Buy-from Vendor No.", '<>%1', '');
                             NumberOfLines := COUNT;
                             OnLineNumber := 0;
                             PrintFooter := FALSE;
@@ -379,6 +376,15 @@ report 50008 "BA Requisition Order"
                                 UnitPriceToPrint := 0 // so it won't print
                             ELSE
                                 UnitPriceToPrint := ROUND(AmountExclInvDisc / Quantity, 0.00001);
+                            UnitPriceToPrintText := AddDecimalText(Format(UnitPriceToPrint));
+                            AmountExclInvDiscText := AddDecimalText(Format(AmountExclInvDisc));
+                            QuantityText := Format(Quantity);
+                            if Type = Type::" " then begin
+                                UnitPriceToPrintText := '';
+                                AmountExclInvDiscText := '';
+                                QuantityText := '';
+                            end;
+
 
                             IF OnLineNumber = NumberOfLines THEN BEGIN
                                 PrintFooter := TRUE;
@@ -680,8 +686,11 @@ report 50008 "BA Requisition Order"
     end;
 
     var
+        QuantityText: Text;
         UnitPriceToPrint: Decimal;
+        UnitPriceToPrintText: Text;
         AmountExclInvDisc: Decimal;
+        AmountExclInvDiscText: Text;
         ShipmentMethod: Record "Shipment Method";
         PaymentTerms: Record "Payment Terms";
         SalesPurchPerson: Record "Salesperson/Purchaser";
@@ -783,5 +792,22 @@ report 50008 "BA Requisition Order"
         exit(SelectStr(1, ConvertStr(s, ' ', ',')));
     end;
 
+
+    local procedure AddDecimalText(Input: Text): Text
+    var
+        NumParts: List of [Text];
+        s: Text;
+        s2: Text;
+    begin
+        if not Input.Contains('.') then
+            exit(Input + '.00');
+        NumParts := Input.Split('.');
+        if not NumParts.Get(2, s) then
+            exit(Input + '.00');
+        if StrLen(s) = 1 then
+            s += '0';
+        NumParts.Get(1, s2);
+        exit(s2 + '.' + s);
+    end;
 }
 
