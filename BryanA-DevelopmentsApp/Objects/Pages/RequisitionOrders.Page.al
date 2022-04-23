@@ -341,7 +341,7 @@ page 50098 "BA Requisition Orders"
         if PurchRcptHeader.FindFirst() then
             if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseOrderQst, PurchRcptHeader."No."),
                              InstructionMgt.ShowPostedConfirmationMessageCode) then
-                Page.Run(Page::"Posted Purchase Receipt", PurchRcptHeader);
+                Page.Run(Page::"BA Posted Requisition Receipt", PurchRcptHeader);
     end;
 
     local procedure ShowPreview()
@@ -352,7 +352,7 @@ page 50098 "BA Requisition Orders"
     end;
 
     var
-        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Purchase Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
+        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Requisition Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
 
 }
 

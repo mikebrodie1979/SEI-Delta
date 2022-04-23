@@ -1904,7 +1904,7 @@ page 50097 "BA Requisition Order"
         ShowWorkflowStatus: Boolean;
         CanCancelApprovalForRecord: Boolean;
         DocumentIsPosted: Boolean;
-        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Purchase Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
+        OpenPostedPurchaseOrderQst: Label 'The order is posted as number %1 and moved to the Posted Requisition Receipts window.\\Do you want to open the posted receipt?', Comment = '%1 = posted document number';
         CanRequestApprovalForFlow: Boolean;
         CanCancelApprovalForFlow: Boolean;
         ShowShippingOptionsWithLocation: Boolean;
@@ -2046,7 +2046,7 @@ page 50097 "BA Requisition Order"
         if PurchRcptHeader.FindFirst() then
             if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseOrderQst, PurchRcptHeader."No."),
                              InstructionMgt.ShowPostedConfirmationMessageCode) then begin
-                Page.Run(Page::"Posted Purchase Receipt", PurchRcptHeader);
+                Page.Run(Page::"BA Posted Requisition Receipt", PurchRcptHeader);
                 CurrPage.Close();
             end;
     end;
