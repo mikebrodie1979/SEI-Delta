@@ -166,10 +166,22 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not PurchaseHeader."BA Requisition Order" then
             exit;
-        HideDialog := true;
-        if not Confirm(StrSubstNo('Receive Requisition Order %1?', PurchaseHeader."No.")) then
-            Error('');
-        PurchaseHeader.Receive := true;
+        case PurchaseHeader."Document Type" of
+            PurchaseHeader."Document Type"::Order, PurchaseHeader."Document Type"::Invoice:
+                begin
+                    HideDialog := true;
+                    if not Confirm(StrSubstNo('Receive Requisition Order %1?', PurchaseHeader."No.")) then
+                        Error('');
+                    PurchaseHeader.Receive := true;
+                end;
+            PurchaseHeader."Document Type"::"Return Order":
+                begin
+                    HideDialog := true;
+                    if not Confirm(StrSubstNo('Ship Requisition Return sOrder %1?', PurchaseHeader."No.")) then
+                        Error('');
+                    PurchaseHeader.Ship := true;
+                end;
+        end;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post (Yes/No)", 'OnRunPreviewOnBeforePurchPostRun', '', false, false)]
