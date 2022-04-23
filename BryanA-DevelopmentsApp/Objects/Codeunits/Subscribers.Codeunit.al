@@ -103,8 +103,45 @@ codeunit 75010 "BA SEI Subscibers"
         if not PurchHeader."BA Requisition Order" then
             exit;
         PurchPaySetup.Get();
-        PurchPaySetup.TestField("BA Requisition Nos.");
-        NoSeriesCode := PurchPaySetup."BA Requisition Nos.";
+        case PurchHeader."Document Type" of
+            PurchHeader."Document Type"::Order, PurchHeader."Document Type"::Invoice:
+                begin
+                    PurchPaySetup.TestField("BA Requisition Nos.");
+                    NoSeriesCode := PurchPaySetup."BA Requisition Nos.";
+                end;
+            PurchHeader."Document Type"::"Credit Memo":
+                begin
+                    PurchPaySetup.TestField("BA Requisition Cr.Memo Nos.");
+                    NoSeriesCode := PurchPaySetup."BA Requisition Cr.Memo Nos.";
+                end;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Header", 'OnAfterInitRecord', '', false, false)]
+    local procedure PurchaseHeaderOnAfterInitRecord(var PurchHeader: Record "Purchase Header")
+    var
+        PurchPaySetup: Record "Purchases & Payables Setup";
+    begin
+        if not PurchHeader."BA Requisition Order" then
+            exit;
+        PurchPaySetup.Get();
+        case PurchHeader."Document Type" of
+            PurchHeader."Document Type"::Order, PurchHeader."Document Type"::Invoice:
+                begin
+                    PurchPaySetup.TestField("BA Requisition Receipt Nos.");
+                    PurchHeader."Receiving No. Series" := PurchPaySetup."BA Requisition Receipt Nos.";
+                end;
+            PurchHeader."Document Type"::"Credit Memo":
+                begin
+                    PurchPaySetup.TestField("BA Requisition Cr.Memo Nos.");
+                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Requisition Cr.Memo Nos.";
+                end;
+            PurchHeader."Document Type"::"Return Order":
+                begin
+                    PurchPaySetup.TestField("BA Requisition Return Nos.");
+                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Requisition Return Nos.";
+                end;
+        end;
     end;
 
 
@@ -127,6 +164,11 @@ codeunit 75010 "BA SEI Subscibers"
         PurchaseHeader.Receive := true;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post (Yes/No)", 'OnRunPreviewOnBeforePurchPostRun', '', false, false)]
+    local procedure PurchPostYesNoOnRunPreviewOnBeforePurchPostRun(var PurchaseHeader: Record "Purchase Header")
+    begin
+        PurchaseHeader.Invoice := not PurchaseHeader."BA Requisition Order";
+    end;
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostItemLine', '', false, false)]
