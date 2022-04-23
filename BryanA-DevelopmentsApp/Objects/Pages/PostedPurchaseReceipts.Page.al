@@ -22,6 +22,10 @@ page 50053 "BA Posted Requisition Receipts"
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the number of the involved entry or record, according to the specified number series.';
                 }
+                field("Order No."; Rec."Order No.")
+                {
+                    ApplicationArea = all;
+                }
                 field("Buy-from Vendor No."; "Buy-from Vendor No.")
                 {
                     ApplicationArea = Basic, Suite;

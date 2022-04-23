@@ -22,6 +22,10 @@ page 50051 "BA Posted Req. Credit Memos"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the number of the involved entry or record, according to the specified number series.';
                 }
+                field("Return Order No."; Rec."Return Order No.")
+                {
+                    ApplicationArea = all;
+                }
                 field("Buy-from Vendor No."; "Buy-from Vendor No.")
                 {
                     ApplicationArea = All;
