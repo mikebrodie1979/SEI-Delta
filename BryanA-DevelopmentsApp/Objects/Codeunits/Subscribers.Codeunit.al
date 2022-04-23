@@ -114,6 +114,11 @@ codeunit 75010 "BA SEI Subscibers"
                     PurchPaySetup.TestField("BA Requisition Cr.Memo Nos.");
                     NoSeriesCode := PurchPaySetup."BA Requisition Cr.Memo Nos.";
                 end;
+            PurchHeader."Document Type"::"Return Order":
+                begin
+                    PurchPaySetup.TestField("BA Requisition Return Nos.");
+                    NoSeriesCode := PurchPaySetup."BA Requisition Return Nos.";
+                end;
         end;
     end;
 
@@ -130,16 +135,19 @@ codeunit 75010 "BA SEI Subscibers"
                 begin
                     PurchPaySetup.TestField("BA Requisition Receipt Nos.");
                     PurchHeader."Receiving No. Series" := PurchPaySetup."BA Requisition Receipt Nos.";
+                    PurchHeader."Posting No. Series" := PurchPaySetup."BA Requisition Receipt Nos.";
                 end;
             PurchHeader."Document Type"::"Credit Memo":
                 begin
-                    PurchPaySetup.TestField("BA Requisition Cr.Memo Nos.");
-                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Requisition Cr.Memo Nos.";
+                    PurchPaySetup.TestField("BA Posted Req. Cr.Memo Nos.");
+                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Posted Req. Cr.Memo Nos.";
+                    PurchHeader."Posting No. Series" := PurchPaySetup."BA Posted Req. Cr.Memo Nos.";
                 end;
             PurchHeader."Document Type"::"Return Order":
                 begin
-                    PurchPaySetup.TestField("BA Requisition Return Nos.");
-                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Requisition Return Nos.";
+                    PurchPaySetup.TestField("BA Req. Return Shipment Nos.");
+                    PurchHeader."Return Shipment No. Series" := PurchPaySetup."BA Req. Return Shipment Nos.";
+                    PurchHeader."Posting No. Series" := PurchPaySetup."BA Req. Return Shipment Nos.";
                 end;
         end;
     end;

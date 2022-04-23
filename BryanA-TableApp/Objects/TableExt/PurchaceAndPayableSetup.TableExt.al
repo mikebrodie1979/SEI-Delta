@@ -26,5 +26,17 @@ tableextension 80006 "BA Purch. & Payables Setup" extends "Purchases & Payables 
             Caption = 'Requisition Credit Memo Nos.';
             TableRelation = "No. Series".Code;
         }
+        field(80004; "BA Req. Return Shipment Nos."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Requisition Return Shipment Nos.';
+            TableRelation = "No. Series".Code;
+        }
+        field(80005; "BA Posted Req. Cr.Memo Nos."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Posted Requisition Credit Memo Nos.';
+            TableRelation = "No. Series".Code;
+        }
     }
 }
