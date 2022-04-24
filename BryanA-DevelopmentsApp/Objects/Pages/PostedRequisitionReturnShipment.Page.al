@@ -512,26 +512,26 @@ page 50054 "BA Posted Req. Return Shipment"
                     Navigate;
                 end;
             }
-            action("Update Document")
-            {
-                ApplicationArea = PurchReturnOrder;
-                Caption = 'Update Document';
-                Image = Edit;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
-                ToolTip = 'Add new information that is relevant to the document, such as the country or region. You can only edit a few fields because the document has already been posted.';
+            // action("Update Document")
+            // {
+            //     ApplicationArea = PurchReturnOrder;
+            //     Caption = 'Update Document';
+            //     Image = Edit;
+            //     Promoted = true;
+            //     PromotedCategory = Process;
+            //     PromotedIsBig = true;
+            //     PromotedOnly = true;
+            //     ToolTip = 'Add new information that is relevant to the document, such as the country or region. You can only edit a few fields because the document has already been posted.';
 
-                trigger OnAction()
-                var
-                    PostedReturnShptUpdate: Page "Posted Return Shpt. - Update";
-                begin
-                    PostedReturnShptUpdate.LOOKUPMODE := TRUE;
-                    PostedReturnShptUpdate.SetRec(Rec);
-                    PostedReturnShptUpdate.RUNMODAL;
-                end;
-            }
+            //     trigger OnAction()
+            //     var
+            //         PostedReturnShptUpdate: Page "Posted Return Shpt. - Update";
+            //     begin
+            //         PostedReturnShptUpdate.LOOKUPMODE := TRUE;
+            //         PostedReturnShptUpdate.SetRec(Rec);
+            //         PostedReturnShptUpdate.RUNMODAL;
+            //     end;
+            // }
         }
     }
 
