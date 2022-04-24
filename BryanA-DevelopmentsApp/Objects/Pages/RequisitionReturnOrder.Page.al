@@ -135,6 +135,7 @@ page 50050 "BA Requsition Return Order"
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
+                    ShowMandatory = true;
                     ToolTip = 'Specifies the posting date of the record.';
 
                     trigger OnValidate()
@@ -164,7 +165,7 @@ page 50050 "BA Requsition Return Order"
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
-                    ShowMandatory = true;
+                    // ShowMandatory = true;
                     ToolTip = 'Specifies the number that the vendor uses for the credit memo you are creating in this purchase return order.';
                 }
                 field("Purchaser Code"; "Purchaser Code")
@@ -1327,7 +1328,7 @@ page 50050 "BA Requsition Return Order"
         ShowWorkflowStatus: Boolean;
         CanCancelApprovalForRecord: Boolean;
         DocumentIsPosted: Boolean;
-        OpenPostedPurchaseReturnOrderQst: Label 'The return order is posted as number %1 and moved to the Posted Purchase Credit Memos window.\\Do you want to open the posted credit memo?', Comment = '%1 = posted document number';
+        OpenPostedPurchaseReturnOrderQst: Label 'The requsition return order is posted as number %1 and moved to the Posted Reqisition Return Shipments window.\\Do you want to open the posted requisition return shipment?', Comment = '%1 = posted document number';
         IsBuyFromCountyVisible: Boolean;
         IsPayToCountyVisible: Boolean;
         IsShipToCountyVisible: Boolean;
@@ -1412,20 +1413,21 @@ page 50050 "BA Requsition Return Order"
         CanCancelApprovalForRecord := ApprovalsMgmt.CanCancelApprovalForRecord(RECORDID);
     end;
 
+
     local procedure ShowPostedConfirmationMessage()
     var
-        ReturnOrderPurchaseHeader: Record "Purchase Header";
-        PurchCrMemoHdr: Record "Purch. Cr. Memo Hdr.";
+        PurchaseHeader: Record "Purchase Header";
+        ReturnShptHeader: Record "Return Shipment Header";
         InstructionMgt: Codeunit "Instruction Mgt.";
     begin
-        IF NOT ReturnOrderPurchaseHeader.GET("Document Type", "No.") THEN BEGIN
-            PurchCrMemoHdr.SETRANGE("No.", "Last Posting No.");
-            IF PurchCrMemoHdr.FINDFIRST THEN
-                IF InstructionMgt.ShowConfirm(STRSUBSTNO(OpenPostedPurchaseReturnOrderQst, PurchCrMemoHdr."No."),
-                     InstructionMgt.ShowPostedConfirmationMessageCode)
-                THEN
-                    PAGE.RUN(PAGE::"Posted Purchase Credit Memo", PurchCrMemoHdr);
-        END;
+        if not Rec.Get(Rec.RecordId()) or not Rec."BA Fully Rec'd. Req. Order" then
+            exit;
+        if ReturnShptHeader.Get(Rec."Last Receiving No.") then
+            if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseReturnOrderQst, ReturnShptHeader."No."),
+                             InstructionMgt.ShowPostedConfirmationMessageCode) then begin
+                Page.Run(Page::"BA Posted Req. Return Shipment", ReturnShptHeader);
+                CurrPage.Close();
+            end;
     end;
 
     local procedure ValidateShippingOption()

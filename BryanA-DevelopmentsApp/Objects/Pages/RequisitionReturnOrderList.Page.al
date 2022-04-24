@@ -9,7 +9,7 @@ page 50051 "BA Req. Return Order List"
     PromotedActionCategories = 'New,Process,Report,Return Order,Request Approval,Release';
     RefreshOnActivate = true;
     SourceTable = "Purchase Header";
-    SourceTableView = WHERE ("Document Type" = CONST ("Return Order"), "BA Requisition Order" = const (true));
+    SourceTableView = WHERE ("Document Type" = CONST ("Return Order"), "BA Requisition Order" = const (true), "BA Fully Rec'd. Req. Order" = const (false));
     UsageCategory = Lists;
 
     layout
