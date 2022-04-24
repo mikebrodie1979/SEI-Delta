@@ -1,7 +1,7 @@
 page 50051 "BA Req. Return Order List"
 {
-    ApplicationArea = PurchReturnOrder;
-    Caption = 'Requsition Return Orders';
+    ApplicationArea = All;
+    Caption = 'Requisition Return Orders';
     CardPageID = "BA Requsition Return Order";
     DataCaptionFields = "Buy-from Vendor No.";
     Editable = false;

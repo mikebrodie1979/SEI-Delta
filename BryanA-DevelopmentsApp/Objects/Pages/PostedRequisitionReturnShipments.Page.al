@@ -1,7 +1,7 @@
 page 50055 "BA Posted Req. Return Shpts."
 {
     ApplicationArea = all;
-    Caption = 'Posted Requsition Return Shipments';
+    Caption = 'Posted Requisition Return Shipments';
     CardPageID = "BA Posted Req. Return Shipment";
     Editable = false;
     PageType = List;

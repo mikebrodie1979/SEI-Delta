@@ -1,6 +1,6 @@
 page 50054 "BA Posted Req. Return Shipment"
 {
-    Caption = 'Posted Requsition Return Shipment';
+    Caption = 'Posted Requisition Return Shipment';
     InsertAllowed = false;
     PageType = Document;
     RefreshOnActivate = true;
