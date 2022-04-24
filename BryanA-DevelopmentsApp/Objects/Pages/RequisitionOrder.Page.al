@@ -146,6 +146,7 @@ page 50097 "BA Requisition Order"
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
+                    ShowMandatory = true;
                     ToolTip = 'Specifies the posting date of the record.';
 
                     trigger OnValidate()
