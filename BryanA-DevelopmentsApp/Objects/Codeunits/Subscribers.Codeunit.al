@@ -1,5 +1,8 @@
 codeunit 75010 "BA SEI Subscibers"
 {
+    Permissions = tabledata "Return Shipment Header" = rimd,
+                  tabledata "Purch. Rcpt. Header" = rimd;
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
     begin
