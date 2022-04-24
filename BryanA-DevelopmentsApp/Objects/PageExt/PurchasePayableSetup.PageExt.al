@@ -24,17 +24,16 @@ pageextension 80008 "BA Purch. & Payables Setup" extends "Purchases & Payables S
                 ApplicationArea = all;
                 ToolTip = 'Specifies the code for the number series that will be used to assign numbers to posted requisition return shipments.';
             }
-            field("BA Requisition Cr.Memo Nos."; Rec."BA Requisition Cr.Memo Nos.")
-            {
-                ApplicationArea = all;
-                ToolTip = 'Specifies the code for the number series that will be used to assign numbers to requisition credit memos.';
-            }
-            field("BA Posted Req. Cr.Memo Nos."; "BA Posted Req. Cr.Memo Nos.")
-            {
-                ApplicationArea = all;
-                ToolTip = 'Specifies the code for the number series that will be used to assign numbers to posted requisition credit memos.';
-
-            }
+            // field("BA Requisition Cr.Memo Nos."; Rec."BA Requisition Cr.Memo Nos.")
+            // {
+            //     ApplicationArea = all;
+            //     ToolTip = 'Specifies the code for the number series that will be used to assign numbers to requisition credit memos.';
+            // }
+            // field("BA Posted Req. Cr.Memo Nos."; "BA Posted Req. Cr.Memo Nos.")
+            // {
+            //     ApplicationArea = all;
+            //     ToolTip = 'Specifies the code for the number series that will be used to assign numbers to posted requisition credit memos.';
+            // }
         }
     }
 }
