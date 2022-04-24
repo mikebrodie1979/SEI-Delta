@@ -177,7 +177,7 @@ codeunit 75010 "BA SEI Subscibers"
             PurchaseHeader."Document Type"::"Return Order":
                 begin
                     HideDialog := true;
-                    if not Confirm(StrSubstNo('Ship Requisition Return sOrder %1?', PurchaseHeader."No.")) then
+                    if not Confirm(StrSubstNo('Ship Requisition Return Order %1?', PurchaseHeader."No.")) then
                         Error('');
                     PurchaseHeader.Ship := true;
                 end;
