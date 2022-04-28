@@ -8,8 +8,8 @@ report 50008 "BA Requisition Order"
     {
         dataitem("Purchase Header"; "Purchase Header")
         {
-            DataItemTableView = SORTING ("Document Type", "No.")
-                                WHERE ("Document Type" = CONST (Order));
+            DataItemTableView = SORTING ("Document Type", "No.");
+            // WHERE ("Document Type" = CONST (Order));
             PrintOnlyIfDetail = true;
             RequestFilterFields = "No.", "Buy-from Vendor No.", "Pay-to Vendor No.", "No. Printed";
             column(No_PurchaseHeader; "No.") { }
