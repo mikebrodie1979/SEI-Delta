@@ -227,67 +227,35 @@ codeunit 75010 "BA SEI Subscibers"
             end;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterPostPurchaseDoc', '', false, false)]
-    local procedure PurchPostOnAfterPostPurchLines(var PurchaseHeader: Record "Purchase Header"; PurchRcpHdrNo: Code[20]; RetShptHdrNo: Code[20])
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterFinalizePosting', '', false, false)]
+    local procedure PurchPostOnAfterFinalizePosting(var PurchHeader: Record "Purchase Header")
     var
         PurchLine: Record "Purchase Line";
-        PurchRcptHeader: Record "Purch. Rcpt. Header";
-        PurchRcptLine: Record "Purch. Rcpt. Line";
-        ReturnShptHeader: Record "Return Shipment Header";
-        ReturnShptLine: Record "Return Shipment Line";
     begin
-        if not PurchaseHeader."BA Requisition Order" then
+        if not PurchHeader."BA Requisition Order" then
             exit;
-        case PurchaseHeader."Document Type" of
-            PurchaseHeader."Document Type"::Order, PurchaseHeader."Document Type"::Invoice:
-                if (PurchRcpHdrNo = '') or not PurchRcptHeader.Get(PurchRcpHdrNo) then
-                    exit
-                else
-                    PurchLine.SetFilter("Qty. to Receive (Base)", '<>%1', 0);
-            PurchaseHeader."Document Type"::"Return Order":
-                if (RetShptHdrNo = '') or not ReturnShptHeader.Get(RetShptHdrNo) then
-                    exit
-                else
-                    PurchLine.SetFilter("Return Qty. to Ship (Base)", '<>%1', 0);
-        end;
-        PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
-        PurchLine.SetRange("Document No.", PurchaseHeader."No.");
-        if not PurchLine.IsEmpty() then
-            exit;
-        case PurchaseHeader."Document Type" of
-            PurchaseHeader."Document Type"::Order, PurchaseHeader."Document Type"::Invoice:
+        case PurchHeader."Document Type" of
+            PurchHeader."Document Type"::Order, PurchHeader."Document Type"::Invoice:
+                PurchHeader."BA Fully Rec'd. Req. Order" := PurchHeader.QtyToReceiveIsZero();
+            PurchHeader."Document Type"::"Return Order":
                 begin
-                    PurchLine.SetRange("Qty. to Receive (Base)");
+                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                    PurchLine.SetRange("Document No.", PurchHeader."No.");
                     if PurchLine.FindSet() then
                         repeat
-                            if (PurchLine."Quantity Received" <> PurchLine.Quantity) then
-                                exit;
-                            if not PurchRcptLine.Get(PurchRcptHeader."No.", PurchLine."Line No.")
-                                    or (PurchRcptLine.Quantity <> PurchLine.Quantity) then
+                            if PurchLine."Return Qty. Shipped" <> PurchLine.Quantity then
                                 exit;
                         until PurchLine.Next() = 0;
-                    PurchRcptHeader."BA Fully Rec'd. Req. Order" := true;
-                    PurchRcptHeader.Modify(false);
+                    PurchHeader."BA Fully Rec'd. Req. Order" := true;
                 end;
-            PurchaseHeader."Document Type"::"Return Order":
-                begin
-                    PurchLine.SetRange("Return Qty. to Ship (Base)");
-                    if PurchLine.FindSet() then
-                        repeat
-
-                            if (PurchLine."Return Qty. Shipped" <> PurchLine.Quantity) then
-                                exit;
-                            if not ReturnShptLine.Get(ReturnShptHeader."No.", PurchLine."Line No.")
-                                    or (ReturnShptLine.Quantity <> PurchLine.Quantity) then
-                                exit;
-                        until PurchLine.Next() = 0;
-                    ReturnShptHeader."BA Fully Rec'd. Req. Order" := true;
-                    ReturnShptHeader.Modify(false);
-                end;
+            else
+                exit;
         end;
-        PurchaseHeader."BA Fully Rec'd. Req. Order" := true;
-        PurchaseHeader.Modify(false);
+        PurchHeader.Modify(false);
     end;
+
 
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnAfterValidateEvent', 'No.', false, false)]
     local procedure PurchLineOnAfterValidateNo(var Rec: Record "Purchase Line")
