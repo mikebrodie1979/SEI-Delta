@@ -21,6 +21,10 @@ page 50055 "BA Posted Req. Return Shpts."
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies the number of the involved entry or record, according to the specified number series.';
                 }
+                field("Return Order No."; Rec."Return Order No.")
+                {
+                    ApplicationArea = all;
+                }
                 field("Buy-from Vendor No."; "Buy-from Vendor No.")
                 {
                     ApplicationArea = PurchReturnOrder;
