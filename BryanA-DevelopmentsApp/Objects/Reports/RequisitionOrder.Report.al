@@ -210,8 +210,8 @@ report 50008 "BA Requisition Order"
                     {
                         DataItemLink = "Document No." = FIELD ("No.");
                         DataItemLinkReference = "Purchase Header";
-                        DataItemTableView = SORTING ("Document Type", "Document No.", "Line No.")
-                                            WHERE ("Document Type" = CONST (Order));
+                        DataItemTableView = SORTING ("Document Type", "Document No.", "Line No.");
+                        // WHERE ("Document Type" = CONST (Order));
                         column(AmountExclInvDisc; AmountExclInvDisc)
                         {
                         }
