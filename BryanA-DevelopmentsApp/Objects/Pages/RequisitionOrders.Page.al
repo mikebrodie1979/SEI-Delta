@@ -161,6 +161,82 @@ page 50098 "BA Requisition Orders"
                     ToolTip = 'Specifies the code of the currency of the amounts on the purchase lines.';
                     Visible = false;
                 }
+                field(Amount; Amount)
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Amount Including VAT"; "Amount Including VAT")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Amt. Rcd. Not Invoiced (LCY)"; "Amt. Rcd. Not Invoiced (LCY)")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("A. Rcd. Not Inv. Ex. VAT (LCY)"; "A. Rcd. Not Inv. Ex. VAT (LCY)")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Due Date"; "Due Date")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Payment Discount %"; "Payment Discount %")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Payment Method Code"; "Payment Method Code")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Payment Terms Code"; "Payment Terms Code")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Posting Description"; "Posting Description")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Requested Receipt Date"; "Requested Receipt Date")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("Shipment Method Code"; "Shipment Method Code")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+
+                field("Order Date"; "Order Date")
+                {
+                    ApplicationArea = all;
+                }
+                field("Received Date"; "Received Date")
+                {
+                    ApplicationArea = all;
+                }
+                field(Status; Status)
+                {
+                    ApplicationArea = all;
+                }
+                field("Job Queue Status"; "Job Queue Status")
+                {
+                    ApplicationArea = all;
+                }
+                field("Document Date"; "Document Date")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
         area(factboxes)
