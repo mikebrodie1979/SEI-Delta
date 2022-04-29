@@ -31,6 +31,7 @@ report 50008 "BA Requisition Order"
             column(Sym; Sym) { }
             column(TitleCaption; titlecaption) { }
             column(SubtypeCaption; SubtypeCaption) { }
+            column(ReturnText; ReturnText) { }
 
             dataitem(CopyLoop; Integer)
             {
@@ -210,8 +211,8 @@ report 50008 "BA Requisition Order"
                     {
                         DataItemLink = "Document No." = FIELD ("No.");
                         DataItemLinkReference = "Purchase Header";
-                        DataItemTableView = SORTING ("Document Type", "Document No.", "Line No.")
-                                            WHERE ("Document Type" = CONST (Order));
+                        DataItemTableView = SORTING ("Document Type", "Document No.", "Line No.");
+                        // WHERE ("Document Type" = CONST (Order));
                         column(AmountExclInvDisc; AmountExclInvDisc)
                         {
                         }
@@ -548,13 +549,13 @@ report 50008 "BA Requisition Order"
                 SumInvDiscountAmt := 0;
                 SumLineAmtTaxAmtInvDiscountAmt := 0;
 
-                if "Purchase Header"."BA Requisition Order" then begin
-                    TitleCaption := 'REQUISITION';
-                    SubtypeCaption := 'RO';
-                end else begin
-                    TitleCaption := 'PURCHASE';
-                    SubtypeCaption := 'PO';
-                end;
+
+                TitleCaption := 'REQUISITION';
+                SubtypeCaption := 'RO';
+                if "Purchase Header"."Document Type" = "Purchase Header"."Document Type"::"Return Order" then
+                    ReturnText := 'RETURN'
+                else
+                    ReturnText := '';
             end;
         }
         dataitem(Totals; Integer)
@@ -781,6 +782,7 @@ report 50008 "BA Requisition Order"
         Sym: Text;
         TitleCaption: Text;
         SubtypeCaption: Text;
+        ReturnText: Text;
 
     procedure CompanyNameText(): Text
     var
