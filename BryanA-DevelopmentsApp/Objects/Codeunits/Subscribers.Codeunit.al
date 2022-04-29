@@ -167,6 +167,17 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post (Yes/No)", 'OnBeforeConfirmPost', '', false, false)]
     local procedure PurchPostYesNoOnBeforeConfirmPost(var PurchaseHeader: Record "Purchase Header"; var HideDialog: Boolean)
     begin
+        UpdatePostingConfirmation(PurchaseHeader, HideDialog);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post + Print", 'OnBeforeConfirmPost', '', false, false)]
+    local procedure PurchPostPrintOnBeforeConfirmPost(var PurchaseHeader: Record "Purchase Header"; var HideDialog: Boolean)
+    begin
+        UpdatePostingConfirmation(PurchaseHeader, HideDialog);
+    end;
+
+    local procedure UpdatePostingConfirmation(var PurchaseHeader: Record "Purchase Header"; var HideDialog: Boolean)
+    begin
         if not PurchaseHeader."BA Requisition Order" then
             exit;
         case PurchaseHeader."Document Type" of
@@ -186,6 +197,7 @@ codeunit 75010 "BA SEI Subscibers"
                 end;
         end;
     end;
+
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post (Yes/No)", 'OnRunPreviewOnBeforePurchPostRun', '', false, false)]
     local procedure PurchPostYesNoOnRunPreviewOnBeforePurchPostRun(var PurchaseHeader: Record "Purchase Header")
