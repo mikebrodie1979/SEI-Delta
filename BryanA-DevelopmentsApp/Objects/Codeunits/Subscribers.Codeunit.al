@@ -299,10 +299,11 @@ codeunit 75010 "BA SEI Subscibers"
         if RecRef.Number() <> Database::"Purchase Header" then
             exit;
         RecRef.SetTable(PurchHeader);
-        if PurchHeader."BA Requisition Order" then
-            TempReportSelections.Validate("Report ID", Report::"BA Requisition Order")
-        else
-            TempReportSelections.Validate("Report ID", 50007);
+        if not PurchHeader."BA Requisition Order" then
+            exit;
+        TempReportSelections.Validate("Report ID", Report::"BA Requisition Order");
+        // else
+        //     TempReportSelections.Validate("Report ID", 50007);
         TempReportSelections.Modify(false);
     end;
 }
