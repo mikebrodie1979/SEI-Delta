@@ -1,4 +1,4 @@
-tableextension 80015 "BA Production Order" extends "Production Order"
+tableextension 80018 "BA Production Order" extends "Production Order"
 {
     fields
     {
