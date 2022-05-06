@@ -2,7 +2,7 @@ page 50053 "BA Posted Requisition Receipts"
 {
     ApplicationArea = All;
     Caption = 'Posted Requisition Receipts';
-    CardPageID = "Posted Purchase Receipt";
+    CardPageID = "BA Posted Requisition Receipt";
     Editable = false;
     PageType = List;
     PromotedActionCategories = 'New,Process,Report,Print/Send,Receipt';
