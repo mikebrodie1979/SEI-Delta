@@ -15,6 +15,10 @@ pageextension 80021 "BA Posted Purch. Shpt. Subpage" extends "Posted Return Ship
             {
                 ApplicationArea = all;
             }
+            field("BA Line Amount"; "BA Line Amount")
+            {
+                ApplicationArea = all;
+            }
             field("Line Discount %"; Rec."Line Discount %")
             {
                 ApplicationArea = all;
