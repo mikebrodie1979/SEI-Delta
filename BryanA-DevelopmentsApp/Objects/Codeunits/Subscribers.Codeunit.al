@@ -239,6 +239,23 @@ codeunit 75010 "BA SEI Subscibers"
             end;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchRcptLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchRcptLineInsert(var PurchLine: Record "Purchase Line"; var PurchRcptLine: Record "Purch. Rcpt. Line")
+    var
+        PurchLine2: Record "Purchase Line";
+    begin
+        PurchLine2.Get(PurchLine.RecordId());
+        PurchRcptLine."BA Line Discount Amount" := PurchLine2."Line Discount Amount";
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforeReturnShptLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforeReturnShptLineInsert(var PurchLine: Record "Purchase Line"; var ReturnShptLine: Record "Return Shipment Line")
+    var
+        PurchLine2: Record "Purchase Line";
+    begin
+        PurchLine2.Get(PurchLine.RecordId());
+        ReturnShptLine."BA Line Discount Amount" := PurchLine2."Line Discount Amount";
+    end;
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterFinalizePosting', '', false, false)]
@@ -266,6 +283,9 @@ codeunit 75010 "BA SEI Subscibers"
                 exit;
         end;
         PurchHeader.Modify(false);
+
+        if not Confirm(StrSubstNo('Fully Posted: %1', PurchHeader."BA Fully Rec'd. Req. Order")) then
+            Error('');
     end;
 
 

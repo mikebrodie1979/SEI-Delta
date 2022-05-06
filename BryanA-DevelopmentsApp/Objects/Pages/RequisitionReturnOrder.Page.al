@@ -1420,9 +1420,7 @@ page 50050 "BA Requsition Return Order"
         ReturnShptHeader: Record "Return Shipment Header";
         InstructionMgt: Codeunit "Instruction Mgt.";
     begin
-        if not Rec.Get(Rec.RecordId()) or not Rec."BA Fully Rec'd. Req. Order" then
-            exit;
-        if ReturnShptHeader.Get(Rec."Last Receiving No.") then
+        if ReturnShptHeader.Get(Rec."Last Return Shipment No.") then
             if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedPurchaseReturnOrderQst, ReturnShptHeader."No."),
                              InstructionMgt.ShowPostedConfirmationMessageCode) then begin
                 Page.Run(Page::"BA Posted Req. Return Shipment", ReturnShptHeader);
