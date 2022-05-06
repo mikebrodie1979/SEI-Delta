@@ -30,7 +30,6 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
                 ApplicationArea = all;
                 Visible = "BA Requisition Order";
             }
-
             field("Line Discount Amount2"; Rec."Line Discount Amount")
             {
                 ApplicationArea = all;

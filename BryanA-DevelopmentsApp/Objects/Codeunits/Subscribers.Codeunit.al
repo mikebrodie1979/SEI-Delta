@@ -246,6 +246,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PurchLine2.Get(PurchLine.RecordId());
         PurchRcptLine."BA Line Discount Amount" := PurchLine2."Line Discount Amount";
+        PurchRcptLine."BA Line Amount" := PurchLine2."Line Amount";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforeReturnShptLineInsert', '', false, false)]
@@ -255,6 +256,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PurchLine2.Get(PurchLine.RecordId());
         ReturnShptLine."BA Line Discount Amount" := PurchLine2."Line Discount Amount";
+        ReturnShptLine."BA Line Amount" := PurchLine2."Line Amount";
     end;
 
 
@@ -283,9 +285,6 @@ codeunit 75010 "BA SEI Subscibers"
                 exit;
         end;
         PurchHeader.Modify(false);
-
-        if not Confirm(StrSubstNo('Fully Posted: %1', PurchHeader."BA Fully Rec'd. Req. Order")) then
-            Error('');
     end;
 
 

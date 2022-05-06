@@ -8,6 +8,10 @@ pageextension 80020 "BA Posted Purch. Rcpt. Subpage" extends "Posted Purchase Rc
             {
                 ApplicationArea = all;
             }
+            field("BA Line Amount"; "BA Line Amount")
+            {
+                ApplicationArea = all;
+            }
             field("Line Discount %"; Rec."Line Discount %")
             {
                 ApplicationArea = all;
