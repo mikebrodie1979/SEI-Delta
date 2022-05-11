@@ -1,7 +1,42 @@
-pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
+pageextension 80019 "BA Purch. Ret. Order Subpage" extends "Purchase Return Order Subform"
 {
     layout
     {
+        modify("Direct Unit Cost")
+        {
+            ApplicationArea = all;
+            Visible = not "BA Requisition Order";
+        }
+        modify("Line Discount Amount")
+        {
+            ApplicationArea = all;
+            Visible = not "BA Requisition Order";
+        }
+
+        modify("Line Discount %")
+        {
+            ApplicationArea = all;
+            Visible = not "BA Requisition Order";
+        }
+        addafter(Quantity)
+        {
+            field("Direct Unit Cost2"; Rec."Direct Unit Cost")
+            {
+                ApplicationArea = all;
+                Visible = "BA Requisition Order";
+            }
+            field("Line Discount %2"; Rec."Line Discount %")
+            {
+                ApplicationArea = all;
+                Visible = "BA Requisition Order";
+            }
+
+            field("Line Discount Amount2"; Rec."Line Discount Amount")
+            {
+                ApplicationArea = all;
+                Visible = "BA Requisition Order";
+            }
+        }
         addafter(ShortcutDimCode4)
         {
             field("BA Sales Person Code"; SalesPersonCode)

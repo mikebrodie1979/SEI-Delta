@@ -1,4 +1,4 @@
-tableextension 80010 "BA Purch. Rcpt. Line" extends "Purch. Rcpt. Line"
+tableextension 80016 "BA Return Shpt. Line" extends "Return Shipment Line"
 {
     fields
     {
