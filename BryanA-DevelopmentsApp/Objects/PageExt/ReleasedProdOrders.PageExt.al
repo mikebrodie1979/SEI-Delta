@@ -1,4 +1,4 @@
-pageextension 80014 "BA Relased Prod. Orders" extends "Released Production Orders"
+pageextension 80024 "BA Relased Prod. Orders" extends "Released Production Orders"
 {
     layout
     {
