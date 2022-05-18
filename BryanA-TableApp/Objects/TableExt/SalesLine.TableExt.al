@@ -14,5 +14,13 @@ tableextension 80002 "BA Sales Line" extends "Sales Line"
             Caption = 'Original Qty. to Invoice';
             Editable = false;
         }
+        field(80002; "BA Stage"; Option)
+        {
+            FieldClass = FlowField;
+            CalcFormula = lookup ("Sales Header"."ENC Stage" where ("Document Type" = field ("Document Type"), "No." = field ("Document No.")));
+            Caption = 'Stage';
+            Editable = false;
+            OptionMembers = " ","Open","Closed/Lost","Closed/Other","Archive";
+        }
     }
 }

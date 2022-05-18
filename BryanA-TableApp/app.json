@@ -11,7 +11,14 @@
   "url": "",
   "logo": "",
   "capabilities": [],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "appId": "d30af3a7-247a-4416-80a1-9b82e52ee5a6",
+      "name": "SEI Table App",
+      "publisher": "Encore Business Solutions",
+      "version": "1.21.14.0"
+    }
+  ],
   "screenshots": [],
   "platform": "14.0.0.0",
   "application": "14.0.0.0",
