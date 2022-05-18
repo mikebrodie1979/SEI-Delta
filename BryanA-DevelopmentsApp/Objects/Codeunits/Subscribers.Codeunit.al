@@ -18,8 +18,15 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterInitRecord', '', false, false)]
     local procedure SalesHeaderOnAfterInitRecord(var SalesHeader: Record "Sales Header")
     begin
-        if SalesHeader."Document Type" = SalesHeader."Document Type"::Quote then
-            SalesHeader.Validate("ENC Stage", SalesHeader."ENC Stage"::Open);
+        case SalesHeader."Document Type" of
+            SalesHeader."Document Type"::Quote:
+                begin
+                    SalesHeader.Validate("ENC Stage", SalesHeader."ENC Stage"::Open);
+                    SalesHeader.Validate("Shipment Date", 0D);
+                end;
+            SalesHeader."Document Type"::Order:
+                SalesHeader.Validate("Shipment Date", 0D);
+        end;
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnCheckItemAvailabilityInLinesOnAfterSetFilters', '', false, false)]
@@ -28,7 +35,17 @@ codeunit 75010 "BA SEI Subscibers"
         SalesLine.SetFilter("Shipment Date", '<>%1', 0D);
     end;
 
-
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'No.', false, false)]
+    local procedure SalesHeaderOnAfterInitHeaderDefaults(var Rec: Record "Sales Line"; var xRec: Record "Sales Line")
+    var
+        SalesHeader: Record "Sales Header";
+    begin
+        if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (Rec."No." = xRec."No.") or (SalesHeader."Shipment Date" <> 0D)
+                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+            exit;
+        Rec.Validate("Planned Delivery Date", 0D);
+        Rec.Validate("Planned Shipment Date", 0D);
+    end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnBeforeCheckLines', '', false, false)]
     local procedure WhseActivityPostOnBeforeCheckLines(var WhseActivityHeader: Record "Warehouse Activity Header")
