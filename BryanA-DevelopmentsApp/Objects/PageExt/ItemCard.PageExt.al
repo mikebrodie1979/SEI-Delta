@@ -8,6 +8,10 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             {
                 ApplicationArea = all;
             }
+            field("BA Qty. on Closed Sales Quote"; "BA Qty. on Closed Sales Quote")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter("Last Direct Cost")
         {
