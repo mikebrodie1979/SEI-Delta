@@ -340,4 +340,16 @@ codeunit 75010 "BA SEI Subscibers"
         TempReportSelections.Validate("Report ID", Report::"BA Requisition Order");
         TempReportSelections.Modify(false);
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Header", 'OnAfterValidateEvent', 'Transfer-to Code', false, false)]
+    local procedure TransferHeaderOnAfterValidateTransferToCode(var Rec: Record "Transfer Header"; var xRec: Record "Transfer Header")
+    var
+        Location: Record Location;
+    begin
+        if Rec.IsTemporary or (Rec."Transfer-to Code" = xRec."Transfer-to Code") or not Location.Get(Rec."Transfer-to Code") then
+            exit;
+        Rec.Validate("BA Transfer-To Phone No.", Location."Phone No.");
+        Rec.Validate("BA Transfer-To FID No.", Location."BA FID No.");
+        Rec.Modify(false);
+    end;
 }
