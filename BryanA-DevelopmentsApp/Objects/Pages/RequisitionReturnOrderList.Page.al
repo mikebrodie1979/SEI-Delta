@@ -245,6 +245,10 @@ page 50051 "BA Req. Return Order List"
                     ToolTip = 'Specifies additional posting information for the document. After you post the document, the description can add detail to vendor and customer ledger entries.';
                     Visible = false;
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
         area(factboxes)

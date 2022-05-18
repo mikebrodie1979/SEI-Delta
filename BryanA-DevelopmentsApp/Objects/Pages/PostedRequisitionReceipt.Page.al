@@ -169,6 +169,10 @@ page 50052 "BA Posted Requisition Receipt"
                     Editable = false;
                     ToolTip = 'Specifies the responsibility center code that is linked to this posted return receipt.';
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
             part(PurchReceiptLines; "Posted Purchase Rcpt. Subform")
             {

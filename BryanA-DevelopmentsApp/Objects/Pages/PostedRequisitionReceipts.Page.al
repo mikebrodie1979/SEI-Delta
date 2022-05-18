@@ -167,6 +167,10 @@ page 50053 "BA Posted Requisition Receipts"
                     ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
                     Visible = false;
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
         area(factboxes)

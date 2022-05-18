@@ -189,6 +189,10 @@ page 50050 "BA Requsition Return Order"
                     Importance = Additional;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
                 field("Assigned User ID"; "Assigned User ID")
                 {
                     ApplicationArea = PurchReturnOrder;

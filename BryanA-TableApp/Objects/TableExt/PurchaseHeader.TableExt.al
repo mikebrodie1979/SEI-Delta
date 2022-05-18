@@ -16,5 +16,10 @@ tableextension 80007 "BA Purchase Header" extends "Purchase Header"
             Editable = false;
             Description = 'System field to specify when a Requisition Order is to be considered fully recieved/posted';
         }
+        field(80005; "BA Omit Orders"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Omit from Outstanding Orders';
+        }
     }
 }

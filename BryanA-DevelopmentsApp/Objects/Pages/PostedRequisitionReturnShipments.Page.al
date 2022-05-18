@@ -172,6 +172,10 @@ page 50055 "BA Posted Req. Return Shpts."
                     ToolTip = 'Specifies the type of the posted document that this document or journal line will be applied to when you post, for example to register payment.';
                     Visible = false;
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
         area(factboxes)

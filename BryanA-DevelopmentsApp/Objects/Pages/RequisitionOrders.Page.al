@@ -237,6 +237,10 @@ page 50098 "BA Requisition Orders"
                 {
                     ApplicationArea = all;
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
         }
         area(factboxes)

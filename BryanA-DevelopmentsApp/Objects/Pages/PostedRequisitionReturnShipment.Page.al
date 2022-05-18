@@ -149,6 +149,10 @@ page 50054 "BA Posted Req. Return Shipment"
                     Editable = false;
                     ToolTip = 'Specifies how many times the document has been printed.';
                 }
+                field("BA Omit Orders"; "BA Omit Orders")
+                {
+                    ApplicationArea = all;
+                }
             }
             part(ReturnShptLines; "Posted Return Shipment Subform")
             {
