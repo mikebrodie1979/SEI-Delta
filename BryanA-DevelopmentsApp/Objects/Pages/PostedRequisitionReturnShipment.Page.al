@@ -117,7 +117,13 @@ page 50054 "BA Posted Req. Return Shipment"
                     Editable = false;
                     ToolTip = 'Specifies the date when the related document was created.';
                 }
-
+                field("Expected Receipt Date"; "Expected Receipt Date")
+                {
+                    ApplicationArea = PurchReturnOrder;
+                    Importance = Promoted;
+                    Editable = false;
+                    ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
+                }
                 field("Vendor Authorization No."; "Vendor Authorization No.")
                 {
                     ApplicationArea = PurchReturnOrder;

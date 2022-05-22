@@ -127,6 +127,13 @@ page 50052 "BA Posted Requisition Receipt"
                     ApplicationArea = OrderPromising;
                     ToolTip = 'Specifies the date that the vendor has promised to deliver the order.';
                 }
+                field("Expected Receipt Date"; "Expected Receipt Date")
+                {
+                    ApplicationArea = Suite;
+                    Editable = false;
+                    Importance = Promoted;
+                    ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
+                }
                 field("Quote No."; "Quote No.")
                 {
                     ApplicationArea = Basic, Suite;
@@ -363,13 +370,6 @@ page 50052 "BA Posted Requisition Receipt"
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies a date formula for the amount of time it takes to replenish the item.';
-                }
-                field("Expected Receipt Date"; "Expected Receipt Date")
-                {
-                    ApplicationArea = Suite;
-                    Editable = false;
-                    Importance = Promoted;
-                    ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
                 }
             }
         }

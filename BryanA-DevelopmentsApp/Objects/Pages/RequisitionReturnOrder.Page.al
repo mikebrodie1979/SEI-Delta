@@ -155,6 +155,12 @@ page 50050 "BA Requsition Return Order"
                     Importance = Additional;
                     ToolTip = 'Specifies the date when the order was created.';
                 }
+                field("Expected Receipt Date"; "Expected Receipt Date")
+                {
+                    ApplicationArea = PurchReturnOrder;
+                    Importance = Promoted;
+                    ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
+                }
                 field("Vendor Authorization No."; "Vendor Authorization No.")
                 {
                     ApplicationArea = PurchReturnOrder;
@@ -248,12 +254,6 @@ page 50050 "BA Requsition Return Order"
                         CurrPage.SAVERECORD;
                         PurchCalcDiscByType.ApplyDefaultInvoiceDiscount(0, Rec);
                     end;
-                }
-                field("Expected Receipt Date"; "Expected Receipt Date")
-                {
-                    ApplicationArea = PurchReturnOrder;
-                    Importance = Promoted;
-                    ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
                 }
                 field("Prices Including VAT"; "Prices Including VAT")
                 {

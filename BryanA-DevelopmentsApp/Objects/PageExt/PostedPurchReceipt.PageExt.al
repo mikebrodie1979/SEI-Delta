@@ -1,19 +1,13 @@
-pageextension 80030 "BA Purchase Order" extends "Purchase Order"
+pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
 {
     layout
     {
-        addbefore("Assigned User ID")
-        {
-            field("BA Omit Orders"; Rec."BA Omit Orders")
-            {
-                ApplicationArea = all;
-            }
-        }
-        addafter("Order Date")
+        addafter("Document Date")
         {
             field("Expected Receipt Date2"; Rec."Expected Receipt Date")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
         modify("Expected Receipt Date")

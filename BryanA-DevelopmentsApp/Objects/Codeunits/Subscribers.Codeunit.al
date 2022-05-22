@@ -147,6 +147,8 @@ codeunit 75010 "BA SEI Subscibers"
     var
         PurchPaySetup: Record "Purchases & Payables Setup";
     begin
+        if PurchHeader."Expected Receipt Date" = 0D then
+            PurchHeader.Validate("Expected Receipt Date", WorkDate());
         if not PurchHeader."BA Requisition Order" then
             exit;
         PurchPaySetup.Get();
