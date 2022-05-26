@@ -9,7 +9,7 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
                 ApplicationArea = all;
             }
         }
-        addafter("Order Date")
+        addbefore("Due Date")
         {
             field("Expected Receipt Date2"; Rec."Expected Receipt Date")
             {
