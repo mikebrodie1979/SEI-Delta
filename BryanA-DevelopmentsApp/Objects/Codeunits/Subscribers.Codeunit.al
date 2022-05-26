@@ -240,9 +240,10 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PurchaseHeader.Get(PurchaseLine."Document Type", PurchaseLine."Document No.");
         FullyPostedReqOrder := PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order";
-        if FullyPostedReqOrder then begin
+        if FullyPostedReqOrder and (PurchaseLine."Qty. to Receive" <> 0) then begin
             Item.Get(PurchaseLine."No.");
             GLSetup.Get();
+            GLSetup.TestField("Unit-Amount Rounding Precision");
             TotalAmount := PurchaseLine."Unit Cost" * PurchaseLine."Qty. to Receive";
             LastDirectCost := Round(TotalAmount / PurchaseLine."Qty. to Receive", GLSetup."Unit-Amount Rounding Precision");
             if PurchaseHeader."Currency Code" <> '' then
