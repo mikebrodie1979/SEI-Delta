@@ -1,5 +1,21 @@
 pageextension 80005 "BA Sales Quote" extends "Sales Quote"
 {
+    layout
+    {
+        modify("Due Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        addafter("Payment Method Code")
+        {
+            field("Due Date2"; Rec."Due Date")
+            {
+                ApplicationArea = all;
+            }
+        }
+    }
+
     actions
     {
         addlast(Navigation)

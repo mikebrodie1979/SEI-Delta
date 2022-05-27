@@ -36,12 +36,27 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'No.', false, false)]
-    local procedure SalesHeaderOnAfterInitHeaderDefaults(var Rec: Record "Sales Line"; var xRec: Record "Sales Line")
+    local procedure SalesLineOnAfterValdiateNo(var Rec: Record "Sales Line"; var xRec: Record "Sales Line")
     var
         SalesHeader: Record "Sales Header";
     begin
         if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (Rec."No." = xRec."No.") or (SalesHeader."Shipment Date" <> 0D)
                 or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+            exit;
+        Rec.Validate("Shipment Date", 0D);
+        // Rec.Validate("Planned Delivery Date", 0D);
+        // Rec.Validate("Planned Shipment Date", 0D);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'Shipment Date', false, false)]
+    local procedure SalesLineOnAfterValdiateShipmentDate(var Rec: Record "Sales Line"; var xRec: Record "Sales Line")
+    var
+        SalesHeader: Record "Sales Header";
+    begin
+        if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (Rec."Shipment Date" = xRec."Shipment Date")
+                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+            exit;
+        if Rec."Shipment Date" <> 0D then
             exit;
         Rec.Validate("Planned Delivery Date", 0D);
         Rec.Validate("Planned Shipment Date", 0D);
