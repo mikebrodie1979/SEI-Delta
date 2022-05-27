@@ -1,5 +1,16 @@
 pageextension 80012 "BA Posted Purch. Invoices" extends "Posted Purchase Invoices"
 {
+    layout
+    {
+        addafter("Buy-from Vendor Name")
+        {
+            field("Order No.2"; "Order No.")
+            {
+                ApplicationArea = all;
+            }
+        }
+    }
+
     trigger OnOpenPage()
     var
         FilterNo: Integer;
