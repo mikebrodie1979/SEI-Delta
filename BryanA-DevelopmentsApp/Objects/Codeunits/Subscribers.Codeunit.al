@@ -355,4 +355,46 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Validate("BA Transfer-To FID No.", Location."BA FID No.");
         Rec.Modify(false);
     end;
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnAfterCheckSalesApprovalPossible', '', false, false)]
+    local procedure ApprovalsMgtOnAfterCheckSalesApprovalPossible(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+        Length: Integer;
+        i: Integer;
+        c: Char;
+    begin
+        SalesHeader.TestField("Sell-to Customer No.");
+        Customer.Get(SalesHeader."Sell-to Customer No.");
+
+        if not Customer."BA Int. Customer" then
+            exit;
+        SalesHeader.TestField("ENC BBD Sell-To No.");
+        SalesHeader.TestField("ENC BBD Sell-To Name");
+        SalesHeader.TestField("External Document No.");
+        Length := StrLen(SalesHeader."External Document No.");
+        if (SalesHeader."External Document No."[1] <> 'S') or (SalesHeader."External Document No."[2] <> 'O') then
+            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), InvalidPrefixError);
+        if Length = 2 then
+            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), MissingNumeralError);
+        if Length < 9 then
+            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), TooShortSuffixError);
+        for i := 3 to Length do begin
+            c := SalesHeader."External Document No."[i];
+            if (c > '9') or (c < '0') then
+                Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), StrSubstNo(NonNumeralError, c));
+        end;
+        if Length > 9 then
+            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), TooLongSuffixError);
+    end;
+
+    var
+        ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
+        InvalidPrefixError: Label 'Missing "SO" prefix.';
+        MissingNumeralError: Label 'Missing numeral suffix.';
+        NonNumeralError: Label 'Non-numeric character: %1.';
+        TooLongSuffixError: Label 'Numeral suffix length is greater than 7.';
+        TooShortSuffixError: Label 'Numeral suffix length is less than 7.';
 }
