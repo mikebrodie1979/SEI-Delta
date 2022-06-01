@@ -388,9 +388,6 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure ApprovalsMgtOnAfterCheckSalesApprovalPossible(var SalesHeader: Record "Sales Header")
     var
         Customer: Record Customer;
-        Length: Integer;
-        i: Integer;
-        c: Char;
     begin
         SalesHeader.TestField("Sell-to Customer No.");
         Customer.Get(SalesHeader."Sell-to Customer No.");
@@ -400,20 +397,45 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader.TestField("ENC BBD Sell-To No.");
         SalesHeader.TestField("ENC BBD Sell-To Name");
         SalesHeader.TestField("External Document No.");
-        Length := StrLen(SalesHeader."External Document No.");
-        if (SalesHeader."External Document No."[1] <> 'S') or (SalesHeader."External Document No."[2] <> 'O') then
-            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), InvalidPrefixError);
+        FormatInternationalExtDocNo(SalesHeader."External Document No.", SalesHeader.FieldCaption("External Document No."));
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforePostWithLines', '', false, false)]
+    local procedure ServicePostOnBeforePostWithLines(var PassedServHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        PassedServHeader.TestField("Customer No.");
+        Customer.Get(PassedServHeader."Customer No.");
+
+        if not Customer."BA Serv. Int. Customer" then
+            exit;
+        PassedServHeader.TestField("ENC BBD Sell-To No.");
+        PassedServHeader.TestField("ENC BBD Sell-To Name");
+        PassedServHeader.TestField("ENC External Document No.");
+        FormatInternationalExtDocNo(PassedServHeader."ENC External Document No.", PassedServHeader.FieldCaption("External Document No."));
+    end;
+
+    local procedure FormatInternationalExtDocNo(var ExtDocNo: Code[35]; FieldCaption: Text)
+    var
+        Length: Integer;
+        i: Integer;
+        c: Char;
+    begin
+        Length := StrLen(ExtDocNo);
+        if (ExtDocNo[1] <> 'S') or (ExtDocNo[2] <> 'O') then
+            Error(ExtDocNoFormatError, FieldCaption, InvalidPrefixError);
         if Length = 2 then
-            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), MissingNumeralError);
+            Error(ExtDocNoFormatError, FieldCaption, MissingNumeralError);
         if Length < 9 then
-            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), TooShortSuffixError);
+            Error(ExtDocNoFormatError, FieldCaption, TooShortSuffixError);
         for i := 3 to Length do begin
-            c := SalesHeader."External Document No."[i];
+            c := ExtDocNo[i];
             if (c > '9') or (c < '0') then
-                Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), StrSubstNo(NonNumeralError, c));
+                Error(ExtDocNoFormatError, FieldCaption, StrSubstNo(NonNumeralError, c));
         end;
         if Length > 9 then
-            Error(ExtDocNoFormatError, SalesHeader.FieldCaption("External Document No."), TooLongSuffixError);
+            Error(ExtDocNoFormatError, FieldCaption, TooLongSuffixError);
     end;
 
     var

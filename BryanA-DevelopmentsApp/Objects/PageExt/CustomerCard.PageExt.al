@@ -8,6 +8,10 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 ApplicationArea = all;
             }
+            field("BA Serv. Int. Customer"; "BA Serv. Int. Customer")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
