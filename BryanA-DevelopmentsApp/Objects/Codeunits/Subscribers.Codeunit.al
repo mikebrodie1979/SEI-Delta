@@ -52,9 +52,11 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure ClearShipmentDates(var Rec: Record "Sales Line")
     var
         SalesHeader: Record "Sales Header";
+        AssemblyHeader: Record "Assembly Header";
+        AssembleToOrderLink: Record "Assemble-to-Order Link";
     begin
         if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (SalesHeader."Shipment Date" <> 0D)
-                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) or AssembleToOrderLink.AsmExistsForSalesLine(Rec) then
             exit;
         Rec.Validate("Shipment Date", 0D);
     end;
@@ -72,6 +74,7 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Validate("Planned Delivery Date", 0D);
         Rec.Validate("Planned Shipment Date", 0D);
     end;
+
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnBeforeCheckLines', '', false, false)]
     local procedure WhseActivityPostOnBeforeCheckLines(var WhseActivityHeader: Record "Warehouse Activity Header")
