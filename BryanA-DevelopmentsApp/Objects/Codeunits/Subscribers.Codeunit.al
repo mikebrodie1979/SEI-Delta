@@ -52,9 +52,11 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure ClearShipmentDates(var Rec: Record "Sales Line")
     var
         SalesHeader: Record "Sales Header";
+        AssemblyHeader: Record "Assembly Header";
+        AssembleToOrderLink: Record "Assemble-to-Order Link";
     begin
         if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (SalesHeader."Shipment Date" <> 0D)
-                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) or AssembleToOrderLink.AsmExistsForSalesLine(Rec) then
             exit;
         Rec.Validate("Shipment Date", 0D);
     end;
@@ -72,6 +74,7 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Validate("Planned Delivery Date", 0D);
         Rec.Validate("Planned Shipment Date", 0D);
     end;
+
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Whse.-Activity-Post", 'OnBeforeCheckLines', '', false, false)]
     local procedure WhseActivityPostOnBeforeCheckLines(var WhseActivityHeader: Record "Warehouse Activity Header")
@@ -173,6 +176,8 @@ codeunit 75010 "BA SEI Subscibers"
     var
         PurchPaySetup: Record "Purchases & Payables Setup";
     begin
+        if PurchHeader."Expected Receipt Date" = 0D then
+            PurchHeader.Validate("Expected Receipt Date", WorkDate());
         if not PurchHeader."BA Requisition Order" then
             exit;
         PurchPaySetup.Get();
@@ -264,9 +269,10 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PurchaseHeader.Get(PurchaseLine."Document Type", PurchaseLine."Document No.");
         FullyPostedReqOrder := PurchaseHeader.Receive and PurchaseHeader."BA Requisition Order";
-        if FullyPostedReqOrder then begin
+        if FullyPostedReqOrder and (PurchaseLine."Qty. to Receive" <> 0) then begin
             Item.Get(PurchaseLine."No.");
             GLSetup.Get();
+            GLSetup.TestField("Unit-Amount Rounding Precision");
             TotalAmount := PurchaseLine."Unit Cost" * PurchaseLine."Qty. to Receive";
             LastDirectCost := Round(TotalAmount / PurchaseLine."Qty. to Receive", GLSetup."Unit-Amount Rounding Precision");
             if PurchaseHeader."Currency Code" <> '' then
@@ -366,4 +372,80 @@ codeunit 75010 "BA SEI Subscibers"
         TempReportSelections.Validate("Report ID", Report::"BA Requisition Order");
         TempReportSelections.Modify(false);
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Header", 'OnAfterValidateEvent', 'Transfer-to Code', false, false)]
+    local procedure TransferHeaderOnAfterValidateTransferToCode(var Rec: Record "Transfer Header"; var xRec: Record "Transfer Header")
+    var
+        Location: Record Location;
+    begin
+        if Rec.IsTemporary or (Rec."Transfer-to Code" = xRec."Transfer-to Code") or not Location.Get(Rec."Transfer-to Code") then
+            exit;
+        Rec.Validate("BA Transfer-To Phone No.", Location."Phone No.");
+        Rec.Validate("BA Transfer-To FID No.", Location."BA FID No.");
+        Rec.Modify(false);
+    end;
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnAfterCheckSalesApprovalPossible', '', false, false)]
+    local procedure ApprovalsMgtOnAfterCheckSalesApprovalPossible(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        SalesHeader.TestField("Sell-to Customer No.");
+        Customer.Get(SalesHeader."Sell-to Customer No.");
+
+        if not Customer."BA Int. Customer" then
+            exit;
+        SalesHeader.TestField("ENC BBD Sell-To No.");
+        SalesHeader.TestField("ENC BBD Sell-To Name");
+        SalesHeader.TestField("External Document No.");
+        FormatInternationalExtDocNo(SalesHeader."External Document No.", SalesHeader.FieldCaption("External Document No."));
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforePostWithLines', '', false, false)]
+    local procedure ServicePostOnBeforePostWithLines(var PassedServHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        PassedServHeader.TestField("Customer No.");
+        Customer.Get(PassedServHeader."Customer No.");
+
+        if not Customer."BA Serv. Int. Customer" then
+            exit;
+        PassedServHeader.TestField("ENC BBD Sell-To No.");
+        PassedServHeader.TestField("ENC BBD Sell-To Name");
+        PassedServHeader.TestField("ENC External Document No.");
+        FormatInternationalExtDocNo(PassedServHeader."ENC External Document No.", PassedServHeader.FieldCaption("External Document No."));
+    end;
+
+    local procedure FormatInternationalExtDocNo(var ExtDocNo: Code[35]; FieldCaption: Text)
+    var
+        Length: Integer;
+        i: Integer;
+        c: Char;
+    begin
+        Length := StrLen(ExtDocNo);
+        if (ExtDocNo[1] <> 'S') or (ExtDocNo[2] <> 'O') then
+            Error(ExtDocNoFormatError, FieldCaption, InvalidPrefixError);
+        if Length = 2 then
+            Error(ExtDocNoFormatError, FieldCaption, MissingNumeralError);
+        if Length < 9 then
+            Error(ExtDocNoFormatError, FieldCaption, TooShortSuffixError);
+        for i := 3 to Length do begin
+            c := ExtDocNo[i];
+            if (c > '9') or (c < '0') then
+                Error(ExtDocNoFormatError, FieldCaption, StrSubstNo(NonNumeralError, c));
+        end;
+        if Length > 9 then
+            Error(ExtDocNoFormatError, FieldCaption, TooLongSuffixError);
+    end;
+
+    var
+        ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
+        InvalidPrefixError: Label 'Missing "SO" prefix.';
+        MissingNumeralError: Label 'Missing numeral suffix.';
+        NonNumeralError: Label 'Non-numeric character: %1.';
+        TooLongSuffixError: Label 'Numeral suffix length is greater than 7.';
+        TooShortSuffixError: Label 'Numeral suffix length is less than 7.';
 }
