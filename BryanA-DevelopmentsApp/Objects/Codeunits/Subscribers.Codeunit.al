@@ -59,6 +59,7 @@ codeunit 75010 "BA SEI Subscibers"
                 or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) or AssembleToOrderLink.AsmExistsForSalesLine(Rec) then
             exit;
         Rec.Validate("Shipment Date", 0D);
+        Rec.CheckItemAvailable(Rec.FieldNo(Quantity));
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'Shipment Date', false, false)]
