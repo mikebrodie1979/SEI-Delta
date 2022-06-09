@@ -5,12 +5,12 @@ tableextension 80030 "BA Customer" extends Customer
         field(80000; "BA Int. Customer"; Boolean)
         {
             DataClassification = CustomerContent;
-            Caption = 'Sales International Customer';
+            Caption = 'Sales BBD Fields Mandatory';
         }
         field(80001; "BA Serv. Int. Customer"; Boolean)
         {
             DataClassification = CustomerContent;
-            Caption = 'Service International Customer';
+            Caption = 'Service BBD Fields Mandatory';
         }
     }
 }
