@@ -9,5 +9,17 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             Caption = 'Copied Document';
             Editable = false;
         }
+        modify("Sell-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Sell-to Country/Region Code"));
+        }
+        modify("Bill-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Bill-to Country/Region Code"));
+        }
+        modify("Ship-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
+        }
     }
 }
