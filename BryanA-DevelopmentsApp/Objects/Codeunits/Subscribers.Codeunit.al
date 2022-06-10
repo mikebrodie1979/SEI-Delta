@@ -442,6 +442,20 @@ codeunit 75010 "BA SEI Subscibers"
             Error(ExtDocNoFormatError, FieldCaption, TooLongSuffixError);
     end;
 
+
+    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterValidateEvent', 'Customer Posting Group', false, false)]
+    local procedure CustomerOnAfterValidateCustomerPostingGroup(var Rec: Record Customer)
+    var
+        CustPostGroup: Record "Customer Posting Group";
+    begin
+        if Rec."Customer Posting Group" = '' then
+            exit;
+        CustPostGroup.Get(Rec."Customer Posting Group");
+        if CustPostGroup."BA Blocked" then
+            Error('%1 %2 is blocked', CustPostGroup.TableCaption, CustPostGroup.Code);
+    end;
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
