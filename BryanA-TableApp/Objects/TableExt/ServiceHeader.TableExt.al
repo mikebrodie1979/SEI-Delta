@@ -1,4 +1,4 @@
-tableextension 80025 "BA Service Header" extends "Service Header"
+tableextension 80026 "BA Service Header" extends "Service Header"
 {
     fields
     {
