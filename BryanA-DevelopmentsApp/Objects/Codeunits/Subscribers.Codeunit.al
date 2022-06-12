@@ -49,14 +49,25 @@ codeunit 75010 "BA SEI Subscibers"
             ClearShipmentDates(Rec);
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeSalesLineByChangedFieldNo', '', false, false)]
+    local procedure SalesHeaderOnBeforeSalesLineByChangedFieldNo(var SalesHeader: Record "Sales Header"; var SalesLine: Record "Sales Line"; var IsHandled: Boolean; ChangedFieldNo: Integer)
+    var
+        AssembleToOrderLink: Record "Assemble-to-Order Link";
+    begin
+        if (SalesHeader."Shipment Date" = 0D) and AssembleToOrderLink.AsmExistsForSalesLine(SalesLine)
+                and (ChangedFieldNo = SalesHeader.FieldNo("Shipment Date")) and (SalesLine."Shipment Date" <> 0D) then
+            IsHandled := true;
+    end;
+
     local procedure ClearShipmentDates(var Rec: Record "Sales Line")
     var
         SalesHeader: Record "Sales Header";
-        AssemblyHeader: Record "Assembly Header";
         AssembleToOrderLink: Record "Assemble-to-Order Link";
     begin
         if not SalesHeader.Get(Rec."Document Type", Rec."Document No.") or Rec.IsTemporary or (SalesHeader."Shipment Date" <> 0D)
-                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) or AssembleToOrderLink.AsmExistsForSalesLine(Rec) then
+                or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order])
+                  or AssembleToOrderLink.AsmExistsForSalesLine(Rec)
+                 then
             exit;
         Rec.Validate("Shipment Date", 0D);
         Rec.CheckItemAvailable(Rec.FieldNo(Quantity));
@@ -395,7 +406,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         SalesHeader.TestField("Sell-to Customer No.");
         Customer.Get(SalesHeader."Sell-to Customer No.");
-
         if not Customer."BA Int. Customer" then
             exit;
         SalesHeader.TestField("ENC BBD Sell-To No.");
@@ -411,7 +421,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PassedServHeader.TestField("Customer No.");
         Customer.Get(PassedServHeader."Customer No.");
-
         if not Customer."BA Serv. Int. Customer" then
             exit;
         PassedServHeader.TestField("ENC BBD Sell-To No.");
