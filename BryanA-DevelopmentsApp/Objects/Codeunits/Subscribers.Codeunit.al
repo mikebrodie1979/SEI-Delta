@@ -384,7 +384,6 @@ codeunit 75010 "BA SEI Subscibers"
         TempReportSelections.Modify(false);
     end;
 
-    //Temp
     [EventSubscriber(ObjectType::Table, Database::"Transfer Header", 'OnAfterValidateEvent', 'Transfer-to Code', false, false)]
     local procedure TransferHeaderOnAfterValidateTransferToCode(var Rec: Record "Transfer Header"; var xRec: Record "Transfer Header")
     var
@@ -406,7 +405,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         SalesHeader.TestField("Sell-to Customer No.");
         Customer.Get(SalesHeader."Sell-to Customer No.");
-        //temp
         if not Customer."BA Int. Customer" then
             exit;
         SalesHeader.TestField("ENC BBD Sell-To No.");
@@ -422,7 +420,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         PassedServHeader.TestField("Customer No.");
         Customer.Get(PassedServHeader."Customer No.");
-        //temp
         if not Customer."BA Serv. Int. Customer" then
             exit;
         PassedServHeader.TestField("ENC BBD Sell-To No.");
