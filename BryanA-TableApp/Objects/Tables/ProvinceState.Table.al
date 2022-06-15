@@ -33,5 +33,5 @@ table 50009 "BA Province/State"
         {
             Clustered = true;
         }
-    }
+    } //
 }
