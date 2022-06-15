@@ -4,7 +4,7 @@ tableextension 80026 "BA Service Header" extends "Service Header"
     {
         modify(County)
         {
-            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field (County));
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));
         }
         modify("Bill-to County")
         {
