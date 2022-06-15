@@ -70,7 +70,6 @@ codeunit 75010 "BA SEI Subscibers"
                  then
             exit;
         Rec.Validate("Shipment Date", 0D);
-        Rec.CheckItemAvailable(Rec.FieldNo(Quantity));
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'Shipment Date', false, false)]
