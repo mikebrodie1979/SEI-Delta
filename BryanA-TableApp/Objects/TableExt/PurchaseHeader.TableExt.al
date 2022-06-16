@@ -21,5 +21,19 @@ tableextension 80007 "BA Purchase Header" extends "Purchase Header"
             DataClassification = CustomerContent;
             Caption = 'Omit from Outstanding Orders';
         }
+
+        modify("Buy-from County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Buy-from Country/Region Code"));
+        }
+        modify("Pay-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Pay-to Country/Region Code"));
+        }
+        modify("Ship-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
+        }
+        //
     }
 }

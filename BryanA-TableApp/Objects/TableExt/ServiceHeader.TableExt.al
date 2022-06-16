@@ -14,5 +14,6 @@ tableextension 80026 "BA Service Header" extends "Service Header"
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
         }
+        //
     }
 }
