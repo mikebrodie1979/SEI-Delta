@@ -7,5 +7,9 @@ tableextension 80020 "BA Location" extends Location
             DataClassification = CustomerContent;
             Caption = 'FID No.';
         }
+        modify(County)
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));
+        }
     }
 }
