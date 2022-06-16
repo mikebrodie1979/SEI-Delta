@@ -16,5 +16,6 @@ tableextension 80030 "BA Customer" extends Customer
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));
         }
+        //
     }
 }

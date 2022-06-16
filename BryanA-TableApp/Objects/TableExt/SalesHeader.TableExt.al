@@ -21,5 +21,6 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
         }
+        //
     }
 }

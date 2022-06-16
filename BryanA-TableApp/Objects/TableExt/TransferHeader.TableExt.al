@@ -12,5 +12,13 @@ tableextension 80021 "BA Transfer Header" extends "Transfer Header"
             DataClassification = CustomerContent;
             Caption = 'Phone No.';
         }
+        modify("Transfer-from County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Trsf.-from Country/Region Code"));
+        }
+        modify("Transfer-to County")
+        {
+            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Trsf.-to Country/Region Code"));
+        }
     }
 }

@@ -34,5 +34,6 @@ tableextension 80007 "BA Purchase Header" extends "Purchase Header"
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
         }
+        //
     }
 }
