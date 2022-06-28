@@ -463,6 +463,13 @@ codeunit 75010 "BA SEI Subscibers"
             Error('%1 %2 is blocked', CustPostGroup.TableCaption, CustPostGroup.Code);
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeAutoReserve', '', false, false)]
+    local procedure SalesLineOnBeforeAutoReserve(SalesLine: Record "Sales Line"; var IsHandled: Boolean)
+    begin
+        if SalesLine."Shipment Date" = 0D then
+            IsHandled := true;
+    end;
+
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
