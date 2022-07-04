@@ -1,4 +1,4 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80051 "BA Service Quote" extends "Service Quote"
 {
     layout
     {
