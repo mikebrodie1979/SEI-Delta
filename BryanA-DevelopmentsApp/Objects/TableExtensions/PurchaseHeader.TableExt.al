@@ -18,5 +18,6 @@ tableextension 81004 "BA Purch. Header Ext." extends "Purchase Header"
         {
             Caption = 'VAT Country';
         }
+        //
     }
 }
