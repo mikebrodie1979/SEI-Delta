@@ -1,20 +1,7 @@
-pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
+pageextension 80058 "BA Purchase Invoice" extends "Purchase Invoice"
 {
     layout
     {
-        addafter("Document Date")
-        {
-            field("Expected Receipt Date2"; Rec."Expected Receipt Date")
-            {
-                ApplicationArea = all;
-                Editable = false;
-            }
-        }
-        modify("Expected Receipt Date")
-        {
-            ApplicationArea = all;
-            Visible = false;
-        }
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;

@@ -21,5 +21,20 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Buy-from Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Buy-from Country';
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Pay-to Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Ship-to Country';
+        }
     }
 }

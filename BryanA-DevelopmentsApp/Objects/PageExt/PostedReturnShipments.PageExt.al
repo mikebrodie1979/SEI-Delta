@@ -9,6 +9,21 @@ pageextension 80017 "BA Posted Return Shipments" extends "Posted Return Shipment
                 ApplicationArea = all;
             }
         }
+        modify("Buy-from Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Buy-from Country';
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Pay-to Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Ship-to Country';
+        }
     }
 
     trigger OnOpenPage()

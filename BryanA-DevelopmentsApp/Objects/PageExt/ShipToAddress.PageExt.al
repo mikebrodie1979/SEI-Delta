@@ -22,5 +22,25 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Shipment Method Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Freight Carrier';
+        }
+        modify("Shipping Agent Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Service Level';
+        }
+        modify("Shipping Agent Service Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Freight Term';
+        }
     }
 }

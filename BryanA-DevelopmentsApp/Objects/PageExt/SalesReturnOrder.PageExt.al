@@ -1,4 +1,4 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80054 "BA Sales Return Order" extends "Sales Return Order"
 {
     layout
     {
@@ -7,10 +7,10 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             ApplicationArea = all;
             Caption = 'Bill-to Country';
         }
-        modify("Country/Region Code")
+        modify("Sell-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Country';
+            Caption = 'Sell-to Country';
         }
         modify("Ship-to Country/Region Code")
         {

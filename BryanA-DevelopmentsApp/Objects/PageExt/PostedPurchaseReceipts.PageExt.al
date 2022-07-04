@@ -9,6 +9,21 @@ pageextension 80011 "BA Posted Purch. Rcpts." extends "Posted Purchase Receipts"
                 ApplicationArea = all;
             }
         }
+        modify("Buy-from Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Buy-from Country';
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Pay-to Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Ship-to Country';
+        }
     }
 
     trigger OnOpenPage()

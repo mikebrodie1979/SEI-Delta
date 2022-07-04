@@ -9,5 +9,10 @@ pageextension 80035 "BA Location Card" extends "Location Card"
                 ApplicationArea = all;
             }
         }
+        modify("Country/Region Code")
+        {
+            Caption = 'Country';
+            ApplicationArea = all;
+        }
     }
 }
