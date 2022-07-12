@@ -9,7 +9,7 @@
             "port": 7119,
             "serverInstance": "Dev",
             "authentication": "UserPassword",
-            "schemaUpdateMode": "Synchronize"
+            // "schemaUpdateMode": "ForceSync"
         }
         ,
         {
