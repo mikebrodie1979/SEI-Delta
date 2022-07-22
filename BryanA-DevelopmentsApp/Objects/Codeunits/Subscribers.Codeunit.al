@@ -470,6 +470,17 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.ShipmentMethodCodeLookup();
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnAfterValidateEvent', 'Shipment Method Code', false, false)]
+    local procedure ShipToAddressValdiateShipmentMethodCode(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
+    var
+        ShipmentMethod: Record "Shipment Method";
+    begin
+        if (Rec."Shipment Method Code" <> xRec."Shipment Method Code") and (Rec."Shipment Method Code" <> '') then begin
+            ShipmentMethod.Get(Rec."Shipment Method Code");
+            ShipmentMethod.TestField("ENC Sales", true);
+        end;
+    end;
+
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';

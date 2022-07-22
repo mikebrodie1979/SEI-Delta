@@ -27,20 +27,32 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             ApplicationArea = all;
             Caption = 'Country';
         }
-        modify("Shipment Method Code")
-        {
-            ApplicationArea = all;
-            Caption = 'Freight Carrier';
-        }
-        modify("Shipping Agent Code")
-        {
-            ApplicationArea = all;
-            Caption = 'Service Level';
-        }
+
+
         modify("Shipping Agent Service Code")
         {
             ApplicationArea = all;
-            Caption = 'Freight Term';
+            Visible = false;
+            Editable = false;
+            Enabled = false;
+        }
+
+        addafter("Shipping Agent Service Code")
+        {
+            field("BA Test"; ServiceCode)
+            {
+                ApplicationArea = all;
+                Caption = 'Freight Term';
+                TableRelation = "ENC Freight Term".Code;
+
+                trigger OnValidate()
+                begin
+                    Rec."Shipping Agent Service Code" := ServiceCode;
+                end;
+            }
         }
     }
+
+    var
+        ServiceCode: Code[10];
 }
