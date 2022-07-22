@@ -1,20 +1,8 @@
-pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
+pageextension 80018 "BA Purch. Return Orders" extends "Purchase Return Order List"
 {
+
     layout
     {
-        addafter("Document Date")
-        {
-            field("Expected Receipt Date2"; Rec."Expected Receipt Date")
-            {
-                ApplicationArea = all;
-                Editable = false;
-            }
-        }
-        modify("Expected Receipt Date")
-        {
-            ApplicationArea = all;
-            Visible = false;
-        }
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
@@ -31,4 +19,14 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
             Caption = 'Country';
         }
     }
+
+    trigger OnOpenPage()
+    var
+        FilterNo: Integer;
+    begin
+        FilterNo := Rec.FilterGroup();
+        Rec.FilterGroup(2);
+        Rec.SetRange("BA Requisition Order", false);
+        Rec.FilterGroup(FilterNo);
+    end;
 }

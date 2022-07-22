@@ -5,7 +5,7 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Bill-to Country';
+            Caption = 'Country';
         }
         modify("Country/Region Code")
         {
@@ -15,7 +15,7 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Ship-to Country';
+            Caption = 'Country';
         }
     }
 }

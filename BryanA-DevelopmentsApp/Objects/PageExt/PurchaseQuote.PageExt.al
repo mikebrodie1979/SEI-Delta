@@ -5,17 +5,17 @@ pageextension 80057 "BA Purchase Quote" extends "Purchase Quote"
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Buy-from Country';
+            Caption = 'Country';
         }
         modify("Pay-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Pay-to Country';
+            Caption = 'Country';
         }
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Ship-to Country';
+            Caption = 'Country';
         }
     }
 }

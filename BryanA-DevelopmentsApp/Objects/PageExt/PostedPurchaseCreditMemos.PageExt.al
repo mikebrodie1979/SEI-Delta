@@ -5,17 +5,17 @@ pageextension 80013 "BA Posted Purch. Cr.Memos" extends "Posted Purchase Credit 
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Buy-from Country';
+            Caption = 'Country';
         }
         modify("Pay-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Pay-to Country';
+            Caption = 'Country';
         }
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Ship-to Country';
+            Caption = 'Country';
         }
     }
 
