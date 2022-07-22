@@ -5,7 +5,7 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Bill-to Country';
+            Caption = 'Country';
         }
         modify("Country/Region Code")
         {
@@ -15,7 +15,7 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Ship-to Country';
+            Caption = 'Country';
         }
     }
 }

@@ -5,12 +5,12 @@ pageextension 80053 "BA Sales Credit Memo" extends "Sales Credit Memo"
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Bill-to Country';
+            Caption = 'Country';
         }
         modify("Sell-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Sell-to Country';
+            Caption = 'Country';
         }
     }
 }

@@ -5,7 +5,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Bill-to Country';
+            Caption = 'Country';
         }
         modify("Country/Region Code")
         {
@@ -15,7 +15,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
-            Caption = 'Ship-to Country';
+            Caption = 'Country';
         }
     }
 }
