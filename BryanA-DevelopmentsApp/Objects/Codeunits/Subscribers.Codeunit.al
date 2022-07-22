@@ -464,6 +464,13 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnShipmentMethodCodeLookup', '', false, false)]
+    local procedure ShipToAddressOnShipmentMethodLookup(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
+    begin
+        Rec.ShipmentMethodCodeLookup();
+    end;
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
