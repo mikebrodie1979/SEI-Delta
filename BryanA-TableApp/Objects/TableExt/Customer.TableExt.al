@@ -12,6 +12,13 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Service BBD Fields Mandatory';
         }
+        field(80010; "BA Region"; Text[30])
+        {
+            Caption = 'Region';
+            FieldClass = FlowField;
+            CalcFormula = lookup ("Country/Region"."BA Region" where (Code = field ("Country/Region Code")));
+            Editable = false;
+        }
         modify(County)
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));
