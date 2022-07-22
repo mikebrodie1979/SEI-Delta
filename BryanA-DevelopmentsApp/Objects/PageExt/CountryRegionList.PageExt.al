@@ -1,5 +1,7 @@
-pageextension 80060 "BA Country/Region List" extends "Countries/Regions"
+pageextension 80065 "BA Country/Region List" extends "Countries/Regions"
 {
+    Caption = 'Countries';
+
     layout
     {
         addafter(Name)

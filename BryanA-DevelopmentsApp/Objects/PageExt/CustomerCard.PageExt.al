@@ -66,8 +66,12 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             Visible = false;
         }
 
-        addafter("Country/Region Code")
+        addafter("Post Code")
         {
+            field("BA Country/Region Code"; "Country/Region Code")
+            {
+                ApplicationArea = all;
+            }
             field("BA Region"; Rec."BA Region")
             {
                 ApplicationArea = all;
@@ -75,10 +79,10 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         }
         modify("Country/Region Code")
         {
-            trigger OnAfterValidate()
-            begin
-                Rec.CalcFields("BA Region");
-            end;
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+            Editable = false;
         }
     }
 }
