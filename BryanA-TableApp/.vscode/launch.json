@@ -22,16 +22,16 @@
             "authentication": "UserPassword",
             // "schemaUpdateMode": "ForceSync"
         }
-        ,
-        {
-            "type": "al",
-            "request": "launch",
-            "name": "Live",
-            "server": "http://localhost",
-            "port": 7109,
-            "serverInstance": "SEI140",
-            "authentication": "UserPassword",
-            "schemaUpdateMode": "Synchronize"
-        }
+        // ,
+        // {
+        //     "type": "al",
+        //     "request": "launch",
+        //     "name": "Live",
+        //     "server": "http://localhost",
+        //     "port": 7109,
+        //     "serverInstance": "SEI140",
+        //     "authentication": "UserPassword",
+        //     "schemaUpdateMode": "Synchronize"
+        // }
     ]
 }
