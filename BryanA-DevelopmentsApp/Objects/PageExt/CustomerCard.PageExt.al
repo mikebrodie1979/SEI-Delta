@@ -71,6 +71,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             field("BA Country/Region Code"; "Country/Region Code")
             {
                 ApplicationArea = all;
+                Caption = 'Country';
             }
             field("BA Region"; Rec."BA Region")
             {
