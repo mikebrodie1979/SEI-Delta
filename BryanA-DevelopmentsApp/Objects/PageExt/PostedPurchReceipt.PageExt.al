@@ -15,5 +15,20 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Buy-from Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
     }
 }

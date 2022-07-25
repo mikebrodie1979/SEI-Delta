@@ -7,6 +7,21 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Bill-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Sell-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
         addafter("Payment Method Code")
         {
             field("Due Date2"; Rec."Due Date")
@@ -36,5 +51,4 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
             }
         }
     }
-
 }

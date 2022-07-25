@@ -15,5 +15,20 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Buy-from Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
+        modify("Ship-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Caption = 'Country';
+        }
     }
 }
