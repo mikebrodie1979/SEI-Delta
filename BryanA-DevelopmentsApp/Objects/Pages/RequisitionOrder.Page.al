@@ -112,10 +112,10 @@ page 50097 "BA Requisition Order"
                     field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
                     {
                         ApplicationArea = Suite;
-                        Caption = 'Country/Region';
+                        Caption = 'Country';
                         Importance = Additional;
                         QuickEntry = false;
-                        ToolTip = 'Specifies the country or region of the address.';
+                        ToolTip = 'Specifies the country of the address.';
 
                         trigger OnValidate()
                         begin
@@ -536,11 +536,11 @@ page 50097 "BA Requisition Order"
                             field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
                             {
                                 ApplicationArea = Basic, Suite;
-                                Caption = 'Country/Region';
+                                Caption = 'Country';
                                 Editable = ShipToOptions = ShipToOptions::"Custom Address";
                                 Importance = Additional;
                                 QuickEntry = false;
-                                ToolTip = 'Specifies the country/region code of the address that you want the items on the purchase document to be shipped to.';
+                                ToolTip = 'Specifies the country code of the address that you want the items on the purchase document to be shipped to.';
 
                                 trigger OnValidate()
                                 begin
@@ -656,12 +656,12 @@ page 50097 "BA Requisition Order"
                         field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
                         {
                             ApplicationArea = Basic, Suite;
-                            Caption = 'Country/Region';
+                            Caption = 'Country';
                             Editable = (PayToOptions = PayToOptions::"Custom Address") OR ("Buy-from Vendor No." <> "Pay-to Vendor No.");
                             Enabled = (PayToOptions = PayToOptions::"Custom Address") OR ("Buy-from Vendor No." <> "Pay-to Vendor No.");
                             Importance = Additional;
                             QuickEntry = false;
-                            ToolTip = 'Specifies the country/region code of the vendor on the purchase document.';
+                            ToolTip = 'Specifies the country code of the vendor on the purchase document.';
 
                             trigger OnValidate()
                             begin

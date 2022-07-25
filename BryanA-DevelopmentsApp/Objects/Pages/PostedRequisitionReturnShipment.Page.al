@@ -93,7 +93,7 @@ page 50054 "BA Posted Req. Return Shipment"
                     field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country/Region';
+                        Caption = 'Country';
                         Editable = false;
                     }
                     field("Buy-from Contact"; "Buy-from Contact")
@@ -233,7 +233,7 @@ page 50054 "BA Posted Req. Return Shipment"
                     field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country/Region';
+                        Caption = 'Country';
                         Editable = false;
                     }
                     field("Pay-to Contact"; "Pay-to Contact")
@@ -326,7 +326,7 @@ page 50054 "BA Posted Req. Return Shipment"
                     field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country/Region';
+                        Caption = 'Country';
                         Editable = false;
                     }
                     field("Ship-to Contact"; "Ship-to Contact")
@@ -522,26 +522,6 @@ page 50054 "BA Posted Req. Return Shipment"
                     Navigate;
                 end;
             }
-            // action("Update Document")
-            // {
-            //     ApplicationArea = PurchReturnOrder;
-            //     Caption = 'Update Document';
-            //     Image = Edit;
-            //     Promoted = true;
-            //     PromotedCategory = Process;
-            //     PromotedIsBig = true;
-            //     PromotedOnly = true;
-            //     ToolTip = 'Add new information that is relevant to the document, such as the country or region. You can only edit a few fields because the document has already been posted.';
-
-            //     trigger OnAction()
-            //     var
-            //         PostedReturnShptUpdate: Page "Posted Return Shpt. - Update";
-            //     begin
-            //         PostedReturnShptUpdate.LOOKUPMODE := TRUE;
-            //         PostedReturnShptUpdate.SetRec(Rec);
-            //         PostedReturnShptUpdate.RUNMODAL;
-            //     end;
-            // }
         }
     }
 
