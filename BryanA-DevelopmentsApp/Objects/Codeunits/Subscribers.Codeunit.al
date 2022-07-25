@@ -471,6 +471,24 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnShipmentMethodCodeLookup', '', false, false)]
+    local procedure ShipToAddressOnShipmentMethodLookup(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
+    begin
+        Rec.ShipmentMethodCodeLookup();
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnAfterValidateEvent', 'Shipment Method Code', false, false)]
+    local procedure ShipToAddressValdiateShipmentMethodCode(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
+    var
+        ShipmentMethod: Record "Shipment Method";
+    begin
+        if (Rec."Shipment Method Code" <> xRec."Shipment Method Code") and (Rec."Shipment Method Code" <> '') then begin
+            ShipmentMethod.Get(Rec."Shipment Method Code");
+            ShipmentMethod.TestField("ENC Sales", true);
+        end;
+    end;
+
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Format Address", 'OnAfterFormatAddress', '', false, false)]
     local procedure FormatAddressOnAfterFormatAddress(var CountryCode: Code[10]; var County: Text[50]; var AddrArray: array[8] of Text)
     var
