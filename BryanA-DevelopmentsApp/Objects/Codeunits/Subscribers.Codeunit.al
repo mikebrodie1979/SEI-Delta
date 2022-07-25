@@ -1,7 +1,9 @@
 codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
-                  tabledata "Purch. Rcpt. Header" = rimd;
+                  tabledata "Purch. Rcpt. Header" = rimd,
+                  tabledata "Sales Shipment Line" = rimd,
+                  tabledata "Sales Shipment Header" = rimd;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -486,6 +488,69 @@ codeunit 75010 "BA SEI Subscibers"
             ShipmentMethod.Get(Rec."Shipment Method Code");
             ShipmentMethod.TestField("ENC Sales", true);
         end;
+    end;
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterSalesShptHeaderInsert', '', false, false)]
+    local procedure SalesPostOnAfterSalesShptHeaderInsert(var SalesShipmentHeader: Record "Sales Shipment Header"; SalesHeader: Record "Sales Header")
+    var
+        SalesShptHdr: Record "Sales Shipment Header";
+        SalesShptLine: Record "Sales Shipment Line";
+    begin
+        SalesShptHdr.SetFilter("No.", '<>%1', SalesShipmentHeader."No.");
+        SalesShptHdr.SetRange("Order No.", SalesHeader."No.");
+        if not SalesShptHdr.FindFirst() then
+            exit;
+        SalesShptLine.SetRange("Document No.", SalesShptHdr."No.");
+        SalesShptLine.SetRange(Type, SalesShptLine.Type::Item);
+        SalesShptLine.SetFilter(Quantity, '>%1', 0);
+        if SalesShptLine.FindFirst() then begin
+            SalesShptLine.SetRange(Type, SalesShptLine.Type::"G/L Account");
+            SalesShptLine.SetRange(Quantity, 0);
+            if not SalesShptLine.IsEmpty() then begin
+                SalesShipmentHeader."BA Original Doc. No." := SalesShipmentHeader."No.";
+                SalesShipmentHeader."No." := SalesShptHdr."No.";
+                SalesShipmentHeader."BA Merged Shpt. Lines" := true;
+                SalesShipmentHeader."BA Hide Merged Shpt. Lines" := true;
+                SalesShipmentHeader.Modify(false);
+            end;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnBeforeSalesShptLineInsert', '', false, false)]
+    local procedure SalesPostOnBeforeSalesShptLineInsert(var SalesShptLine: Record "Sales Shipment Line"; SalesShptHeader: Record "Sales Shipment Header")
+    var
+        SalesShptLine2: Record "Sales Shipment Line";
+    begin
+        if not SalesShptHeader."BA Merged Shpt. Lines" then
+            exit;
+        SalesShptLine2.SetRange("Document No.", SalesShptHeader."No.");
+        if SalesShptLine2.FindLast() then
+            SalesShptLine."Line No." := SalesShptLine2."Line No." + 10000;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterSalesShptLineInsert', '', false, false)]
+    local procedure SalesPostOnAfterSalesShptLineInsert(var SalesShipmentLine: Record "Sales Shipment Line")
+    begin
+        if SalesShipmentLine."BA Merged Shpt. Line" then
+            SalesShipmentLine.Delete(true);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
+    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header")
+    var
+        SalesShptLine: Record "Sales Shipment Line";
+    begin
+        if not SalesShipmentHeader."BA Merged Shpt. Lines" then
+            exit;
+        SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
+        SalesShptLine.SetRange(Type, SalesShptLine.Type::Item);
+        SalesShptLine.SetRange(Quantity, 0);
+        SalesShptLine.DeleteAll(true);
+        SalesShipmentHeader."No." := SalesShipmentHeader."BA Original Doc. No.";
+        SalesShipmentHeader."No. Printed" := -1;
+        SalesShipmentHeader.Delete(true);
     end;
 
 
