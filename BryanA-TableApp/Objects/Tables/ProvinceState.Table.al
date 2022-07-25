@@ -25,6 +25,10 @@ table 50009 "BA Province/State"
             FieldClass = FlowField;
             CalcFormula = lookup ("Country/Region".Name where (Code = field ("Country/Region Code")));
         }
+        field(5; "Print Full Name"; Boolean)
+        {
+            DataClassification = CustomerContent;
+        }
     }
 
     keys
@@ -33,5 +37,36 @@ table 50009 "BA Province/State"
         {
             Clustered = true;
         }
-    } //
+    }
+
+    trigger OnDelete()
+    begin
+        CheckIfCanMakeChanges();
+    end;
+
+    trigger OnInsert()
+    begin
+        CheckIfCanMakeChanges();
+    end;
+
+    trigger OnRename()
+    begin
+        CheckIfCanMakeChanges();
+    end;
+
+    trigger OnModify()
+    begin
+        CheckIfCanMakeChanges();
+    end;
+
+    procedure CheckIfCanMakeChanges()
+    var
+        UserSetup: Record "User Setup";
+    begin
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Allow Changing Counties" then
+            Error(InvalidPermissionError);
+    end;
+
+    var
+        InvalidPermissionError: Label 'You do not have permission to make this change.';
 }
