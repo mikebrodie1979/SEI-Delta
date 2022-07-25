@@ -471,6 +471,36 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Format Address", 'OnAfterFormatAddress', '', false, false)]
+    local procedure FormatAddressOnAfterFormatAddress(var CountryCode: Code[10]; var County: Text[50]; var AddrArray: array[8] of Text)
+    var
+        ProvinceState: Record "BA Province/State";
+        CompInfo: Record "Company Information";
+        i: Integer;
+    begin
+        if CountryCode = '' then begin
+            CompInfo.Get('');
+            CompInfo.TestField("Country/Region Code");
+            CountryCode := CompInfo."Country/Region Code";
+        end;
+
+        if not ProvinceState.Get(CountryCode, CopyStr(County, 1, MaxStrLen(ProvinceState.Symbol))) then begin
+            ProvinceState.SetRange("Country/Region Code", CountryCode);
+            ProvinceState.SetRange(Name, County);
+            if not ProvinceState.FindFirst() then
+                exit;
+        end;
+        if not ProvinceState."Print Full Name" then
+            exit;
+
+        for i := 1 to 8 do
+            if AddrArray[i].Contains(County) then begin
+                AddrArray[i] := AddrArray[i].Replace(County, ProvinceState.Name);
+                exit;
+            end;
+    end;
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
