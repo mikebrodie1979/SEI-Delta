@@ -8,6 +8,14 @@ pageextension 80044 "BA User Setup" extends "User Setup"
             {
                 ApplicationArea = all;
             }
+            field("BA Allow Changing Counties"; "BA Allow Changing Counties")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Allow Changing Regions"; "BA Allow Changing Regions")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
