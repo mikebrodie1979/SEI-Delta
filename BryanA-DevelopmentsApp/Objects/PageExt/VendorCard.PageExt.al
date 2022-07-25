@@ -7,7 +7,7 @@ pageextension 80056 "BA Vendor Card" extends "Vendor Card"
             ApplicationArea = all;
             Visible = false;
         }
-        addafter(AddressDetails)
+        addfirst(AddressDetails)
         {
             field("BA Country/Region Code"; "Country/Region Code")
             {
