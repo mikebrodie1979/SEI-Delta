@@ -102,9 +102,9 @@ page 50050 "BA Requsition Return Order"
                     field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country';
+                        Caption = 'Country/Region';
                         Importance = Additional;
-                        ToolTip = 'Specifies the country of the address.';
+                        ToolTip = 'Specifies the country or region of the address.';
 
                         trigger OnValidate()
                         begin
@@ -438,10 +438,10 @@ page 50050 "BA Requsition Return Order"
                     field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country';
+                        Caption = 'Country/Region Code';
                         Editable = ShipToOptions = ShipToOptions::"Custom Address";
                         Importance = Additional;
-                        ToolTip = 'Specifies the country of the address.';
+                        ToolTip = 'Specifies the country or region of the address.';
 
                         trigger OnValidate()
                         begin
@@ -520,11 +520,11 @@ page 50050 "BA Requsition Return Order"
                     field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
-                        Caption = 'Country';
+                        Caption = 'Country/Region';
                         Editable = "Buy-from Vendor No." <> "Pay-to Vendor No.";
                         Enabled = "Buy-from Vendor No." <> "Pay-to Vendor No.";
                         Importance = Additional;
-                        ToolTip = 'Specifies the country of the address.';
+                        ToolTip = 'Specifies the country or region of the address.';
 
                         trigger OnValidate()
                         begin

@@ -255,7 +255,7 @@ page 50052 "BA Posted Requisition Receipt"
                     field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
                     {
                         ApplicationArea = Suite;
-                        Caption = 'Country';
+                        Caption = 'Country/Region';
                         Editable = false;
                         ToolTip = 'Specifies the country or region of the vendor on the purchase document.';
                     }
@@ -336,7 +336,7 @@ page 50052 "BA Posted Requisition Receipt"
                     field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
                     {
                         ApplicationArea = Suite;
-                        Caption = 'Country';
+                        Caption = 'Country/Region';
                         Editable = false;
                         ToolTip = 'Specifies the country or region of the ship-to address.';
                     }
