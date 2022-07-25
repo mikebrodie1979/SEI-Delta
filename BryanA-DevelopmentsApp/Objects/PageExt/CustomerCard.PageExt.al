@@ -68,19 +68,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
         addafter("Post Code")
         {
-            field("BA Country/Region Code"; "Country/Region Code")
-            {
-                ApplicationArea = all;
-                Caption = 'Country';
-            }
-            field("BA Region"; Rec."BA Region")
-            {
-                ApplicationArea = all;
-            }
-        }
-
-        addafter("Post Code")
-        {
             field("BA Region"; Rec."BA Region")
             {
                 ApplicationArea = all;
