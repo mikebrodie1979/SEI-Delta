@@ -14,5 +14,11 @@ tableextension 80040 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Editable = false;
             Caption = 'Original Document No.';
         }
+        field(80002; "BA Hide Merged Shpt. Lines"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Editable = false;
+            Caption = 'Hide Merged Shipment Lines';
+        }
     }
 }
