@@ -493,6 +493,8 @@ codeunit 75010 "BA SEI Subscibers"
                 SalesShipmentHeader."BA Original Doc. No." := SalesShipmentHeader."No.";
                 SalesShipmentHeader."No." := SalesShptHdr."No.";
                 SalesShipmentHeader."BA Merged Shpt. Lines" := true;
+                SalesShipmentHeader."BA Hide Merged Shpt. Lines" := true;
+                SalesShipmentHeader.Modify(false);
             end;
         end;
     end;
