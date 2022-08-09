@@ -37,6 +37,11 @@ page 50060 "BA Province/State List"
                 {
                     ApplicationArea = all;
                 }
+                field("Print Full Name"; "Print Full Name")
+                {
+                    ApplicationArea = all;
+                }
+                //derp
             }
         }
     }
