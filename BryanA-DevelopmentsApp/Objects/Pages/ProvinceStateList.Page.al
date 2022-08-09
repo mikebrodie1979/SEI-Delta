@@ -41,6 +41,7 @@ page 50060 "BA Province/State List"
                 {
                     ApplicationArea = all;
                 }
+                //derp
             }
         }
     }
