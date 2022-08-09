@@ -471,6 +471,29 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
+    var
+        SalesPrice: Record "Sales Price";
+    begin
+        // if not Confirm(StrSubstNo('%1 -> %2\%3', TempSalesPrice.GetFilters, TempSalesPrice.Count, TempSalesPrice.RecordId)) then
+        //     Error('');
+
+        if not FoundSalesPrice then
+            exit;
+
+        SalesPrice.SetRange("Item No.", SalesLine."No.");
+        // SalesPrice.SetRange();
+
+        if TempSalesPrice.FindSet() then
+            repeat
+                if not Confirm(StrSubstNo('%1: %2, %3, %4', TempSalesPrice."Item No.",
+                        TempSalesPrice."Starting Date", TempSalesPrice."Ending Date", TempSalesPrice."Unit Price")) then
+                    Error('');
+            until TempSalesPrice.Next() = 0;
+    end;
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
