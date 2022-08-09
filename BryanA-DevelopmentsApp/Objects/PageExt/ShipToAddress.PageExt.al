@@ -27,8 +27,6 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             ApplicationArea = all;
             Caption = 'Country';
         }
-
-
         modify("Shipping Agent Service Code")
         {
             ApplicationArea = all;
@@ -36,10 +34,9 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             Editable = false;
             Enabled = false;
         }
-
         addafter("Shipping Agent Service Code")
         {
-            field("BA Test"; ServiceCode)
+            field("BA Freight Term"; ServiceCode)
             {
                 ApplicationArea = all;
                 Caption = 'Freight Term';
@@ -52,6 +49,11 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        ServiceCode := Rec."Shipping Agent Service Code";
+    end;
 
     var
         ServiceCode: Code[10];
