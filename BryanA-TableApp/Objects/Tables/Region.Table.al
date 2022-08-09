@@ -40,7 +40,7 @@ table 50000 "BA Region"
     var
         UserSetup: Record "User Setup";
     begin
-        if not UserSetup.Get(UserId()) or not UserSetup."BA Allow Changing Counties" then
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Allow Changing Regions" then
             Error(InvalidPermissionError);
     end;
 
