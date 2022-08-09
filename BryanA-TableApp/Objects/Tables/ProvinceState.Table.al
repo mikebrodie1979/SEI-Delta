@@ -10,7 +10,7 @@ table 50009 "BA Province/State"
             NotBlank = true;
             TableRelation = "Country/Region".Code;
         }
-        field(2; "Symbol"; Code[2])
+        field(2; "Symbol"; Code[5])
         {
             DataClassification = CustomerContent;
             NotBlank = true;
