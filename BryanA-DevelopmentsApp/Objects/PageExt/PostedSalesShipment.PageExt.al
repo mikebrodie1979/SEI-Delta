@@ -1,4 +1,4 @@
-pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
+pageextension 80070 "BA Posted Sales Shpt." extends "Posted Sales Shipment"
 {
     layout
     {
@@ -30,7 +30,6 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
                 Caption = 'Country';
             }
         }
-
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
