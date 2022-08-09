@@ -1,4 +1,4 @@
-pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
+pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
 {
     layout
     {
@@ -9,6 +9,11 @@ pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
                 ApplicationArea = all;
                 Editable = false;
             }
+        }
+        modify("Expected Receipt Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
         }
         modify("Buy-from Country/Region Code")
         {
@@ -30,7 +35,7 @@ pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
             Visible = false;
             Enabled = false;
         }
-        addfirst(Control15)
+        addfirst("Pay-to")
         {
             field("BA Pay-to Country/Region Code"; "Pay-to Country/Region Code")
             {

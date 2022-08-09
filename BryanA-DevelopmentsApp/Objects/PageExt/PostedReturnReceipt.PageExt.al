@@ -1,38 +1,30 @@
-pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
+pageextension 80061 "BA Posted Purch. Receipt" extends "Posted Return Receipt"
 {
     layout
     {
-        addafter("Document Date")
-        {
-            field("Expected Receipt Date2"; Rec."Expected Receipt Date")
-            {
-                ApplicationArea = all;
-                Editable = false;
-            }
-        }
-        modify("Buy-from Country/Region Code")
+        modify("Sell-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addfirst("Buy-from")
+        addfirst("Sell-to")
         {
-            field("BA Buy-from Country/Region Code"; "Buy-from Country/Region Code")
+            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
             }
         }
-        modify("Pay-to Country/Region Code")
+        modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addfirst(Control15)
+        addfirst("Bill-to")
         {
-            field("BA Pay-to Country/Region Code"; "Pay-to Country/Region Code")
+            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
