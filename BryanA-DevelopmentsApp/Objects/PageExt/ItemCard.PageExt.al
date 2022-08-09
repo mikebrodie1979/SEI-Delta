@@ -100,8 +100,10 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Rec.FieldNo("ENC Product ID Code")) then
             UpdateRec := true;
 
-        if UpdateRec then
+        if UpdateRec then begin
+            RecRef.SetTable(Rec);
             CurrPage.Update(true);
+        end;
     end;
 
     local procedure UpdateDimValue(var RecRef: RecordRef; var GLRecRef: RecordRef; GLFldNo: Integer; DimFldNo: Integer): Boolean
