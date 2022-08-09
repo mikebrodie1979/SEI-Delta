@@ -1,43 +1,55 @@
-pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
+pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
 {
     layout
     {
-        modify("Sell-to Country/Region Code")
+        addafter("Document Date")
+        {
+            field("Expected Receipt Date2"; Rec."Expected Receipt Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+        }
+        modify("Expected Receipt Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addfirst("Sell-to")
+        addfirst("Buy-from")
         {
-            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
+            field("BA Buy-from Country/Region Code"; "Buy-from Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
             }
         }
-        modify("Bill-to Country/Region Code")
+        modify("Pay-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addbefore("Bill-to Name")
+        addfirst("Pay-to")
         {
-            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
+            field("BA Pay-to Country/Region Code"; "Pay-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
             }
         }
-
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addbefore("Ship-to Name")
+        addfirst("Ship-to")
         {
             field("BA Ship-to Country/Region Code"; "Ship-to Country/Region Code")
             {

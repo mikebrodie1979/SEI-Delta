@@ -1,4 +1,4 @@
-pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
+pageextension 80061 "BA Posted Purch. Receipt" extends "Posted Return Receipt"
 {
     layout
     {
@@ -22,7 +22,7 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
             Visible = false;
             Enabled = false;
         }
-        addbefore("Bill-to Name")
+        addfirst("Bill-to")
         {
             field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
             {
@@ -30,14 +30,13 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
                 Caption = 'Country';
             }
         }
-
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addbefore("Ship-to Name")
+        addfirst("Ship-to")
         {
             field("BA Ship-to Country/Region Code"; "Ship-to Country/Region Code")
             {
