@@ -506,8 +506,6 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         end;
         TempSalesPrice := SalesPrice;
-        if SalesLine."Document Type" <> SalesLine."Document Type"::Quote then
-            exit;
         if (SalesLine."Currency Code" <> CurrencyCode) or SalesHeader."BA Use Manual Exch. Rate" then begin
             if not SalesHeader."BA Use Manual Exch. Rate" then begin
                 ExchangeRate.SetRange("Currency Code", CurrencyCode);
