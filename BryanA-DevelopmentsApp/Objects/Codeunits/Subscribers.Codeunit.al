@@ -577,13 +577,43 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
-    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header")
+    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
     var
         SalesShptLine: Record "Sales Shipment Line";
+        SalesShptLine2: Record "Sales Shipment Line";
+        TempSalesShptLines: Record "Sales Shipment Line" temporary;
+        OrphanedLines: Record "Sales Shipment Line";
     begin
-        if not SalesShipmentHeader."BA Merged Shpt. Lines" then
+        if SalesInvoiceHeader."No." <> '' then begin
+            OrphanedLines.SetCurrentKey("Order No.", "Order Line No.");
+            OrphanedLines.SetRange("Order No.", SalesInvoiceHeader."Order No.");
+            OrphanedLines.DeleteAll(false);
+            exit;
+        end;
+        if SalesShipmentHeader."No." = '' then
             exit;
         SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
+        SalesShptLine.SetFilter(Type, '<>%1&<>%2', SalesShptLine.Type::"G/L Account", SalesShptLine.Type::" ");
+        SalesShptLine2.SetRange("Document No.", SalesShipmentHeader."No.");
+        SalesShptLine2.SetRange(Type, SalesShptLine2.Type::"G/L Account");
+        if SalesShptLine.IsEmpty() and SalesShptLine2.FindSet() then begin
+            repeat
+                TempSalesShptLines := SalesShptLine2;
+                TempSalesShptLines.insert(false);
+                SalesShptLine2.Quantity := 0;
+                SalesShptLine2.Modify(false);
+            until SalesShptLine2.Next() = 0;
+            SalesShipmentHeader."No. Printed" := -1;
+            SalesShipmentHeader.Delete(true);
+            TempSalesShptLines.FindSet();
+            repeat
+                OrphanedLines := TempSalesShptLines;
+                OrphanedLines.Insert(false);
+            until TempSalesShptLines.Next() = 0;
+            exit;
+        end;
+        if not SalesShipmentHeader."BA Merged Shpt. Lines" then
+            exit;
         SalesShptLine.SetRange(Type, SalesShptLine.Type::Item);
         SalesShptLine.SetRange(Quantity, 0);
         SalesShptLine.DeleteAll(true);
