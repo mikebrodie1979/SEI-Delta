@@ -21,5 +21,11 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Ship-to Country/Region Code"));
         }
+        field(80020; "BA Quote Exch. Rate"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Exchange Rate';
+            Editable = false;
+        }
     }
 }
