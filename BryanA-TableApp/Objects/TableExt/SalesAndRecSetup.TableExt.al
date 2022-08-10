@@ -1,4 +1,4 @@
-tableextension 80035 "BA Sales & Rec. Setup" extends "Sales & Receivables Setup"
+tableextension 80036 "BA Sales & Rec. Setup" extends "Sales & Receivables Setup"
 {
     fields
     {
