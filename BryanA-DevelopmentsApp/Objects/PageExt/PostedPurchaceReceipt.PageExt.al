@@ -27,6 +27,7 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Pay-to Country/Region Code")
@@ -41,6 +42,7 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -55,6 +57,7 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

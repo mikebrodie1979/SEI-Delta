@@ -14,6 +14,7 @@ pageextension 80061 "BA Posted Purch. Receipt" extends "Posted Return Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Bill-to Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80061 "BA Posted Purch. Receipt" extends "Posted Return Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80061 "BA Posted Purch. Receipt" extends "Posted Return Receipt"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

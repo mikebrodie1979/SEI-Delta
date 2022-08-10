@@ -14,6 +14,7 @@ pageextension 80063 "BA Posted Service Shpt." extends "Posted Service Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80063 "BA Posted Service Shpt." extends "Posted Service Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80063 "BA Posted Service Shpt." extends "Posted Service Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }
