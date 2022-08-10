@@ -653,6 +653,48 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesPrice: Record "Sales Price";
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        GLSetup: Record "General Ledger Setup";
+        ExchangeRate: Record "Currency Exchange Rate";
+        CurrencyCode: Code[10];
+        RateValue: Decimal;
+    begin
+        if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
+            exit;
+        SalesRecSetup.TestField("BA Single Price Currency");
+        if not FoundSalesPrice then
+            exit;
+        GLSetup.Get();
+        GLSetup.TestField("LCY Code");
+        if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
+            CurrencyCode := SalesRecSetup."BA Single Price Currency";
+        SalesPrice.SetRange("Item No.", SalesLine."No.");
+        SalesPrice.SetRange("Currency Code", CurrencyCode);
+        SalesPrice.SetAscending("Starting Date", true);
+        if not SalesPrice.FindLast() then
+            exit;
+        TempSalesPrice := SalesPrice;
+        if SalesLine."Document Type" <> SalesLine."Document Type"::Quote then
+            exit;
+        if (SalesLine."Currency Code" <> CurrencyCode) then begin
+            ExchangeRate.SetRange("Currency Code", CurrencyCode);
+            if ExchangeRate.FindLast() then begin
+                TempSalesPrice."Unit Price" *= ExchangeRate."Relational Exch. Rate Amount";
+                RateValue := ExchangeRate."Relational Exch. Rate Amount";
+            end;
+        end else
+            RateValue := 1;
+        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
+        SalesHeader."BA Quote Exch. Rate" := RateValue;
+        SalesHeader.Modify(true);
+    end;
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
