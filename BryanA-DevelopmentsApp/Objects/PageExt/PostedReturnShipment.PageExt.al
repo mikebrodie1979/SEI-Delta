@@ -22,6 +22,7 @@ pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Pay-to Country/Region Code")
@@ -36,6 +37,7 @@ pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -50,6 +52,7 @@ pageextension 80042 "BA Post. Purch. Shpt." extends "Posted Return Shipment"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

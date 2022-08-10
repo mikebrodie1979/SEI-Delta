@@ -14,6 +14,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Bill-to Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

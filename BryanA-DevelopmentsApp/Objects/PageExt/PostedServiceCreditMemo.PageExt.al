@@ -14,6 +14,7 @@ pageextension 80064 "BA Posted Service Cr.Memo" extends "Posted Service Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80064 "BA Posted Service Cr.Memo" extends "Posted Service Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80064 "BA Posted Service Cr.Memo" extends "Posted Service Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

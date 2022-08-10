@@ -14,6 +14,7 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Pay-to Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

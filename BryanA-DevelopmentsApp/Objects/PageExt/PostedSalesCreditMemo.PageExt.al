@@ -14,6 +14,7 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Bill-to Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
 
@@ -43,6 +45,7 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }
