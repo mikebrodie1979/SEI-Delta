@@ -662,6 +662,7 @@ codeunit 75010 "BA SEI Subscibers"
         GLSetup: Record "General Ledger Setup";
         ExchangeRate: Record "Currency Exchange Rate";
         CurrencyCode: Code[10];
+        EndDate: Date;
         RateValue: Decimal;
     begin
         if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
@@ -669,27 +670,40 @@ codeunit 75010 "BA SEI Subscibers"
         SalesRecSetup.TestField("BA Single Price Currency");
         if not FoundSalesPrice then
             exit;
+        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
+        if SalesHeader."Document Type" = SalesHeader."Document Type"::Quote then
+            EndDate := SalesHeader."Order Date"
+        else
+            EndDate := SalesHeader."Posting Date";
         GLSetup.Get();
         GLSetup.TestField("LCY Code");
         if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
             CurrencyCode := SalesRecSetup."BA Single Price Currency";
         SalesPrice.SetRange("Item No.", SalesLine."No.");
         SalesPrice.SetRange("Currency Code", CurrencyCode);
+        SalesPrice.SetRange("Starting Date", 0D, EndDate);
         SalesPrice.SetAscending("Starting Date", true);
-        if not SalesPrice.FindLast() then
+        if not SalesPrice.FindLast() then begin
+            FoundSalesPrice := false;
             exit;
+        end;
         TempSalesPrice := SalesPrice;
         if SalesLine."Document Type" <> SalesLine."Document Type"::Quote then
             exit;
-        if (SalesLine."Currency Code" <> CurrencyCode) then begin
-            ExchangeRate.SetRange("Currency Code", CurrencyCode);
-            if ExchangeRate.FindLast() then begin
-                TempSalesPrice."Unit Price" *= ExchangeRate."Relational Exch. Rate Amount";
-                RateValue := ExchangeRate."Relational Exch. Rate Amount";
+        if (SalesLine."Currency Code" <> CurrencyCode) or SalesHeader."BA Use Manual Exch. Rate" then begin
+            if not SalesHeader."BA Use Manual Exch. Rate" then begin
+                ExchangeRate.SetRange("Currency Code", CurrencyCode);
+                ExchangeRate.SetRange("Starting Date", 0D, EndDate);
+                if ExchangeRate.FindLast() then begin
+                    TempSalesPrice."Unit Price" *= ExchangeRate."Relational Exch. Rate Amount";
+                    RateValue := ExchangeRate."Relational Exch. Rate Amount";
+                end;
+            end else begin
+                RateValue := SalesHeader."BA Manual Exch. Rate";
+                TempSalesPrice."Unit Price" *= RateValue;
             end;
         end else
             RateValue := 1;
-        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
         SalesHeader."BA Quote Exch. Rate" := RateValue;
         SalesHeader.Modify(true);
     end;
