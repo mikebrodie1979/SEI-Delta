@@ -662,7 +662,6 @@ codeunit 75010 "BA SEI Subscibers"
         GLSetup: Record "General Ledger Setup";
         ExchangeRate: Record "Currency Exchange Rate";
         CurrencyCode: Code[10];
-        EndDate: Date;
         RateValue: Decimal;
     begin
         if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
@@ -670,18 +669,13 @@ codeunit 75010 "BA SEI Subscibers"
         SalesRecSetup.TestField("BA Single Price Currency");
         if not FoundSalesPrice then
             exit;
-        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
-        if SalesHeader."Document Type" = SalesHeader."Document Type"::Quote then
-            EndDate := SalesHeader."Order Date"
-        else
-            EndDate := SalesHeader."Posting Date";
         GLSetup.Get();
         GLSetup.TestField("LCY Code");
         if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
             CurrencyCode := SalesRecSetup."BA Single Price Currency";
         SalesPrice.SetRange("Item No.", SalesLine."No.");
         SalesPrice.SetRange("Currency Code", CurrencyCode);
-        SalesPrice.SetRange("Starting Date", 0D, EndDate);
+        SalesPrice.SetRange("Starting Date", 0D, WorkDate());
         SalesPrice.SetAscending("Starting Date", true);
         if not SalesPrice.FindLast() then begin
             FoundSalesPrice := false;
@@ -690,22 +684,46 @@ codeunit 75010 "BA SEI Subscibers"
         TempSalesPrice := SalesPrice;
         if not (SalesLine."Document Type" in [SalesLine."Document Type"::Quote, SalesLine."Document Type"::Order]) then
             exit;
-        if (SalesLine."Currency Code" <> CurrencyCode) or SalesHeader."BA Use Manual Exch. Rate" then begin
-            if not SalesHeader."BA Use Manual Exch. Rate" then begin
-                ExchangeRate.SetRange("Currency Code", CurrencyCode);
-                ExchangeRate.SetRange("Starting Date", 0D, EndDate);
-                if ExchangeRate.FindLast() then begin
-                    TempSalesPrice."Unit Price" *= ExchangeRate."Relational Exch. Rate Amount";
-                    RateValue := ExchangeRate."Relational Exch. Rate Amount";
-                end;
-            end else begin
-                RateValue := SalesHeader."BA Manual Exch. Rate";
-                TempSalesPrice."Unit Price" *= RateValue;
-            end;
+        if (SalesLine."Currency Code" <> CurrencyCode) and GetExchangeRate(ExchangeRate, CurrencyCode) then begin
+            GLSetup.TestField("Amount Rounding Precision");
+            TempSalesPrice."Unit Price" := Round(TempSalesPrice."Unit Price" * ExchangeRate."Relational Exch. Rate Amount",
+                GLSetup."Amount Rounding Precision");
+            RateValue := Round(ExchangeRate."Relational Exch. Rate Amount", GLSetup."Amount Rounding Precision");
         end else
             RateValue := 1;
+        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
         SalesHeader."BA Quote Exch. Rate" := RateValue;
         SalesHeader.Modify(true);
+    end;
+
+
+    local procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
+    begin
+        ExchangeRate.SetRange("Currency Code", CurrencyCode);
+        ExchangeRate.SetRange("Starting Date", 0D, WorkDate());
+        exit(ExchangeRate.FindLast());
+    end;
+
+    procedure UpdateSalesPrice(var SalesHeader: Record "Sales Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        SalesLine: Record "Sales Line";
+        ExchangeRate: Record "Currency Exchange Rate";
+        SalesPriceCalcMgt: Codeunit "Sales Price Calc. Mgt.";
+    begin
+        SalesRecSetup.Get();
+        SalesRecSetup.TestField("BA Use Single Currency Pricing", true);
+        SalesRecSetup.TestField("BA Single Price Currency");
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
+        if not SalesLine.FindSet(true) then
+            exit;
+        repeat
+            SalesPriceCalcMgt.FindSalesLinePrice(SalesHeader, SalesLine, 0);
+            SalesLine.Modify(true);
+        until SalesLine.Next() = 0;
+        SalesHeader.Get(SalesHeader.RecordId());
     end;
 
 

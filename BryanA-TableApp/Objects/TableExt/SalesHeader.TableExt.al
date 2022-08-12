@@ -27,17 +27,5 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             Caption = 'Exchange Rate';
             Editable = false;
         }
-        field(80021; "BA Use Manual Exch. Rate"; Boolean)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Use Manual Exchange Rate';
-            Editable = false;
-        }
-        field(80022; "BA Manual Exch. Rate"; Decimal)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Manual Exchange Rate';
-            Editable = false;
-        }
     }
 }
