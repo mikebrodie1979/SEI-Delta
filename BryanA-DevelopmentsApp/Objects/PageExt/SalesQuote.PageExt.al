@@ -50,10 +50,9 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
 
                 trigger OnAction()
                 var
-                    UpdateExchangeRate: Report "BA Update Exchange Rate";
+                    Subscribers: Codeunit "BA SEI Subscibers";
                 begin
-                    UpdateExchangeRate.SetSource(Rec.RecordId());
-                    UpdateExchangeRate.RunModal();
+                    Subscribers.UpdateSalesPrice(Rec);
                 end;
             }
         }
