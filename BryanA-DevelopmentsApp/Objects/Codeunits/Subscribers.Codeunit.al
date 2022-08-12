@@ -724,6 +724,7 @@ codeunit 75010 "BA SEI Subscibers"
             SalesLine.Modify(true);
         until SalesLine.Next() = 0;
         SalesHeader.Get(SalesHeader.RecordId());
+        Message('Updated exchange to %1.', SalesHeader."BA Quote Exch. Rate");
     end;
 
 
