@@ -24,6 +24,11 @@ pageextension 80076 "BA Sales Quote Subpage" extends "Sales Quote Subform"
             ExchageRate := SalesHeader."BA Quote Exch. Rate";
     end;
 
+    procedure SetExchangeRate(NewExchangeRate: Decimal)
+    begin
+        ExchageRate := NewExchangeRate;
+    end;
+
     var
         ExchageRate: Decimal;
 }

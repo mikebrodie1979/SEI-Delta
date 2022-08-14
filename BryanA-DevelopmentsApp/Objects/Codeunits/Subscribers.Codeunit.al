@@ -653,6 +653,25 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindSalesPrice(var FromSalesPrice: Record "Sales Price"; var ToSalesPrice: Record "Sales Price"; ItemNo: Code[20])
+    var
+        NewestDate: Date;
+    begin
+        if (ItemNo = '') or not ToSalesPrice.FindSet() then
+            exit;
+        NewestDate := ToSalesPrice."Starting Date";
+        repeat
+            if ToSalesPrice."Starting Date" > NewestDate then
+                NewestDate := ToSalesPrice."Starting Date";
+        until ToSalesPrice.Next() = 0;
+        ToSalesPrice.SetFilter("Starting Date", '<>%1', NewestDate);
+        ToSalesPrice.DeleteAll(false);
+        ToSalesPrice.SetRange("Starting Date");
+    end;
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
     local procedure SalesLineOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
     var
@@ -697,7 +716,7 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    local procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
+    procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
     begin
         ExchangeRate.SetRange("Currency Code", CurrencyCode);
         ExchangeRate.SetRange("Starting Date", 0D, WorkDate());
@@ -726,6 +745,8 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader.Get(SalesHeader.RecordId());
         Message('Updated exchange to %1.', SalesHeader."BA Quote Exch. Rate");
     end;
+
+
 
 
     var
