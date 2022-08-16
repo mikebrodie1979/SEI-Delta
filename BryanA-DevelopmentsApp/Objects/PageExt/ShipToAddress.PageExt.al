@@ -27,6 +27,20 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             ApplicationArea = all;
             Caption = 'Country';
         }
+        modify("Shipping Agent Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Editable = false;
+            Enabled = false;
+        }
+        modify("Shipment Method Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Editable = false;
+            Enabled = false;
+        }
         modify("Shipping Agent Service Code")
         {
             ApplicationArea = all;
