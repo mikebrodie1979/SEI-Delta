@@ -17,5 +17,10 @@ tableextension 80024 "BA User Setup" extends "User Setup"
             DataClassification = CustomerContent;
             Caption = 'Allow Changing Regions';
         }
+        field(80003; "BA Allow Changing Countries"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Allow Changing Countries';
+        }
     }
 }
