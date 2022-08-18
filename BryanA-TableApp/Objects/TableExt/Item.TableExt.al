@@ -21,7 +21,7 @@ tableextension 80012 "BA Item" extends Item
             Editable = false;
             Caption = 'Last USD Purchase Cost';
         }
-        Field(80002; "BA Qty. on Closed Sales Quote"; Decimal)
+        field(80002; "BA Qty. on Closed Sales Quote"; Decimal)
         {
             Caption = 'Qty. on Archived Sales Quote';
             FieldClass = FlowField;
@@ -33,6 +33,11 @@ tableextension 80012 "BA Item" extends Item
                 "Shipment Date" = Field ("Date Filter"), "BA Stage" = Filter (Archive | "Closed/Lost" | "Closed/Other")));
             AccessByPermission = TableData "Sales Shipment Header" = R;
             DecimalPlaces = 0 : 5;
+        }
+        field(80010; "BA ETL Approved Fabric"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'ETL Approved Fabric';
         }
     }
 
