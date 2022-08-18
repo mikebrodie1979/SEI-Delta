@@ -501,6 +501,102 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindSalesPrice(var FromSalesPrice: Record "Sales Price"; var ToSalesPrice: Record "Sales Price"; ItemNo: Code[20])
+    var
+        NewestDate: Date;
+    begin
+        if (ItemNo = '') or not ToSalesPrice.FindSet() then
+            exit;
+        NewestDate := ToSalesPrice."Starting Date";
+        repeat
+            if ToSalesPrice."Starting Date" > NewestDate then
+                NewestDate := ToSalesPrice."Starting Date";
+        until ToSalesPrice.Next() = 0;
+        ToSalesPrice.SetFilter("Starting Date", '<>%1', NewestDate);
+        ToSalesPrice.DeleteAll(false);
+        ToSalesPrice.SetRange("Starting Date");
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesPrice: Record "Sales Price";
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        GLSetup: Record "General Ledger Setup";
+        ExchangeRate: Record "Currency Exchange Rate";
+        CurrencyCode: Code[10];
+        RateValue: Decimal;
+    begin
+        if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
+            exit;
+        SalesRecSetup.TestField("BA Single Price Currency");
+        if not FoundSalesPrice then
+            exit;
+        GLSetup.Get();
+        GLSetup.TestField("LCY Code");
+        if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
+            CurrencyCode := SalesRecSetup."BA Single Price Currency";
+        SalesPrice.SetRange("Item No.", SalesLine."No.");
+        SalesPrice.SetRange("Currency Code", CurrencyCode);
+        SalesPrice.SetRange("Starting Date", 0D, WorkDate());
+        SalesPrice.SetAscending("Starting Date", true);
+        if not SalesPrice.FindLast() then begin
+            FoundSalesPrice := false;
+            exit;
+        end;
+        TempSalesPrice := SalesPrice;
+        if not (SalesLine."Document Type" in [SalesLine."Document Type"::Quote, SalesLine."Document Type"::Order]) then
+            exit;
+        if (SalesLine."Currency Code" <> CurrencyCode) and GetExchangeRate(ExchangeRate, CurrencyCode) then begin
+            GLSetup.TestField("Amount Rounding Precision");
+            TempSalesPrice."Unit Price" := Round(TempSalesPrice."Unit Price" * ExchangeRate."Relational Exch. Rate Amount",
+                GLSetup."Amount Rounding Precision");
+            RateValue := Round(ExchangeRate."Relational Exch. Rate Amount", GLSetup."Amount Rounding Precision");
+        end else
+            RateValue := 1;
+        SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.");
+        SalesHeader."BA Quote Exch. Rate" := RateValue;
+        SalesHeader.Modify(true);
+    end;
+
+
+    procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
+    begin
+        ExchangeRate.SetRange("Currency Code", CurrencyCode);
+        ExchangeRate.SetRange("Starting Date", 0D, WorkDate());
+        exit(ExchangeRate.FindLast());
+    end;
+
+    procedure UpdateSalesPrice(var SalesHeader: Record "Sales Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        SalesLine: Record "Sales Line";
+        ExchangeRate: Record "Currency Exchange Rate";
+        SalesPriceCalcMgt: Codeunit "Sales Price Calc. Mgt.";
+    begin
+        SalesRecSetup.Get();
+        SalesRecSetup.TestField("BA Use Single Currency Pricing", true);
+        SalesRecSetup.TestField("BA Single Price Currency");
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
+        if not SalesLine.FindSet(true) then
+            exit;
+        repeat
+            SalesPriceCalcMgt.FindSalesLinePrice(SalesHeader, SalesLine, 0);
+            SalesLine.Modify(true);
+        until SalesLine.Next() = 0;
+        SalesHeader.Get(SalesHeader.RecordId());
+        Message('Updated exchange to %1.', SalesHeader."BA Quote Exch. Rate");
+    end;
+
+
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
