@@ -1,30 +1,30 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80059 "BA Purch. Ret. Order" extends "Purchase Return Order"
 {
-    actions
+    layout
     {
-        modify("Bill-to Country/Region Code")
+        modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addbefore("Bill-to Name")
+        addfirst("Buy-from")
         {
-            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
+            field("BA Buy-from Country/Region Code"; "Buy-from Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
             }
         }
-        modify("Country/Region Code")
+        modify("Pay-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addfirst("Sell-to")
+        addbefore("Pay-to Name")
         {
-            field("BA Country/Region Code"; "Country/Region Code")
+            field("BA Pay-to Country/Region Code"; "Pay-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';

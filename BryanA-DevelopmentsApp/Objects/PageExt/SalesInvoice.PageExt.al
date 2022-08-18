@@ -1,6 +1,6 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80073 "BA Sales Invoice" extends "Sales Invoice"
 {
-    actions
+    layout
     {
         modify("Bill-to Country/Region Code")
         {
@@ -8,7 +8,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             Visible = false;
             Enabled = false;
         }
-        addbefore("Bill-to Name")
+        addafter(BillToOptions)
         {
             field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
             {
@@ -16,7 +16,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
                 Caption = 'Country';
             }
         }
-        modify("Country/Region Code")
+        modify("Sell-to Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
@@ -24,7 +24,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         }
         addfirst("Sell-to")
         {
-            field("BA Country/Region Code"; "Country/Region Code")
+            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';

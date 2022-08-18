@@ -1,38 +1,48 @@
-pageextension 80025 "BA Sales Order" extends "Sales Order"
+pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
 {
     layout
     {
-        modify("Due Date")
+        addafter("Document Date")
         {
-            ApplicationArea = all;
-            Visible = false;
-        }
-        modify("Bill-to Country/Region Code")
-        {
-            ApplicationArea = all;
-            Visible = false;
-            Enabled = false;
-        }
-        addfirst(Control82)
-        {
-            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
+            field("Expected Receipt Date2"; Rec."Expected Receipt Date")
             {
                 ApplicationArea = all;
-                Caption = 'Country';
+                Editable = false;
             }
         }
-        modify("Sell-to Country/Region Code")
+        modify("Expected Receipt Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
         }
-        addfirst("Sell-to")
+        addfirst("Buy-from")
         {
-            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
+            field("BA Buy-from Country/Region Code"; "Buy-from Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
+            }
+        }
+        modify("Pay-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+        }
+        addfirst("Pay-to")
+        {
+            field("BA Pay-to Country/Region Code"; "Pay-to Country/Region Code")
+            {
+                ApplicationArea = all;
+                Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -41,19 +51,13 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
             Visible = false;
             Enabled = false;
         }
-        addfirst(Control4)
+        addfirst("Ship-to")
         {
             field("BA Ship-to Country/Region Code"; "Ship-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
-            }
-        }
-        addafter("Payment Method Code")
-        {
-            field("Due Date2"; Rec."Due Date")
-            {
-                ApplicationArea = all;
+                Editable = false;
             }
         }
     }

@@ -1,6 +1,6 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
 {
-    actions
+    layout
     {
         modify("Bill-to Country/Region Code")
         {
@@ -14,6 +14,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Country/Region Code")
@@ -28,6 +29,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

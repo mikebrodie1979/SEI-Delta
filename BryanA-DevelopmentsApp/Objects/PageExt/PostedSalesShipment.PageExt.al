@@ -1,7 +1,22 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80070 "BA Posted Sales Shpt." extends "Posted Sales Shipment"
 {
-    actions
+    layout
     {
+        modify("Sell-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+        }
+        addfirst("Sell-to")
+        {
+            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
+            {
+                ApplicationArea = all;
+                Caption = 'Country';
+                Editable = false;
+            }
+        }
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
@@ -14,20 +29,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
-            }
-        }
-        modify("Country/Region Code")
-        {
-            ApplicationArea = all;
-            Visible = false;
-            Enabled = false;
-        }
-        addfirst("Sell-to")
-        {
-            field("BA Country/Region Code"; "Country/Region Code")
-            {
-                ApplicationArea = all;
-                Caption = 'Country';
+                Editable = false;
             }
         }
         modify("Ship-to Country/Region Code")
@@ -42,6 +44,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }

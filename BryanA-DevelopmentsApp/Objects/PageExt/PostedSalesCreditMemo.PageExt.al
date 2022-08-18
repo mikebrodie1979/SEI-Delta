@@ -1,7 +1,22 @@
-pageextension 80050 "BA Service Order" extends "Service Order"
+pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
 {
-    actions
+    layout
     {
+        modify("Sell-to Country/Region Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+        }
+        addfirst("Sell-to")
+        {
+            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
+            {
+                ApplicationArea = all;
+                Caption = 'Country';
+                Editable = false;
+            }
+        }
         modify("Bill-to Country/Region Code")
         {
             ApplicationArea = all;
@@ -14,22 +29,10 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
-        modify("Country/Region Code")
-        {
-            ApplicationArea = all;
-            Visible = false;
-            Enabled = false;
-        }
-        addfirst("Sell-to")
-        {
-            field("BA Country/Region Code"; "Country/Region Code")
-            {
-                ApplicationArea = all;
-                Caption = 'Country';
-            }
-        }
+
         modify("Ship-to Country/Region Code")
         {
             ApplicationArea = all;
@@ -42,6 +45,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
                 Caption = 'Country';
+                Editable = false;
             }
         }
     }
