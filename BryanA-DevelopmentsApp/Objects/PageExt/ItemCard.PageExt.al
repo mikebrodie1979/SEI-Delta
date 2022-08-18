@@ -34,6 +34,8 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             field("ENC Fabric Brand Name"; "ENC Fabric Brand Name")
             {
                 ApplicationArea = all;
+            }
+        }
         addlast(Item)
         {
             group("Dimensions")
