@@ -1,4 +1,4 @@
-table 50009 "BA Province/State"
+table 75010 "BA Province/State"
 {
     DataClassification = CustomerContent;
 

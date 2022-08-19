@@ -44,5 +44,26 @@ pageextension 80050 "BA Service Order" extends "Service Order"
                 Caption = 'Country';
             }
         }
+        addlast(General)
+        {
+            field("BA Quote Exch. Rate"; "BA Quote Exch. Rate")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    var
+        ExchangeRate: Record "Currency Exchange Rate";
+        ServiceMgtSetup: Record "Service Mgt. Setup";
+        Subscribers: Codeunit "BA SEI Subscibers";
+    begin
+        ServiceMgtSetup.Get();
+        if not ServiceMgtSetup."BA Use Single Currency Pricing" then
+            exit;
+        ServiceMgtSetup.TestField("BA Single Price Currency");
+        if Subscribers.GetExchangeRate(ExchangeRate, ServiceMgtSetup."BA Single Price Currency") then
+            Rec."BA Quote Exch. Rate" := ExchangeRate."Relational Exch. Rate Amount";
+    end;
 }
