@@ -476,10 +476,6 @@ codeunit 75010 "BA SEI Subscibers"
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
     begin
-
-        // if not Confirm('dim value validated') then
-        //     Error('');
-
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
             exit;
@@ -559,6 +555,8 @@ codeunit 75010 "BA SEI Subscibers"
         ToSalesPrice.SetRange("Starting Date");
     end;
 
+
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
     local procedure SalesLineOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
     var
@@ -603,6 +601,52 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindServLiveItemPrice', '', false, false)]
+    local procedure SalesLineOnAfterFindServLiveItemPrice(var ServiceLine: Record "Service Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
+    var
+        ServiceHeader: Record "Service Header";
+        SalesPrice: Record "Sales Price";
+        ServiceSetup: Record "Service Mgt. Setup";
+        GLSetup: Record "General Ledger Setup";
+        ExchangeRate: Record "Currency Exchange Rate";
+        CurrencyCode: Code[10];
+        RateValue: Decimal;
+    begin
+        if not ServiceSetup.Get() or not ServiceSetup."BA Use Single Currency Pricing" then
+            exit;
+        ServiceSetup.TestField("BA Single Price Currency");
+        if not FoundSalesPrice then
+            exit;
+        GLSetup.Get();
+        GLSetup.TestField("LCY Code");
+        if ServiceSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
+            CurrencyCode := ServiceSetup."BA Single Price Currency";
+        SalesPrice.SetRange("Item No.", ServiceLine."No.");
+        SalesPrice.SetRange("Currency Code", CurrencyCode);
+        SalesPrice.SetRange("Starting Date", 0D, WorkDate());
+        SalesPrice.SetAscending("Starting Date", true);
+        if not SalesPrice.FindLast() then begin
+            FoundSalesPrice := false;
+            exit;
+        end;
+        TempSalesPrice := SalesPrice;
+        if not (ServiceLine."Document Type" in [ServiceLine."Document Type"::Quote, ServiceLine."Document Type"::Order]) then
+            exit;
+        if (ServiceLine."Currency Code" <> CurrencyCode) and GetExchangeRate(ExchangeRate, CurrencyCode) then begin
+            GLSetup.TestField("Amount Rounding Precision");
+            TempSalesPrice."Unit Price" := Round(TempSalesPrice."Unit Price" * ExchangeRate."Relational Exch. Rate Amount",
+                GLSetup."Amount Rounding Precision");
+            RateValue := Round(ExchangeRate."Relational Exch. Rate Amount", GLSetup."Amount Rounding Precision");
+        end else
+            RateValue := 1;
+        ServiceHeader.Get(ServiceLine."Document Type", ServiceLine."Document No.");
+        ServiceHeader."BA Quote Exch. Rate" := RateValue;
+        ServiceHeader.Modify(true);
+    end;
+
+
     procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
     begin
         ExchangeRate.SetRange("Currency Code", CurrencyCode);
@@ -630,7 +674,31 @@ codeunit 75010 "BA SEI Subscibers"
             SalesLine.Modify(true);
         until SalesLine.Next() = 0;
         SalesHeader.Get(SalesHeader.RecordId());
-        Message('Updated exchange to %1.', SalesHeader."BA Quote Exch. Rate");
+        Message(ExchageRateUpdateMsg, SalesHeader."BA Quote Exch. Rate");
+    end;
+
+
+    procedure UpdateServicePrice(var ServiceHeader: Record "Service Header")
+    var
+        ServiceMgtSetup: Record "Service Mgt. Setup";
+        ServiceLine: Record "Service Line";
+        ExchangeRate: Record "Currency Exchange Rate";
+        SalesPriceCalcMgt: Codeunit "Sales Price Calc. Mgt.";
+    begin
+        ServiceMgtSetup.Get();
+        ServiceMgtSetup.TestField("BA Use Single Currency Pricing", true);
+        ServiceMgtSetup.TestField("BA Single Price Currency");
+        ServiceLine.SetRange("Document Type", ServiceHeader."Document Type");
+        ServiceLine.SetRange("Document No.", ServiceHeader."No.");
+        ServiceLine.SetRange(Type, ServiceLine.Type::Item);
+        if not ServiceLine.FindSet(true) then
+            exit;
+        repeat
+            SalesPriceCalcMgt.FindServLinePrice(ServiceHeader, ServiceLine, 0);
+            ServiceLine.Modify(true);
+        until ServiceLine.Next() = 0;
+        ServiceHeader.Get(ServiceHeader.RecordId());
+        Message(ExchageRateUpdateMsg, ServiceHeader."BA Quote Exch. Rate");
     end;
 
 
@@ -643,4 +711,5 @@ codeunit 75010 "BA SEI Subscibers"
         NonNumeralError: Label 'Non-numeric character: %1.';
         TooLongSuffixError: Label 'Numeral suffix length is greater than 7.';
         TooShortSuffixError: Label 'Numeral suffix length is less than 7.';
+        ExchageRateUpdateMsg: Label 'Updated exchange rate to %1.';
 }
