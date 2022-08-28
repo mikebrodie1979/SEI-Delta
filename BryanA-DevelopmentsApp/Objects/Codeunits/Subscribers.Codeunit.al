@@ -684,8 +684,10 @@ codeunit 75010 "BA SEI Subscibers"
         if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
             exit;
         SalesRecSetup.TestField("BA Single Price Currency");
-        if not FoundSalesPrice then
+        if not FoundSalesPrice then begin
+            TempSalesPrice."Unit Price" := SalesLine."Unit Price";
             exit;
+        end;
         GLSetup.Get();
         GLSetup.TestField("LCY Code");
         if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
@@ -714,50 +716,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-
-
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindServLiveItemPrice', '', false, false)]
-    local procedure SalesLineOnAfterFindServLiveItemPrice(var ServiceLine: Record "Service Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
-    var
-        ServiceHeader: Record "Service Header";
-        SalesPrice: Record "Sales Price";
-        ServiceSetup: Record "Service Mgt. Setup";
-        GLSetup: Record "General Ledger Setup";
-        ExchangeRate: Record "Currency Exchange Rate";
-        CurrencyCode: Code[10];
-        RateValue: Decimal;
-    begin
-        if not ServiceSetup.Get() or not ServiceSetup."BA Use Single Currency Pricing" then
-            exit;
-        ServiceSetup.TestField("BA Single Price Currency");
-        if not FoundSalesPrice then
-            exit;
-        GLSetup.Get();
-        GLSetup.TestField("LCY Code");
-        if ServiceSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
-            CurrencyCode := ServiceSetup."BA Single Price Currency";
-        SalesPrice.SetRange("Item No.", ServiceLine."No.");
-        SalesPrice.SetRange("Currency Code", CurrencyCode);
-        SalesPrice.SetRange("Starting Date", 0D, WorkDate());
-        SalesPrice.SetAscending("Starting Date", true);
-        if not SalesPrice.FindLast() then begin
-            FoundSalesPrice := false;
-            exit;
-        end;
-        TempSalesPrice := SalesPrice;
-        if not (ServiceLine."Document Type" in [ServiceLine."Document Type"::Quote, ServiceLine."Document Type"::Order]) then
-            exit;
-        if (ServiceLine."Currency Code" <> CurrencyCode) and GetExchangeRate(ExchangeRate, CurrencyCode) then begin
-            GLSetup.TestField("Amount Rounding Precision");
-            TempSalesPrice."Unit Price" := Round(TempSalesPrice."Unit Price" * ExchangeRate."Relational Exch. Rate Amount",
-                GLSetup."Amount Rounding Precision");
-            RateValue := Round(ExchangeRate."Relational Exch. Rate Amount", GLSetup."Amount Rounding Precision");
-        end else
-            RateValue := 1;
-        ServiceHeader.Get(ServiceLine."Document Type", ServiceLine."Document No.");
-        ServiceHeader."BA Quote Exch. Rate" := RateValue;
-        ServiceHeader.Modify(true);
-    end;
 
 
     procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
