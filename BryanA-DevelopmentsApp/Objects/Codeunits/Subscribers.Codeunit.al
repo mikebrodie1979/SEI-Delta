@@ -573,8 +573,10 @@ codeunit 75010 "BA SEI Subscibers"
         if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
             exit;
         SalesRecSetup.TestField("BA Single Price Currency");
-        if not FoundSalesPrice then
+        if not FoundSalesPrice then begin
+            TempSalesPrice."Unit Price" := SalesLine."Unit Price";
             exit;
+        end;
         GLSetup.Get();
         GLSetup.TestField("LCY Code");
         if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
@@ -601,6 +603,8 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader."BA Quote Exch. Rate" := RateValue;
         SalesHeader.Modify(true);
     end;
+
+
 
 
     procedure GetExchangeRate(var ExchangeRate: Record "Currency Exchange Rate"; CurrencyCode: Code[10]): Boolean
