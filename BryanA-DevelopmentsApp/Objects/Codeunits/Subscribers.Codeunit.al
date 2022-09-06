@@ -767,6 +767,7 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         repeat
             SalesPriceCalcMgt.FindServLinePrice(ServiceHeader, ServiceLine, 0);
+            ServiceLine.UpdateUnitPrice(0);
             ServiceLine.Modify(true);
         until ServiceLine.Next() = 0;
         ServiceHeader.Get(ServiceHeader.RecordId());
