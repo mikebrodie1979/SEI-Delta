@@ -30,5 +30,33 @@ pageextension 80053 "BA Sales Credit Memo" extends "Sales Credit Memo"
                 Caption = 'Country';
             }
         }
+        addafter("Sell-to County")
+        {
+            field("BA Sell-to County Fullname"; "BA Sell-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Sell-to County")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA Sell-to County Fullname");
+            end;
+        }
+        addafter("Bill-to County")
+        {
+            field("BA Bill-to County Fullname"; "BA Bill-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Bill-to County")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA Bill-to County Fullname");
+            end;
+        }
     }
 }
