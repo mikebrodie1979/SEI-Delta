@@ -84,6 +84,29 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 }
             }
         }
+        modify("Vendor No.")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+        }
+        modify("Vendor Item No.")
+        {
+            ApplicationArea = all;
+            Visible = false;
+            Enabled = false;
+        }
+        addafter("Vendor Item No.")
+        {
+            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Default Vendor No."; "BA Default Vendor No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetRecord()

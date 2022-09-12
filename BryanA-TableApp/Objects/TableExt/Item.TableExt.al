@@ -39,6 +39,34 @@ tableextension 80012 "BA Item" extends Item
             DataClassification = CustomerContent;
             Caption = 'ETL Approved Fabric';
         }
+        field(80020; "BA Default Vendor No."; Code[30])
+        {
+            Caption = 'Default Vendor No.';
+            FieldClass = FlowField;
+            CalcFormula = lookup ("Item Cross Reference"."Cross-Reference Type No." where ("Item No." = field ("No."), "Cross-Reference Type" = const (Vendor), "Cross-Reference No." = field ("BA Default Cross-Ref. No.")));
+        }
+        field(80021; "BA Default Cross-Ref. No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Default Cross-Ref. No.';
+            TableRelation = "Item Cross Reference"."Cross-Reference No." where ("Item No." = field ("No."), "Cross-Reference Type" = const (Vendor));
+            trigger OnValidate()
+            var
+                ItemCrossRef: Record "Item Cross Reference";
+            begin
+                CalcFields("BA Default Vendor No.");
+                ItemCrossRef.SetRange("Item No.", Rec."No.");
+                ItemCrossRef.ModifyAll("BA Default Cross Refernce No.", false, false);
+                if Rec."BA Default Cross-Ref. No." = '' then
+                    exit;
+                ItemCrossRef.SetRange("Cross-Reference No.", Rec."BA Default Cross-Ref. No.");
+                ItemCrossRef.SetRange("Cross-Reference Type", ItemCrossRef."Cross-Reference Type"::Vendor);
+                ItemCrossRef.SetRange("Cross-Reference Type No.", Rec."BA Default Vendor No.");
+                ItemCrossRef.FindFirst();
+                ItemCrossRef."BA Default Cross Refernce No." := true;
+                ItemCrossRef.Modify(true);
+            end;
+        }
     }
 
     procedure SetLastCurrencyPurchCost(CurrCode: Code[10]; LastPurchCost: Decimal)
