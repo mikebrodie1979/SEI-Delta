@@ -15,5 +15,19 @@ pageextension 80056 "BA Vendor Card" extends "Vendor Card"
                 Caption = 'Country';
             }
         }
+        addafter(County)
+        {
+            field("BA County Fullname"; "BA County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify(County)
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA County Fullname");
+            end;
+        }
     }
 }

@@ -47,5 +47,26 @@ pageextension 80070 "BA Posted Sales Shpt." extends "Posted Sales Shipment"
                 Editable = false;
             }
         }
+        addafter("Sell-to County")
+        {
+            field("BA Sell-to County Fullname"; "BA Sell-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addafter("Ship-to County")
+        {
+            field("BA Ship-to County Fullname"; "BA Ship-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addafter("Bill-to County")
+        {
+            field("BA Bill-to County Fullname"; "BA Bill-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

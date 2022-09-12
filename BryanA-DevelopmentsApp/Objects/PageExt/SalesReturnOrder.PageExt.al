@@ -44,5 +44,47 @@ pageextension 80054 "BA Sales Return Order" extends "Sales Return Order"
                 Caption = 'Country';
             }
         }
+        addafter("Sell-to County")
+        {
+            field("BA Sell-to County Fullname"; "BA Sell-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Sell-to County")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA Sell-to County Fullname");
+            end;
+        }
+        addafter("Ship-to County")
+        {
+            field("BA Ship-to County Fullname"; "BA Ship-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Ship-to County")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA Ship-to County Fullname");
+            end;
+        }
+        addafter("Bill-to County")
+        {
+            field("BA Bill-to County Fullname"; "BA Bill-to County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Bill-to County")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA Bill-to County Fullname");
+            end;
+        }
     }
 }
