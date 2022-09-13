@@ -1,4 +1,4 @@
-tableextension 80060 "BA Item Cross Ref." extends "Item Cross Reference"
+tableextension 80065 "BA Item Cross Ref." extends "Item Cross Reference"
 {
     fields
     {

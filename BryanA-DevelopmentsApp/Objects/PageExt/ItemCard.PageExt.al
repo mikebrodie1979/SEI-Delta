@@ -80,6 +80,10 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 ApplicationArea = all;
             }
             field("ENC Fabric Brand Name"; "ENC Fabric Brand Name")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Vendor No.")
         {
             ApplicationArea = all;
