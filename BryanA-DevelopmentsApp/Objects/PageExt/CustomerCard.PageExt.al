@@ -81,12 +81,26 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 Caption = 'Country';
             }
         }
+        addafter(County)
+        {
+            field("BA County Fullname"; "BA County Fullname")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Country/Region Code")
         {
             ApplicationArea = all;
             Visible = false;
             Enabled = false;
             Editable = false;
+        }
+        modify(County)
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec.CalcFields("BA County Fullname");
+            end;
         }
     }
 }
