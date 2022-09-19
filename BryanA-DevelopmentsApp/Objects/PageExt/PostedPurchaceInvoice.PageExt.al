@@ -60,5 +60,18 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
                 Editable = false;
             }
         }
+        addafter("Document Date")
+        {
+            field("Order Date"; "Order Date")
+            {
+                ApplicationArea = all;
+                Visible = true;
+            }
+            field("Received Date"; "Received Date")
+            {
+                ApplicationArea = all;
+                Visible = true;
+            }
+        }
     }
 }
