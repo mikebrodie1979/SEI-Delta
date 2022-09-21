@@ -735,6 +735,18 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+        if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
+            exit;
+        SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
+        if not SalesShptLine.IsEmpty() then begin
+            SalesShptLine.SetFilter(Quantity, '<>%1', 0);
+            if not SalesShptLine.IsEmpty() then
+                exit;
+        end;
+        SalesShipmentHeader."No. Printed" := -1;
+        SalesShipmentHeader.Delete(true);
+    end;
+
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
