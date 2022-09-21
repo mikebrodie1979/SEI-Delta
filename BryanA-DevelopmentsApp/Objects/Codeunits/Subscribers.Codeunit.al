@@ -735,6 +735,18 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
+    local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
+    begin
+        if SalesLine.Type = SalesLine.Type::"G/L Account" then
+            IsHandled := true;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
+    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
+    var
+        SalesShptLine: Record "Sales Shipment Line";
+    begin
         if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
             exit;
         SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
