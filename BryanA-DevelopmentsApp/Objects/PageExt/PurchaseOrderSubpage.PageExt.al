@@ -18,6 +18,29 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
             ApplicationArea = all;
             Visible = not "BA Requisition Order";
         }
+        modify("Cross-Reference No.")
+        {
+            ApplicationArea = all;
+            trigger OnLookup(var Text: Text): Boolean
+            var
+                PurchHeader: Record "Purchase Header";
+                ItemCrossRef: Record "Item Cross Reference";
+                CrossRefList: Page "Cross Reference List";
+            begin
+                if (Rec.Type <> Rec.Type::Item) or not PurchHeader.Get(Rec."Document Type", Rec."Document No.")
+                        or (PurchHeader."Buy-from Vendor No." = '') then
+                    exit;
+                ItemCrossRef.SetRange("Item No.", Rec."No.");
+                ItemCrossRef.SetRange("Cross-Reference Type", ItemCrossRef."Cross-Reference Type"::Vendor);
+                ItemCrossRef.SetRange("Cross-Reference Type No.", PurchHeader."Buy-from Vendor No.");
+                CrossRefList.LookupMode(true);
+                CrossRefList.SetTableView(ItemCrossRef);
+                if CrossRefList.RunModal() <> Action::LookupOK then
+                    exit;
+                CrossRefList.GetRecord(ItemCrossRef);
+                Rec.Validate("Cross-Reference No.", ItemCrossRef."Cross-Reference No.");
+            end;
+        }
         addafter(Quantity)
         {
             field("Direct Unit Cost2"; Rec."Direct Unit Cost")
