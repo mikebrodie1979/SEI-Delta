@@ -101,10 +101,35 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
             {
                 ApplicationArea = all;
+                Editable = false;
+
+                trigger OnDrillDown()
+                var
+                    ItemCrossRef: Record "Item Cross Reference";
+                    ItemCrossRefEntries: Page "Item Cross Reference Entries";
+                begin
+                    ItemCrossRef.FilterGroup(2);
+                    ItemCrossRef.SetRange("Item No.", Rec."No.");
+                    ItemCrossRefEntries.SetTableView(ItemCrossRef);
+                    ItemCrossRefEntries.RunModal();
+                    ItemCrossRef.FilterGroup(0);
+                    Rec.CalcFields("BA Default Cross-Ref. No.", "BA Default Vendor No.");
+                end;
             }
             field("BA Default Vendor No."; "BA Default Vendor No.")
             {
                 ApplicationArea = all;
+                Editable = false;
+
+                trigger OnDrillDown()
+                var
+                    Vendor: Record Vendor;
+                begin
+                    if Rec."BA Default Vendor No." = '' then
+                        exit;
+                    Vendor.SetRange("No.", Rec."BA Default Vendor No.");
+                    Page.RunModal(Page::"Vendor Card", Vendor);
+                end;
             }
         }
     }
