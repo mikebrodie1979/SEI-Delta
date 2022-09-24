@@ -39,6 +39,22 @@ tableextension 80012 "BA Item" extends Item
             DataClassification = CustomerContent;
             Caption = 'ETL Approved Fabric';
         }
+        field(80020; "BA Default Vendor No."; Code[30])
+        {
+            Caption = 'Default Vendor No.';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = lookup ("Item Cross Reference"."Cross-Reference Type No." where ("Item No." = field ("No."),
+                "Cross-Reference Type" = const (Vendor), "Cross-Reference No." = field ("BA Default Cross-Ref. No.")));
+        }
+        field(80021; "BA Default Cross-Ref. No."; Code[20])
+        {
+            Caption = 'Default Cross-Ref. No.';
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = lookup ("Item Cross Reference"."Cross-Reference No." where ("Item No." = field ("No."),
+                "Cross-Reference Type" = const (Vendor), "BA Default Cross Refernce No." = const (true)));
+        }
     }
 
     procedure SetLastCurrencyPurchCost(CurrCode: Code[10]; LastPurchCost: Decimal)
