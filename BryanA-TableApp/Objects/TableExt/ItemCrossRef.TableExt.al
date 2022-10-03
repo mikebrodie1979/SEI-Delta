@@ -1,4 +1,4 @@
-tableextension 80060 "BA Item Cross Ref." extends "Item Cross Reference"
+tableextension 80064 "BA Item Cross Ref." extends "Item Cross Reference"
 {
     fields
     {
@@ -13,7 +13,6 @@ tableextension 80060 "BA Item Cross Ref." extends "Item Cross Reference"
             else
             if ("Cross-Reference Type" = const (Vendor))
                 Vendor.Name where ("No." = field ("Cross-Reference Type No."));
-
         }
         field(80001; "BA Default Cross Refernce No."; Boolean)
         {
