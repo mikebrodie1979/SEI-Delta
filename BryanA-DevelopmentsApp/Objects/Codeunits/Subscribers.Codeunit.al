@@ -3,7 +3,8 @@ codeunit 75010 "BA SEI Subscibers"
     Permissions = tabledata "Return Shipment Header" = rimd,
                   tabledata "Purch. Rcpt. Header" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
-                  tabledata "Sales Shipment Header" = rimd;
+                  tabledata "Sales Shipment Header" = rimd,
+                  tabledata "Item Ledger Entry" = rimd;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -475,175 +476,6 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Default Dimension", 'OnAfterValidateEvent', 'Dimension Value Code', false, false)]
     local procedure DefaultDimOnAfterValidateDimValueCode(var Rec: Record "Default Dimension"; var xRec: Record "Default Dimension")
     var
-        Item: Record Item;
-        GLSetup: Record "General Ledger Setup";
-    begin
-        if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
-                or (Rec."No." = '') or not Item.Get(Rec."No.") then
-            exit;
-        GLSetup.Get();
-        case true of
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 1 Code":
-                Item."Global Dimension 1 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 2 Code":
-                Item."Global Dimension 2 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 3 Code":
-                Item."ENC Shortcut Dimension 3 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 4 Code":
-                Item."ENC Shortcut Dimension 4 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 5 Code":
-                Item."ENC Shortcut Dimension 5 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 6 Code":
-                Item."ENC Shortcut Dimension 6 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 7 Code":
-                Item."ENC Shortcut Dimension 7 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."Shortcut Dimension 8 Code":
-                Item."ENC Shortcut Dimension 8 Code" := Rec."Dimension Value Code";
-            Rec."Dimension Code" = GLSetup."ENC Product ID Dim. Code":
-                Item."ENC Product ID Code" := Rec."Dimension Value Code";
-            else
-                exit;
-        end;
-        Rec.Modify(true);
-    end;
-
-
-    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnShipmentMethodCodeLookup', '', false, false)]
-    local procedure ShipToAddressOnShipmentMethodLookup(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
-    begin
-        Rec.ShipmentMethodCodeLookup();
-    end;
-
-    [EventSubscriber(ObjectType::Table, Database::"Ship-to Address", 'OnAfterValidateEvent', 'Shipment Method Code', false, false)]
-    local procedure ShipToAddressValdiateShipmentMethodCode(var Rec: Record "Ship-to Address"; var xRec: Record "Ship-to Address")
-    var
-        ShipmentMethod: Record "Shipment Method";
-    begin
-        if (Rec."Shipment Method Code" <> xRec."Shipment Method Code") and (Rec."Shipment Method Code" <> '') then begin
-            ShipmentMethod.Get(Rec."Shipment Method Code");
-            ShipmentMethod.TestField("ENC Sales", true);
-        end;
-    end;
-
-
-
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterSalesShptHeaderInsert', '', false, false)]
-    // local procedure SalesPostOnAfterSalesShptHeaderInsert(var SalesShipmentHeader: Record "Sales Shipment Header"; SalesHeader: Record "Sales Header")
-    // var
-    //     SalesShptHdr: Record "Sales Shipment Header";
-    //     SalesShptLine: Record "Sales Shipment Line";
-    // begin
-    //     SalesShptHdr.SetFilter("No.", '<>%1', SalesShipmentHeader."No.");
-    //     SalesShptHdr.SetRange("Order No.", SalesHeader."No.");
-
-    //     if not Confirm(StrSubstNo('%1 -> %2', SalesShptHdr.GetFilters, SalesShptHdr.Count)) then
-    //         Error('');
-
-    //     if not SalesShptHdr.FindFirst() then
-    //         exit;
-    //     SalesShptLine.SetRange("Document No.", SalesShptHdr."No.");
-    //     SalesShptLine.SetRange(Type, SalesShptLine.Type::Item);
-    //     SalesShptLine.SetFilter(Quantity, '>%1', 0);
-
-    //     if not Confirm(StrSubstNo('%1 -> %2', SalesShptLine.GetFilters, SalesShptLine.Count)) then
-    //         Error('');
-
-    //     if SalesShptLine.FindFirst() then begin
-    //         SalesShptLine.SetRange(Type, SalesShptLine.Type::"G/L Account");
-    //         SalesShptLine.SetRange(Quantity, 0);
-
-    //         if not Confirm(StrSubstNo('%1 -> %2', SalesShptLine.GetFilters, SalesShptLine.Count)) then
-    //             Error('');
-
-    //         if not SalesShptLine.IsEmpty() then begin
-    //             SalesShipmentHeader."BA Original Doc. No." := SalesShipmentHeader."No.";
-    //             SalesShipmentHeader."No." := SalesShptHdr."No.";
-    //             SalesShipmentHeader."BA Merged Shpt. Lines" := true;
-    //             SalesShipmentHeader."BA Hide Merged Shpt. Lines" := true;
-    //             SalesShipmentHeader.Modify(false);
-    //         end;
-    //     end;
-    // end;
-
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnBeforeSalesShptLineInsert', '', false, false)]
-    // local procedure SalesPostOnBeforeSalesShptLineInsert(var SalesShptLine: Record "Sales Shipment Line"; SalesShptHeader: Record "Sales Shipment Header")
-    // var
-    //     SalesShptLine2: Record "Sales Shipment Line";
-    // begin
-    //     if not SalesShptHeader."BA Merged Shpt. Lines" then
-    //         exit;
-    //     SalesShptLine2.SetRange("Document No.", SalesShptHeader."No.");
-    //     if SalesShptLine2.FindLast() then
-    //         SalesShptLine."Line No." := SalesShptLine2."Line No." + 10000;
-    // end;
-
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterSalesShptLineInsert', '', false, false)]
-    // local procedure SalesPostOnAfterSalesShptLineInsert(var SalesShipmentLine: Record "Sales Shipment Line")
-    // begin
-    //     if SalesShipmentLine."BA Merged Shpt. Line" then
-    //         SalesShipmentLine.Delete(true);
-    // end;
-
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
-    // local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
-    // var
-    //     SalesShptLine: Record "Sales Shipment Line";
-    //     SalesShptLine2: Record "Sales Shipment Line";
-    //     TempSalesShptLines: Record "Sales Shipment Line" temporary;
-    //     OrphanedLines: Record "Sales Shipment Line";
-    // begin
-    //     if SalesInvoiceHeader."No." <> '' then begin
-    //         OrphanedLines.SetCurrentKey("Order No.", "Order Line No.");
-    //         OrphanedLines.SetRange("Order No.", SalesInvoiceHeader."Order No.");
-    //         OrphanedLines.DeleteAll(false);
-    //         exit;
-    //     end;
-    //     if SalesShipmentHeader."No." = '' then
-    //         exit;
-    //     SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
-    //     SalesShptLine.SetFilter(Type, '<>%1&<>%2', SalesShptLine.Type::"G/L Account", SalesShptLine.Type::" ");
-    //     SalesShptLine2.SetRange("Document No.", SalesShipmentHeader."No.");
-    //     SalesShptLine2.SetRange(Type, SalesShptLine2.Type::"G/L Account");
-    //     if SalesShptLine.IsEmpty() and SalesShptLine2.FindSet() then begin
-    //         repeat
-    //             TempSalesShptLines := SalesShptLine2;
-    //             TempSalesShptLines.insert(false);
-    //             SalesShptLine2.Quantity := 0;
-    //             SalesShptLine2.Modify(false);
-    //         until SalesShptLine2.Next() = 0;
-    //         SalesShipmentHeader."No. Printed" := -1;
-    //         SalesShipmentHeader.Delete(true);
-    //         TempSalesShptLines.FindSet();
-    //         repeat
-    //             OrphanedLines := TempSalesShptLines;
-    //             OrphanedLines.Insert(false);
-    //         until TempSalesShptLines.Next() = 0;
-    //         exit;
-    //     end;
-    //     if not SalesShipmentHeader."BA Merged Shpt. Lines" then
-    //         exit;
-    //     SalesShptLine.SetRange(Type, SalesShptLine.Type::Item);
-    //     SalesShptLine.SetRange(Quantity, 0);
-    //     SalesShptLine.DeleteAll(true);
-    //     SalesShipmentHeader."No." := SalesShipmentHeader."BA Original Doc. No.";
-    //     SalesShipmentHeader."No. Printed" := -1;
-    //     SalesShipmentHeader.Delete(true);
-    // end;
-
-
-
-
-    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
-    local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
-    begin
-        if SalesLine.Type = SalesLine.Type::"G/L Account" then
-            IsHandled := true;
-    end;
-
-
-    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
-    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
-    var
         SalesShptLine: Record "Sales Shipment Line";
     begin
         if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
@@ -888,6 +720,43 @@ codeunit 75010 "BA SEI Subscibers"
         SalesCrMemoHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesCrMemoHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
     end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
+    local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
+    begin
+        if SalesLine.Type = SalesLine.Type::"G/L Account" then
+            IsHandled := true;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
+    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
+    var
+        SalesShptLine: Record "Sales Shipment Line";
+    begin
+        if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
+            exit;
+        SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
+        if not SalesShptLine.IsEmpty() then begin
+            SalesShptLine.SetFilter(Quantity, '<>%1', 0);
+            if not SalesShptLine.IsEmpty() then
+                exit;
+        end;
+        SalesShipmentHeader."No. Printed" := -1;
+        SalesShipmentHeader.Delete(true);
+    end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
+    local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
+    begin
+        if not ItemJournalLine."BA Updated" then
+            exit;
+        ItemLedgerEntry."BA Year-end Adjst." := true;
+        ItemLedgerEntry.Modify(false);
+    end;
+
+
 
 
 
