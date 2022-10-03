@@ -476,18 +476,36 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Default Dimension", 'OnAfterValidateEvent', 'Dimension Value Code', false, false)]
     local procedure DefaultDimOnAfterValidateDimValueCode(var Rec: Record "Default Dimension"; var xRec: Record "Default Dimension")
     var
-        SalesShptLine: Record "Sales Shipment Line";
+        Item: Record Item;
+        GLSetup: Record "General Ledger Setup";
     begin
-        if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
+        if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
+                or (Rec."No." = '') or not Item.Get(Rec."No.") then
             exit;
-        SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
-        if not SalesShptLine.IsEmpty() then begin
-            SalesShptLine.SetFilter(Quantity, '<>%1', 0);
-            if not SalesShptLine.IsEmpty() then
+        GLSetup.Get();
+        case true of
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 1 Code":
+                Item."Global Dimension 1 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 2 Code":
+                Item."Global Dimension 2 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 3 Code":
+                Item."ENC Shortcut Dimension 3 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 4 Code":
+                Item."ENC Shortcut Dimension 4 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 5 Code":
+                Item."ENC Shortcut Dimension 5 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 6 Code":
+                Item."ENC Shortcut Dimension 6 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 7 Code":
+                Item."ENC Shortcut Dimension 7 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."Shortcut Dimension 8 Code":
+                Item."ENC Shortcut Dimension 8 Code" := Rec."Dimension Value Code";
+            Rec."Dimension Code" = GLSetup."ENC Product ID Dim. Code":
+                Item."ENC Product ID Code" := Rec."Dimension Value Code";
+            else
                 exit;
         end;
-        SalesShipmentHeader."No. Printed" := -1;
-        SalesShipmentHeader.Delete(true);
+        Rec.Modify(true);
     end;
 
 
@@ -746,7 +764,6 @@ codeunit 75010 "BA SEI Subscibers"
         SalesShipmentHeader.Delete(true);
     end;
 
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
     local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
     begin
@@ -755,10 +772,6 @@ codeunit 75010 "BA SEI Subscibers"
         ItemLedgerEntry."BA Year-end Adjst." := true;
         ItemLedgerEntry.Modify(false);
     end;
-
-
-
-
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
