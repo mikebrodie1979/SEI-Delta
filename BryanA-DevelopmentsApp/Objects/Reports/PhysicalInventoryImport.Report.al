@@ -116,7 +116,7 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.Validate("Item No.", ItemNo);
         ItemJnlLine.Validate("Location Code", LocationCode);
         ItemJnlLine.Validate("Phys. Inventory", true);
-        ItemJnlLine.Validate("Qty. (Calculated)", Qty);
+        ItemJnlLine.Validate("Qty. (Calculated)", 0);
         ItemJnlLine.Validate("Qty. (Phys. Inventory)", Qty);
         ItemJnlLine."BA Updated" := true;
         ItemJnlLine.Insert(true);

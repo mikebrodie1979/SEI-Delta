@@ -1,7 +1,8 @@
 codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
-                  tabledata "Purch. Rcpt. Header" = rimd;
+                  tabledata "Purch. Rcpt. Header" = rimd,
+                  tabledata "Item Ledger Entry" = rimd;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -760,7 +761,14 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
+    local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
+    begin
+        if not ItemJournalLine."BA Updated" then
+            exit;
+        ItemLedgerEntry."BA Year-end Adjst." := true;
+        ItemLedgerEntry.Modify(false);
+    end;
 
 
 
