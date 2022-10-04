@@ -102,5 +102,81 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 Rec.CalcFields("BA County Fullname");
             end;
         }
+        modify("Customer Posting Group")
+        {
+            trigger OnAfterValidate()
+            begin
+                UpdateBalanaceDisplay();
+            end;
+        }
+        modify("Balance (LCY)")
+        {
+            Visible = false;
+        }
+        modify("Balance Due (LCY)")
+        {
+            Visible = false;
+        }
+        addafter("Balance (LCY)")
+        {
+            field(ShowLCYBalances; ShowLCYBalances)
+            {
+                ApplicationArea = all;
+            }
+            group("BA Local Balances")
+            {
+                Visible = ShowLCYBalances;
+                ShowCaption = false;
+                field("BA Balance (LCY)"; "Balance (LCY)")
+                {
+                    ApplicationArea = all;
+                }
+                field("BA Balance Due (LCY)"; "Balance Due (LCY)")
+                {
+                    ApplicationArea = all;
+                }
+            }
+            group("BA Non-Local Balances")
+            {
+                Visible = not ShowLCYBalances;
+                ShowCaption = false;
+                field("BA Balance"; Balance)
+                {
+                    ApplicationArea = all;
+                }
+                field("BA Balance Due"; "Balance Due")
+                {
+                    ApplicationArea = all;
+                }
+            }
+        }
+        modify(CustomerStatisticsFactBox)
+        {
+            Visible = ShowLCYBalances;
+        }
+        addafter(CustomerStatisticsFactBox)
+        {
+            part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
+            {
+                SubPageLink = "No." = field ("Bill-to Customer No.");
+                Visible = not ShowLCYBalances;
+            }
+        }
     }
+
+    var
+        [InDataSet]
+        ShowLCYBalances: Boolean;
+
+    trigger OnAfterGetRecord()
+    begin
+        UpdateBalanaceDisplay();
+    end;
+
+    local procedure UpdateBalanaceDisplay()
+    var
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+        ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
+    end;
 }
