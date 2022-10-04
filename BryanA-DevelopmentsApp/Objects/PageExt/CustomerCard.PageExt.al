@@ -111,10 +111,17 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         }
         modify("Balance (LCY)")
         {
+            ApplicationArea = all;
             Visible = false;
         }
         modify("Balance Due (LCY)")
         {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Credit Limit (LCY)")
+        {
+            ApplicationArea = all;
             Visible = false;
         }
         addafter("Balance (LCY)")
@@ -127,6 +134,11 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 Visible = ShowLCYBalances;
                 ShowCaption = false;
+                field("Credit Limit (LCY)2"; "Credit Limit (LCY)")
+                {
+                    ApplicationArea = all;
+                    StyleExpr = StyleTxt;
+                }
                 field("BA Balance (LCY)"; "Balance (LCY)")
                 {
                     ApplicationArea = all;
@@ -140,6 +152,11 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 Visible = not ShowLCYBalances;
                 ShowCaption = false;
+                field("BA Credit Limit"; "BA Credit Limit")
+                {
+                    ApplicationArea = all;
+                    StyleExpr = StyleTxt;
+                }
                 field("BA Balance"; Balance)
                 {
                     ApplicationArea = all;
@@ -160,6 +177,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 SubPageLink = "No." = field ("Bill-to Customer No.");
                 Visible = not ShowLCYBalances;
+                ApplicationArea = all;
             }
         }
     }
@@ -167,10 +185,20 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
     var
         [InDataSet]
         ShowLCYBalances: Boolean;
+        [InDataSet]
+        StyleTxt: Text;
 
     trigger OnAfterGetRecord()
+    var
+        p1: Page "BA Non-LCY Cust. Stat. Factbox";
     begin
         UpdateBalanaceDisplay();
+        StyleTxt := '';
+        if ShowLCYBalances then
+            StyleTxt := Rec.SetStyle()
+        else
+            if "BA Credit Limit" < p1.GetTotalAmount() then
+                StyleTxt := 'Unfavorable';
     end;
 
     local procedure UpdateBalanaceDisplay()

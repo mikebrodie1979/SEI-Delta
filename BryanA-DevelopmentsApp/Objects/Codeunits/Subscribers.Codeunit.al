@@ -773,6 +773,8 @@ codeunit 75010 "BA SEI Subscibers"
         ItemLedgerEntry.Modify(false);
     end;
 
+
+
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';

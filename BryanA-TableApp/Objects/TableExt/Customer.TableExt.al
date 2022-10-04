@@ -68,5 +68,10 @@ tableextension 80030 "BA Customer" extends Customer
                 "Currency Code" = FIELD ("Currency Filter")));
             Editable = false;
         }
+        field(80025; "BA Credit Limit"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Credit Limit';
+        }
     }
 }
