@@ -89,7 +89,7 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
                 ApplicationArea = all;
                 Style = Strong;
             }
-            field("Credit Limit (LCY)"; Rec."Credit Limit (LCY)")
+            field("Credit Limit (LCY)"; Rec."BA Credit Limit")
             {
                 ApplicationArea = all;
             }
@@ -183,7 +183,7 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
         EXIT(CustLedgerEntry."Posting Date");
     end;
 
-    local procedure GetTotalAmount(): Decimal
+    procedure GetTotalAmount(): Decimal
     begin
         Rec.CalcFields("Balance", "Outstanding Orders", "Shipped Not Invoiced", "Outstanding Invoices",
              "BA Outstanding Serv. Orders", "BA Outstanding Serv. Orders", "BA Outstanding Serv.Invoices");
