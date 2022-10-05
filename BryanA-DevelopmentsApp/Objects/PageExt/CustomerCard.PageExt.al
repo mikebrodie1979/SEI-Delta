@@ -126,10 +126,10 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         }
         addafter("Balance (LCY)")
         {
-            field(ShowLCYBalances; ShowLCYBalances)
-            {
-                ApplicationArea = all;
-            }
+            // field(ShowLCYBalances; ShowLCYBalances)
+            // {
+            //     ApplicationArea = all;
+            // }
             group("BA Local Balances")
             {
                 Visible = ShowLCYBalances;
@@ -175,7 +175,9 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         {
             part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
             {
-                SubPageLink = "No." = field ("Bill-to Customer No.");
+                SubPageLink = "No." = field ("No."), "Currency Filter" = FIELD ("Currency Filter"), "Date Filter" = FIELD ("Date Filter"),
+                "Global Dimension 1 Filter" = FIELD ("Global Dimension 1 Filter"),
+                "Global Dimension 2 Filter" = FIELD ("Global Dimension 2 Filter");
                 Visible = not ShowLCYBalances;
                 ApplicationArea = all;
             }
