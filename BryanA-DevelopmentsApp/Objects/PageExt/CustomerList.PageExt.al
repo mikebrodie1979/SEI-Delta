@@ -10,8 +10,11 @@ pageextension 80083 "BA Customer List" extends "Customer List"
         {
             part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
             {
-                SubPageLink = "No." = field ("Bill-to Customer No.");
+                SubPageLink = "No." = field ("No."), "Currency Filter" = FIELD ("Currency Filter"), "Date Filter" = FIELD ("Date Filter"),
+                "Global Dimension 1 Filter" = FIELD ("Global Dimension 1 Filter"),
+                "Global Dimension 2 Filter" = FIELD ("Global Dimension 2 Filter");
                 Visible = not ShowLCYBalances;
+                ApplicationArea = all;
             }
         }
     }
