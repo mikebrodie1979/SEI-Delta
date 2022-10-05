@@ -19,12 +19,12 @@ report 50080 "BA Physical Inventory Import"
                         ApplicationArea = all;
                         Caption = 'Document No.';
                     }
-                    field(CalculateMissingItems; CalculateMissingItems)
-                    {
-                        ApplicationArea = all;
-                        ToolTip = 'Specifies if a new journal line will be created and calculate for items that are not already present in the journal upon import.';
-                        Caption = 'Create lines for missing items';
-                    }
+                    // field(CalculateMissingItems; CalculateMissingItems)
+                    // {
+                    //     ApplicationArea = all;
+                    //     ToolTip = 'Specifies if a new journal line will be created and calculate for items that are not already present in the journal upon import.';
+                    //     Caption = 'Create lines for missing items';
+                    // }
                 }
             }
         }
@@ -38,6 +38,7 @@ report 50080 "BA Physical Inventory Import"
             Error('Batch Name must be specified.');
         if DocNo = '' then
             Error('Document No. must be specified');
+        CalculateMissingItems := true;
         ImportExcelToPhysicalItemJnl();
     end;
 
