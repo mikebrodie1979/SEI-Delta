@@ -1,7 +1,8 @@
 codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
-                  tabledata "Purch. Rcpt. Header" = rimd;
+                  tabledata "Purch. Rcpt. Header" = rimd,
+                  tabledata "Sales Shipment Line" = i;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -759,6 +760,38 @@ codeunit 75010 "BA SEI Subscibers"
     //     SalesShipmentHeader.Delete(true);
     // end;
 
+
+    procedure AddMissingLineToShpt(ShptNo: Code[20])
+    var
+        SalesShptHeader: Record "Sales Shipment Header";
+        SalesShptLine: Record "Sales Shipment Line";
+        SalesHeader: Record "Sales Header";
+        SalesLine: Record "Sales Line";
+    begin
+        SalesShptHeader.Get(ShptNo);
+        SalesHeader.Get(SalesHeader."Document Type"::Order, SalesShptHeader."Order No.");
+
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetRange(Type, SalesLine.Type::"G/L Account");
+        SalesLine.FindFirst();
+
+        SalesShptLine.SetRange("Document No.", SalesShptHeader."No.");
+        SalesShptLine.SetRange(Type, SalesShptLine.Type::"G/L Account");
+        if not SalesShptLine.IsEmpty() then
+            Error('Already added');
+
+        SalesShptLine.Init();
+        SalesShptLine.TransferFields(SalesLine);
+        SalesShptLine."Posting Date" := SalesShptHeader."Posting Date";
+        SalesShptLine."Document No." := SalesShptHeader."No.";
+        SalesShptLine."Order No." := SalesLine."Document No.";
+        SalesShptLine."Order Line No." := SalesLine."Line No.";
+        SalesShptLine."Quantity Invoiced" := 0;
+        SalesShptLine."Qty. Invoiced (Base)" := 0;
+        SalesShptLine."Qty. Shipped Not Invoiced" := SalesLine.Quantity;
+        SalesShptLine.Insert(true);
+    end;
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';

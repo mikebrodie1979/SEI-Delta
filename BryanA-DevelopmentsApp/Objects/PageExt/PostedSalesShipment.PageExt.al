@@ -69,4 +69,38 @@ pageextension 80070 "BA Posted Sales Shpt." extends "Posted Sales Shipment"
             }
         }
     }
+
+    actions
+    {
+        addlast(Processing)
+        {
+            action("Add Missing GL Line")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = ExportDatabase;
+                Visible = IsEncore;
+                Enabled = IsEncore;
+
+                trigger OnAction()
+                var
+                    c1: Codeunit "BA SEI Subscibers";
+                begin
+                    c1.AddMissingLineToShpt(Rec."No.");
+                end;
+            }
+        }
+    }
+
+    trigger OnOpenPage()
+    begin
+        IsEncore := UserId = 'ENCORE';
+    end;
+
+    var
+        [InDataSet]
+        IsEncore: Boolean;
 }
