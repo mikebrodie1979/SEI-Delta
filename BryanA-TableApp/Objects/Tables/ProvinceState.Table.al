@@ -1,6 +1,7 @@
 table 75010 "BA Province/State"
 {
     DataClassification = CustomerContent;
+    Caption = 'Province/State';
 
     fields
     {
