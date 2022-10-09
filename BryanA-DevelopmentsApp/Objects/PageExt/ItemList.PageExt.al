@@ -2,33 +2,8 @@ pageextension 80046 "BA Item List" extends "Item List"
 {
     layout
     {
-        modify("Vendor Item No.")
-        {
-            ApplicationArea = all;
-            Visible = false;
-        }
-        addafter("Vendor Item No.")
-        {
-            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
-            {
-                ApplicationArea = all;
-            }
-        }
-        modify("Vendor No.")
-        {
-            ApplicationArea = all;
-            Visible = false;
-        }
-        addafter("Vendor No.")
-        {
-            field("BA Default Vendor No."; "BA Default Vendor No.")
-            {
-                ApplicationArea = all;
-            }
-        }
         addlast(Control1)
         {
-
             field("ENC International HS Code"; Rec."ENC International HS Code")
             {
                 ApplicationArea = all;
@@ -46,6 +21,14 @@ pageextension 80046 "BA Item List" extends "Item List"
                 ApplicationArea = all;
             }
             field("Country/Region of Origin Code"; Rec."Country/Region of Origin Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Default Vendor No."; "BA Default Vendor No.")
             {
                 ApplicationArea = all;
             }
