@@ -99,6 +99,19 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
                 Rec.CalcFields("BA Bill-to County Fullname");
             end;
         }
+        modify(Control1902018507)
+        {
+            Visible = ShowLCYBalances;
+        }
+        addafter(Control1902018507)
+        {
+            part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
+            {
+                SubPageLink = "No." = Field ("Bill-to Customer No.");
+                Visible = not ShowLCYBalances;
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions
@@ -146,13 +159,21 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
     var
         [InDataSet]
         CanUpdateRate: Boolean;
+        [InDataSet]
+        ShowLCYBalances: Boolean;
 
     trigger OnAfterGetRecord()
     var
         SalesRecSetup: Record "Sales & Receivables Setup";
+        CustPostingGroup: Record "Customer Posting Group";
     begin
         CanUpdateRate := SalesRecSetup.Get() and SalesRecSetup."BA Use Single Currency Pricing";
+        ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
     end;
+
+
+
+
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     var
