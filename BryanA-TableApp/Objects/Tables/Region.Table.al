@@ -1,5 +1,8 @@
 table 75011 "BA Region"
 {
+    DataClassification = CustomerContent;
+    Caption = 'Region';
+
     fields
     {
         field(1; Name; Text[30])

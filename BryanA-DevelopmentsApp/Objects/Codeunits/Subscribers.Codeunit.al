@@ -740,29 +740,40 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
-    local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
-    begin
-        if SalesLine.Type = SalesLine.Type::"G/L Account" then
-            IsHandled := true;
-    end;
+    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
+    // local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
+    // begin
+    //     if SalesLine.Type = SalesLine.Type::"G/L Account" then
+    //         IsHandled := true;
+    // end;
 
-    [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
-    local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
-    var
-        SalesShptLine: Record "Sales Shipment Line";
-    begin
-        if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
-            exit;
-        SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
-        if not SalesShptLine.IsEmpty() then begin
-            SalesShptLine.SetFilter(Quantity, '<>%1', 0);
-            if not SalesShptLine.IsEmpty() then
-                exit;
-        end;
-        SalesShipmentHeader."No. Printed" := -1;
-        SalesShipmentHeader.Delete(true);
-    end;
+    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
+    // local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
+    // var
+    //     SalesShptLine: Record "Sales Shipment Line";
+    // begin
+    //     if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
+    //         exit;
+    //     SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
+    //     if not SalesShptLine.IsEmpty() then begin
+    //         SalesShptLine.SetFilter(Quantity, '<>%1', 0);
+    //         if not SalesShptLine.IsEmpty() then
+    //             exit;
+    //     end;
+    //     SalesShipmentHeader."No. Printed" := -1;
+    //     SalesShipmentHeader.Delete(true);
+    // end;
+
+
+    // procedure AddMissingLineToShpt(ShptNo: Code[20])
+    // var
+    //     SalesShptHeader: Record "Sales Shipment Header";
+    //     SalesShptLine: Record "Sales Shipment Line";
+    //     SalesHeader: Record "Sales Header";
+    //     SalesLine: Record "Sales Line";
+    // begin
+    //     SalesShptHeader.Get(ShptNo);
+    //     SalesHeader.Get(SalesHeader."Document Type"::Order, SalesShptHeader."Order No.");
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
     local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
