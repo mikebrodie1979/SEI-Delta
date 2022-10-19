@@ -151,6 +151,13 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
     var
         AccountingPeriod: Record "Accounting Period";
 
+    procedure ShouldUseNonLCYValues(var Rec: Record Customer): Boolean
+    var
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+        exit(CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency");
+    end;
+
     procedure GetSales(var Rec: Record Customer): Decimal
     var
         CustLedgerEntry: Record "Cust. Ledger Entry";
@@ -205,7 +212,7 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
 
 
 
-    local procedure SetFilterLastPaymentDateEntry(VAR CustLedgerEntry: Record "Cust. Ledger Entry")
+    procedure SetFilterLastPaymentDateEntry(VAR CustLedgerEntry: Record "Cust. Ledger Entry")
     begin
         CustLedgerEntry.SETCURRENTKEY("Document Type", "Customer No.", "Posting Date", "Currency Code");
         CustLedgerEntry.SETRANGE("Customer No.", "No.");
@@ -214,7 +221,7 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
     end;
 
 
-    local procedure CalcLastPaymentDate(): Date
+    procedure CalcLastPaymentDate(): Date
     var
         CustLedgerEntry: Record "Cust. Ledger Entry";
     begin
@@ -265,7 +272,7 @@ page 50062 "BA Non-LCY Cust. Stat. Factbox"
 
 
 
-    local procedure CalcOverdueBalanceNonLCY(): Decimal
+    procedure CalcOverdueBalanceNonLCY(): Decimal
     var
         CustLedgEntryRemainAmtQuery: Query "Cust. Ledg. Entry Remain. Amt.";
     begin
