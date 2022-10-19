@@ -785,6 +785,20 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterValidateEvent', 'BA Credit Limit', false, false)]
+    local procedure CustomerOnAfterValidateCreditLimitNonLCY(var Rec: Record Customer)
+    var
+        Currency: Record Currency;
+        ExchRate: Record "Currency Exchange Rate";
+    begin
+        if not Currency.Get(Rec."Customer Posting Group") then
+            exit;
+        ExchRate.SetRange("Currency Code", Currency.Code);
+        ExchRate.SetRange("Starting Date", 0D, WorkDate());
+        if ExchRate.FindLast() and (ExchRate."Relational Exch. Rate Amount" <> 0) then
+            Rec.Validate("Credit Limit (LCY)", Rec."BA Credit Limit" * ExchRate."Relational Exch. Rate Amount");
+    end;
+
 
     var
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
