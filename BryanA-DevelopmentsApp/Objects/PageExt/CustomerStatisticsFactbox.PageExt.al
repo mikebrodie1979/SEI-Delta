@@ -53,11 +53,6 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
 
         addlast(Content)
         {
-            field(ShowLCYBalances; ShowLCYBalances)
-            {
-                ApplicationArea = all;
-            }
-
             group("Non-LCY Details")
             {
                 ShowCaption = false;
