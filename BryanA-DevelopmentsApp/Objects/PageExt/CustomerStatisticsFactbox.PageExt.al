@@ -53,23 +53,32 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
 
         addlast(Content)
         {
-            field("No.2"; Rec."No.")
+            field(ShowLCYBalances; ShowLCYBalances)
             {
                 ApplicationArea = all;
-                Caption = 'Customer No.';
-                ToolTip = 'Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.';
+            }
+
+            group("Non-LCY Details")
+            {
+                ShowCaption = false;
                 Visible = not ShowLCYBalances;
 
-                trigger OnDrillDown()
-                begin
-                    PAGE.RUN(PAGE::"Customer Card", Rec);
-                end;
-            }
-            field(Balance; Rec.Balance)
-            {
-                ApplicationArea = all;
-                ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
-                Visible = not ShowLCYBalances;
+                field("No.2"; Rec."No.")
+                {
+                    ApplicationArea = all;
+                    Caption = 'Customer No.';
+                    ToolTip = 'Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.';
+
+                    trigger OnDrillDown()
+                    begin
+                        PAGE.RUN(PAGE::"Customer Card", Rec);
+                    end;
+                }
+                field(Balance; Rec.Balance)
+                {
+                    ApplicationArea = all;
+                    ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+                }
             }
             group(SalesNonLCY)
             {
@@ -213,23 +222,28 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                     ToolTip = 'Specifies your sales income from the customer, based on invoiced prepayments.';
                 }
             }
-            field("No.3"; Rec."No.")
+
+
+            group("LCY Details")
             {
-                ApplicationArea = all;
-                Caption = 'Customer No.';
-                ToolTip = 'Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.';
+                ShowCaption = false;
                 Visible = ShowLCYBalances;
-                trigger OnDrillDown()
-                begin
-                    PAGE.RUN(PAGE::"Customer Card", Rec);
-                end;
-            }
-            field("Balance (LCY)2"; Rec."Balance (LCY)")
-            {
-                ApplicationArea = all;
-                Visible = ShowLCYBalances;
-                Caption = 'Balance ($)';
-                ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+                field("No.3"; Rec."No.")
+                {
+                    ApplicationArea = all;
+                    Caption = 'Customer No.';
+                    ToolTip = 'Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.';
+                    trigger OnDrillDown()
+                    begin
+                        PAGE.RUN(PAGE::"Customer Card", Rec);
+                    end;
+                }
+                field("Balance (LCY)2"; Rec."Balance (LCY)")
+                {
+                    ApplicationArea = all;
+                    Caption = 'Balance ($)';
+                    ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+                }
             }
             group(SalesLCY)
             {
