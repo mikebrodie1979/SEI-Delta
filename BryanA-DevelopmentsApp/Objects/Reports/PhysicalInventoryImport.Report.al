@@ -25,12 +25,20 @@ report 50080 "BA Physical Inventory Import"
                         ApplicationArea = all;
                         Editable = false;
                         ToolTip = 'Use the Assist Edit function to select an excel file containing the inventory information to be imported.';
-                        // ToolTip = 'After inventory is calculated for the journal, use this feature to upload the physical inventory count numbers into the Qty. (Phys. Inventory) column. Format an Excel file with 2 columns (Item No. & Quantity) Set the Document No. to match the Document No. of the journal that will receive the Excel file upload. Select "Upload Excel File" and choose the file required. If any items exist in the Excel file that are not on the journal, they will be added as new lines at the bottom of the journal.';
-                        // ToolTip = 'After inventory is calculated for the journal, use this feature to upload the physical inventory count numbers into the Qty. (Phys. Inventory) column.';
 
                         trigger OnAssistEdit()
                         begin
                             OpenFile(TempBlob, FilePath, ImportDialogTitle);
+                        end;
+                    }
+                    field("Show Detailed Instructions"; 'Detailed Instructions')
+                    {
+                        ApplicationArea = all;
+                        ShowCaption = false;
+
+                        trigger OnDrillDown()
+                        begin
+                            Message(ImportInstructions);
                         end;
                     }
                 }
@@ -200,7 +208,5 @@ report 50080 "BA Physical Inventory Import"
         NoSheetsError: Label 'No sheets found.';
         MissingSheetError: Label 'No sheet found with name %1.', Comment = '%1 = Sheetname';
         ImportDialogTitle: Label 'Physical Inventory Import';
-
-
-
+        ImportInstructions: Label 'After inventory is calculated for the journal, use this feature to upload the physical inventory count numbers into the Qty. (Phys. Inventory) column:\\ - Format an Excel file with 2 columns (Item No. & Quantity)\ - Set the Document No. to match the Document No. of the journal that will receive the Excel file upload.\ - Select "Upload Excel File" and choose the file required.\ - If any items exist in the Excel file that are not on the journal, they will be added as new lines at the bottom of the journal.';
 }
