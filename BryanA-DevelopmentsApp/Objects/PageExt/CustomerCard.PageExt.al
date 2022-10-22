@@ -184,11 +184,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 Visible = not ShowLCYBalances;
                 ShowCaption = false;
-                field("Credit Limit (LCY)3"; "Credit Limit (LCY)")
-                {
-                    ApplicationArea = all;
-                    Editable = false;
-                }
                 field("BA Credit Limit"; "BA Credit Limit")
                 {
                     ApplicationArea = all;
