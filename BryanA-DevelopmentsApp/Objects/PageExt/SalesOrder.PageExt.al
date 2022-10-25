@@ -98,6 +98,17 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 Rec.CalcFields("BA Bill-to County Fullname");
             end;
         }
+        addafter("Quote No.")
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
