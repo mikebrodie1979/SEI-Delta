@@ -111,6 +111,17 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         //         ApplicationArea = all;
         //     }
         // }
+        addafter("Quote No.")
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
 

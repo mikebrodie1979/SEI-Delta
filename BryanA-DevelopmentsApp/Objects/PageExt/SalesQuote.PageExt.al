@@ -99,19 +99,17 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
                 Rec.CalcFields("BA Bill-to County Fullname");
             end;
         }
-        // modify(Control1902018507)
-        // {
-        //     Visible = ShowLCYBalances;
-        // }
-        // addafter(Control1902018507)
-        // {
-        //     part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
-        //     {
-        //         SubPageLink = "No." = Field ("Bill-to Customer No.");
-        //         Visible = not ShowLCYBalances;
-        //         ApplicationArea = all;
-        //     }
-        // }
+        addafter("Requested Delivery Date")
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions

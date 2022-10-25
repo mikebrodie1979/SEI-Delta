@@ -68,5 +68,16 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
             }
         }
+        addafter("Order No.")
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

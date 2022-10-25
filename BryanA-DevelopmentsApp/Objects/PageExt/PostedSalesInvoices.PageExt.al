@@ -1,4 +1,4 @@
-pageextension 80120 "BA Sales Quotes" extends "Sales Quotes"
+pageextension 80123 "BA Posted Sales Invoices" extends "Posted Sales Invoices"
 {
     layout
     {

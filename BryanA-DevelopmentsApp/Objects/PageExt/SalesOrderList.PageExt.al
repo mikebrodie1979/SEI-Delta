@@ -1,30 +1,17 @@
-// pageextension 80090 "BA Sales Order List" extends "Sales Order List"
-// {
-//     layout
-//     {
-//         modify(Control1902018507)
-//         {
-//             Visible = ShowLCYBalances;
-//         }
-//         addafter(Control1902018507)
-//         {
-//             part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
-//             {
-//                 SubPageLink = "No." = Field ("Bill-to Customer No.");
-//                 Visible = not ShowLCYBalances;
-//                 ApplicationArea = all;
-//             }
-//         }
-//     }
-
-//     var
-//         [InDataSet]
-//         ShowLCYBalances: Boolean;
-
-//     trigger OnAfterGetRecord()
-//     var
-//         CustPostingGroup: Record "Customer Posting Group";
-//     begin
-//         ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
-//     end;
-// }
+pageextension 80121 "BA Sales Order List" extends "Sales Order List"
+{
+    layout
+    {
+        addlast(Control1)
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
+    }
+}
