@@ -8,6 +8,10 @@ pageextension 80024 "BA Relased Prod. Orders" extends "Released Production Order
             {
                 ApplicationArea = all;
             }
+            field("BA All Quantities Completed"; "BA All Quantities Completed")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
