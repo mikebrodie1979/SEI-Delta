@@ -98,7 +98,7 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 Rec.CalcFields("BA Bill-to County Fullname");
             end;
         }
-        addafter("Quote No.")
+        addbefore("External Document No.")
         {
             field("BA Sales Source"; "BA Sales Source")
             {
