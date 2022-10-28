@@ -26,5 +26,11 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Editable = false;
             CalcFormula = exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account')));
         }
+        field(80021; "BA Has Only Empty Lines"; Boolean)
+        {
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
+        }
     }
 }
