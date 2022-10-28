@@ -775,8 +775,37 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Currency Exchange Rate", 'OnAfterValidateEvent', 'Relational Exch. Rate Amount', false, false)]
+    local procedure CurrencyExchangeRateOnAfterValidateRelationExchRateAmount(var Rec: Record "Currency Exchange Rate"; var xRec: Record "Currency Exchange Rate")
+    var
+        Customer: Record Customer;
+        Window: Dialog;
+        RecCount: Integer;
+        i: Integer;
+    begin
+        if (Rec."Currency Code" <> 'USD') or (Rec."Relational Exch. Rate Amount" = xRec."Relational Exch. Rate Amount") then
+            exit;
+        Customer.SetFilter("BA Credit Limit", '<>%1', 0);
+        if not Customer.FindSet(true) then
+            exit;
+        RecCount := Customer.Count;
+        if not Confirm(UpdateCreditLimitMsg) then
+            exit;
+        Window.Open(UpdateCreditLimitDialog);
+        repeat
+            i += 1;
+            Window.Update(1, StrSubstNo('%1 of %2', i, RecCount));
+            Customer.Validate("Credit Limit (LCY)", Customer."BA Credit Limit" * Rec."Relational Exch. Rate Amount");
+            Customer.Modify(true);
+        until Customer.Next() = 0;
+        Window.Close();
+    end;
+
+
 
     var
+        UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
+        UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
         InvalidPrefixError: Label 'Missing "SO" prefix.';
         MissingNumeralError: Label 'Missing numeral suffix.';
