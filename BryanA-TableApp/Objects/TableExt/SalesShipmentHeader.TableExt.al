@@ -30,7 +30,7 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
         {
             FieldClass = FlowField;
             Editable = false;
-            CalcFormula = exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
+            CalcFormula = - exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
         }
     }
 }
