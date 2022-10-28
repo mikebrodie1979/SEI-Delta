@@ -1,4 +1,4 @@
-pageextension 80121 "BA Posted Sales Shpt. Subpage" extends "Posted Sales Shpt. Subform"
+pageextension 80131 "BA Posted Sales Shpt. Subpage" extends "Posted Sales Shpt. Subform"
 {
     trigger OnOpenPage()
     begin

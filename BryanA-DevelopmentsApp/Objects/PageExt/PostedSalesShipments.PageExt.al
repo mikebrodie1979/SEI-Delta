@@ -1,4 +1,4 @@
-pageextension 80120 "BA Posted Sales Shipments" extends "Posted Sales Shipments"
+pageextension 80130 "BA Posted Sales Shipments" extends "Posted Sales Shipments"
 {
     trigger OnOpenPage()
     begin
