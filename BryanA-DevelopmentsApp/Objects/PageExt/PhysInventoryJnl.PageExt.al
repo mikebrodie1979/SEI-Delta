@@ -2,6 +2,13 @@ pageextension 80090 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
 {
     layout
     {
+        addfirst(Control1)
+        {
+            field("BA Created At"; "BA Created At")
+            {
+                ApplicationArea = all;
+            }
+        }
         addafter(Description)
         {
             field("BA Updated"; "BA Updated")

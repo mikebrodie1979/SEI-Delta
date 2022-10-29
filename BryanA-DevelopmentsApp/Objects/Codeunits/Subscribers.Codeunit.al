@@ -778,6 +778,23 @@ codeunit 75010 "BA SEI Subscibers"
             ItemJournalLine."BA Updated" := true;
     end;
 
+    [EventSubscriber(ObjectType::Page, Page::"Phys. Inventory Journal", 'OnAfterActionEvent', 'CalculateInventory', false, false)]
+    local procedure PhysInvJournalOnAfterCalculateInventory(var Rec: Record "Item Journal Line")
+    begin
+        Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
+        Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
+        Rec.SetRange("BA Created At", 0DT);
+        if not Confirm(StrSubstNo('%1 -> %2', Rec.GetFilters, Rec.count)) then
+            Error('');
+        Rec.ModifyAll("BA Created At", CurrentDateTime());
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Item Journal Line", 'OnAfterInsertEvent', '', false, false)]
+    local procedure ItemJounalLineOnAfterInsert(var Rec: Record "Item Journal Line")
+    begin
+        Rec."BA Created At" := CurrentDateTime();
+    end;
+
 
 
     var

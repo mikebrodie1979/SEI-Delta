@@ -1,4 +1,4 @@
-page 50065 "BA Phys. Invt. Import Errors"
+page 50067 "BA Phys. Invt. Import Errors"
 {
     // ApplicationArea = all;
     // UsageCategory = Lists;

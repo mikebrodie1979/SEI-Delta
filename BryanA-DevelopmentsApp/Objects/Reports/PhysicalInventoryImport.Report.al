@@ -189,7 +189,7 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.Validate("Qty. (Calculated)", 0);
         ItemJnlLine.Validate("Qty. (Phys. Inventory)", Qty);
         ItemJnlLine."BA Updated" := true;
-        ItemJnlLine."BA Created At" := CurrentDateTime();
+        // ItemJnlLine."BA Created At" := CurrentDateTime();
         ItemJnlLine.Insert(true);
     end;
 
