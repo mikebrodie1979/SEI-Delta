@@ -818,6 +818,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if (Rec."Currency Code" <> 'USD') or (Rec."Relational Exch. Rate Amount" = xRec."Relational Exch. Rate Amount") then
             exit;
+        UpdateSystemIndicator(Rec);
         Customer.SetFilter("BA Credit Limit", '<>%1', 0);
         if not Customer.FindSet(true) then
             exit;
@@ -832,6 +833,22 @@ codeunit 75010 "BA SEI Subscibers"
             Customer.Modify(true);
         until Customer.Next() = 0;
         Window.Close();
+    end;
+
+
+    local procedure UpdateSystemIndicator(var CurrExchRate: Record "Currency Exchange Rate")
+    var
+        CompInfo: Record "Company Information";
+        DateRec: Record Date;
+    begin
+        CompInfo.Get('');
+        if CompInfo."BA Environment Name" = '' then
+            exit;
+        DateRec.SetRange("Period Type", DateRec."Period Type"::Month);
+        DateRec.SetRange("Period Start", DMY2Date(1, Date2DMY(CurrExchRate."Starting Date", 2), 2000));
+        DateRec.FindFirst();
+        CompInfo."Custom System Indicator Text" := CopyStr(StrSubstNo('%1 - USD Exch. Rate %2 (%3)', CompInfo."BA Environment Name", CurrExchRate."Relational Exch. Rate Amount", DateRec."Period Name"), 1, MaxStrLen(CompInfo."Custom System Indicator Text"));
+        CompInfo.Modify(false);
     end;
 
 
