@@ -157,13 +157,21 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
     var
         [InDataSet]
         CanUpdateRate: Boolean;
+        // [InDataSet]
+        // ShowLCYBalances: Boolean;
 
     trigger OnAfterGetRecord()
     var
         SalesRecSetup: Record "Sales & Receivables Setup";
+        CustPostingGroup: Record "Customer Posting Group";
     begin
         CanUpdateRate := SalesRecSetup.Get() and SalesRecSetup."BA Use Single Currency Pricing";
+        // ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
     end;
+
+
+
+
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     var

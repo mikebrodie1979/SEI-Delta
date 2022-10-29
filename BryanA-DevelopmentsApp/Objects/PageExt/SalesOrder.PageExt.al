@@ -111,6 +111,19 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         }
     }
 
+
+    // var
+    //     [InDataSet]
+    //     ShowLCYBalances: Boolean;
+
+    // trigger OnAfterGetRecord()
+    // var
+    //     CustPostingGroup: Record "Customer Posting Group";
+    // begin
+    //     ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
+    // end;
+
+
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     var
         ExchangeRate: Record "Currency Exchange Rate";

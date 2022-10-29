@@ -40,5 +40,38 @@ tableextension 80030 "BA Customer" extends Customer
                     Rec.CalcFields("BA Region");
             end;
         }
+
+        field(80020; "BA Outstanding Serv. Orders"; Decimal)
+        {
+            Caption = 'Outstanding Serv. Orders';
+            FieldClass = FlowField;
+            CalcFormula = Sum ("Service Line"."Outstanding Amount" WHERE ("Document Type" = CONST (Order), "Bill-to Customer No." = FIELD ("No."),
+            "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
+            "Currency Code" = FIELD ("Currency Filter")));
+            Editable = false;
+        }
+        field(80021; "BA Serv Shipped Not Invoiced"; Decimal)
+        {
+            Caption = 'Serv Shipped Not Invoiced';
+            FieldClass = FlowField;
+            CalcFormula = Sum ("Service Line"."Shipped Not Invoiced" WHERE ("Document Type" = CONST (Order), "Bill-to Customer No." = FIELD ("No."),
+            "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
+            "Currency Code" = FIELD ("Currency Filter")));
+            Editable = false;
+        }
+        field(80022; "BA Outstanding Serv.Invoices"; Decimal)
+        {
+            Caption = 'Outstanding Serv.Invoices';
+            FieldClass = FlowField;
+            CalcFormula = Sum ("Service Line"."Outstanding Amount" WHERE ("Document Type" = CONST (Invoice), "Bill-to Customer No." = FIELD ("No."),
+                "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
+                "Currency Code" = FIELD ("Currency Filter")));
+            Editable = false;
+        }
+        field(80025; "BA Credit Limit"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Credit Limit';
+        }
     }
 }
