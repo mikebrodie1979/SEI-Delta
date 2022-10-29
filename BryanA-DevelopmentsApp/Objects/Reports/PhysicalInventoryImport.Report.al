@@ -55,13 +55,13 @@ report 50080 "BA Physical Inventory Import"
     trigger OnPostReport()
     begin
         if TemplateName = '' then
-            Error('Template Name must be specified.');
+            Error(NoTemplateNameError);
         if BatchName = '' then
-            Error('Batch Name must be specified.');
+            Error(NoBatchNameError);
         if DocNo = '' then
-            Error('Document No. must be specified.');
+            Error(NoDocumentNoError);
         if FilePath = '' then
-            Error('Must select a file to be imported.');
+            Error(NoFilePathError);
         CalculateMissingItems := true;
         ImportExcelToPhysicalItemJnl();
     end;
@@ -80,6 +80,7 @@ report 50080 "BA Physical Inventory Import"
     begin
         if not ImportFile(ExcelBuffer, ImportDialogTitle) then
             exit;
+        ClearErrors();
         ExcelBuffer.SetFilter("Row No.", '>%1', 1);
         if not ExcelBuffer.FindSet() then
             exit;
@@ -100,8 +101,7 @@ report 50080 "BA Physical Inventory Import"
             LineNo := ItemJnlLine."Line No.";
         Window.Update(1, 'Importing Lines');
         Window.Update(2, '');
-        ItemJnlLine.ModifyAll("BA Updated", false);
-        ItemJnlLine.SetRange("BA Updated", false);
+        ItemJnlLine.SetFilter("BA Created At", '<=%1', CurrentDateTime());
         ExcelBuffer.SetRange("Column No.", 1);
         ExcelBuffer.FindSet();
         i := 1;
@@ -122,15 +122,60 @@ report 50080 "BA Physical Inventory Import"
 
         ItemJnlLine.SetRange("Item No.", '');
         ItemJnlLine.DeleteAll(true);
+
+        ViewErrors();
     end;
 
 
+    local procedure ClearErrors()
+    var
+        NameBuffer: Record "Name/Value Buffer";
+    begin
+        NameBuffer.DeleteAll(false);
+    end;
 
+    local procedure ViewErrors()
+    var
+        NameBuffer: Record "Name/Value Buffer";
+    begin
+        if NameBuffer.IsEmpty() then
+            exit;
+        if Confirm(ViewErrorConf) then
+            Page.Run(Page::"BA Phys. Invt. Import Errors", NameBuffer);
+    end;
+
+    local procedure AddError(ItemNo: Code[20]; LineNo: Integer; ErrorMsg: Text)
+    var
+        NameBuffer: Record "Name/Value Buffer";
+        ID: Integer;
+    begin
+        if NameBuffer.FindLast() then
+            ID := NameBuffer.ID;
+        NameBuffer.Init();
+        NameBuffer.ID := ID + 1;
+        NameBuffer.Name := ItemNo;
+        NameBuffer.Value := Format(LineNo);
+        NameBuffer."Value Long" := CopyStr(ErrorMsg, 1, MaxStrLen(NameBuffer."Value Long"));
+        NameBuffer.Insert(false);
+    end;
 
     local procedure CreateItemJnlLine(var LineNo: Integer; ItemNo: Code[20]; Qty: Decimal)
     var
         ItemJnlLine: Record "Item Journal Line";
+        Item: Record Item;
     begin
+        if not Item.Get(ItemNo) then begin
+            AddError(ItemNo, LineNo, StrSubstNo(NoItemError, ItemNo));
+            exit;
+        end;
+        if Item.Blocked then begin
+            AddError(ItemNo, LineNo, StrSubstNo(BlockedItemError, ItemNo));
+            exit;
+        end;
+        if Item."Purchasing Blocked" then begin
+            AddError(ItemNo, LineNo, StrSubstNo(PurchBlockedError, ItemNo));
+            exit;
+        end;
         LineNo += 10000;
         ItemJnlLine.Init();
         ItemJnlLine.Validate("Journal Template Name", TemplateName);
@@ -144,6 +189,7 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.Validate("Qty. (Calculated)", 0);
         ItemJnlLine.Validate("Qty. (Phys. Inventory)", Qty);
         ItemJnlLine."BA Updated" := true;
+        ItemJnlLine."BA Created At" := CurrentDateTime();
         ItemJnlLine.Insert(true);
     end;
 
@@ -204,9 +250,17 @@ report 50080 "BA Physical Inventory Import"
         PostingDate: Date;
         FilePath: Text;
 
+
+        NoTemplateNameError: Label 'Template Name must be specified.';
+        NoBatchNameError: Label 'Batch Name must be specified.';
+        NoDocumentNoError: Label 'Document No. must be specified.';
+        NoFilePathError: Label 'Must select a file to be imported.';
         NotTempRecError: Label 'Must use a temporary record to import excel data.';
         NoSheetsError: Label 'No sheets found.';
-        MissingSheetError: Label 'No sheet found with name %1.', Comment = '%1 = Sheetname';
+        NoItemError: Label 'Item %1 does not exist.';
+        BlockedItemError: Label 'Item %1 is blocked.';
+        PurchBlockedError: Label 'Item %1 is blocked for purchasing.';
+        ViewErrorConf: Label 'Errors occurred while importing file, view errors now?';
         ImportDialogTitle: Label 'Physical Inventory Import';
         ImportInstructions: Label 'After inventory is calculated for the journal, use this feature to upload the physical inventory count numbers into the Qty. (Phys. Inventory) column:\\ - Format an Excel file with 2 columns (Item No. & Quantity)\ - Set the Document No. to match the Document No. of the journal that will receive the Excel file upload.\ - Select "Upload Excel File" and choose the file required.\ - If any items exist in the Excel file that are not on the journal, they will be added as new lines at the bottom of the journal.';
 }

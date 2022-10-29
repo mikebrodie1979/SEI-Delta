@@ -9,5 +9,11 @@ tableextension 80049 "BA Item Jnl. Line" extends "Item Journal Line"
             Editable = false;
             Description = 'System field used for Physical Inventory import';
         }
+        field(80001; "BA Created At"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Created At';
+            Editable = false;
+        }
     }
 }

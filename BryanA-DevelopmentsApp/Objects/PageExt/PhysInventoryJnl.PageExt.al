@@ -35,6 +35,17 @@ pageextension 80090 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
                     ImportInventory.RunModal();
                 end;
             }
+            action("BA View Import Errors")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = PhysicalInventoryLedger;
+                Caption = 'View Inventory Import Errors';
+                RunObject = page "BA Phys. Invt. Import Errors";
+            }
         }
     }
 }
