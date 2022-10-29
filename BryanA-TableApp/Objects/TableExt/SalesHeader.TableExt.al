@@ -48,5 +48,16 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             Caption = 'Exchange Rate';
             Editable = false;
         }
+        field(80025; "BA Sales Source"; Text[30])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Source';
+            TableRelation = "BA Sales Source".Name;
+        }
+        field(80026; "BA Web Lead Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Web Lead Date';
+        }
     }
 }

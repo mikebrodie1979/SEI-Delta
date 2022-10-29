@@ -99,6 +99,17 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
                 Rec.CalcFields("BA Bill-to County Fullname");
             end;
         }
+        addafter("Requested Delivery Date")
+        {
+            field("BA Sales Source"; "BA Sales Source")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Web Lead Date"; "BA Web Lead Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions
