@@ -1,4 +1,4 @@
-pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics FactBox"
+Pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics FactBox"
 {
     layout
     {
@@ -66,13 +66,18 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
 
                     trigger OnDrillDown()
                     begin
-                        PAGE.RUN(PAGE::"Customer Card", Rec);
+                        Page.Run(Page::"Customer Card", Rec);
                     end;
                 }
                 field(Balance; Rec.Balance)
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+
+                    trigger OnDrillDown()
+                    begin
+                        BalanceDrillDown();
+                    end;
                 }
             }
             group(SalesNonLCY)
@@ -150,7 +155,7 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         IF CustLedgerEntry.FINDLAST THEN
                             CustomerLedgerEntries.SETRECORD(CustLedgerEntry);
                         CustomerLedgerEntries.SETTABLEVIEW(CustLedgerEntry);
-                        CustomerLedgerEntries.RUN;
+                        CustomerLedgerEntries.Run;
                     end;
                 }
             }
@@ -185,9 +190,9 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         DtldCustLedgEntry: Record "Detailed Cust. Ledg. Entry";
                     begin
                         DtldCustLedgEntry.SETFILTER("Customer No.", Rec."No.");
-                        COPYFILTER("Global Dimension 1 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 1");
-                        COPYFILTER("Global Dimension 2 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 2");
-                        COPYFILTER("Currency Filter", DtldCustLedgEntry."Currency Code");
+                        CopyFilter("Global Dimension 1 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 1");
+                        CopyFilter("Global Dimension 2 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 2");
+                        CopyFilter("Currency Filter", DtldCustLedgEntry."Currency Code");
                         CustLedgEntry.DrillDownOnOverdueEntries(DtldCustLedgEntry);
                     end;
                 }
@@ -203,10 +208,10 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         CustLedgEntry: Record "Cust. Ledger Entry";
                         AccountingPeriod: Record "Accounting Period";
                     begin
-                        CustLedgEntry.SETRANGE("Customer No.", Rec."No.");
-                        CustLedgEntry.SETRANGE("Posting Date", AccountingPeriod.GetFiscalYearStartDate(WORKDATE),
+                        CustLedgEntry.SetRange("Customer No.", Rec."No.");
+                        CustLedgEntry.SetRange("Posting Date", AccountingPeriod.GetFiscalYearStartDate(WORKDATE),
                             AccountingPeriod.GetFiscalYearEndDate(WORKDATE));
-                        PAGE.RUNMODAL(PAGE::"Customer Ledger Entries", CustLedgEntry);
+                        Page.RunMODAL(Page::"Customer Ledger Entries", CustLedgEntry);
                     end;
                 }
                 field(GetInvoicedPrepmtAmountNonLCY; NonLCYCustStatFactbox.GetInvoicedPrepmtAmount(Rec."No."))
@@ -230,7 +235,7 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                     ToolTip = 'Specifies the number of the customer. The field is either filled automatically from a defined number series, or you enter the number manually because you have enabled manual number entry in the number-series setup.';
                     trigger OnDrillDown()
                     begin
-                        PAGE.RUN(PAGE::"Customer Card", Rec);
+                        Page.Run(Page::"Customer Card", Rec);
                     end;
                 }
                 field("Balance (LCY)2"; Rec."Balance (LCY)")
@@ -238,6 +243,11 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                     ApplicationArea = all;
                     Caption = 'Balance ($)';
                     ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+
+                    trigger OnDrillDown()
+                    begin
+                        BalanceDrillDown();
+                    end;
                 }
             }
             group(SalesLCY)
@@ -315,7 +325,7 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         IF CustLedgerEntry.FINDLAST THEN
                             CustomerLedgerEntries.SETRECORD(CustLedgerEntry);
                         CustomerLedgerEntries.SETTABLEVIEW(CustLedgerEntry);
-                        CustomerLedgerEntries.RUN;
+                        CustomerLedgerEntries.Run;
                     end;
                 }
             }
@@ -350,9 +360,9 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         DtldCustLedgEntry: Record "Detailed Cust. Ledg. Entry";
                     begin
                         DtldCustLedgEntry.SETFILTER("Customer No.", Rec."No.");
-                        COPYFILTER("Global Dimension 1 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 1");
-                        COPYFILTER("Global Dimension 2 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 2");
-                        COPYFILTER("Currency Filter", DtldCustLedgEntry."Currency Code");
+                        CopyFilter("Global Dimension 1 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 1");
+                        CopyFilter("Global Dimension 2 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 2");
+                        CopyFilter("Currency Filter", DtldCustLedgEntry."Currency Code");
                         CustLedgEntry.DrillDownOnOverdueEntries(DtldCustLedgEntry);
                     end;
                 }
@@ -368,10 +378,10 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
                         CustLedgEntry: Record "Cust. Ledger Entry";
                         AccountingPeriod: Record "Accounting Period";
                     begin
-                        CustLedgEntry.SETRANGE("Customer No.", Rec."No.");
-                        CustLedgEntry.SETRANGE("Posting Date", AccountingPeriod.GetFiscalYearStartDate(WORKDATE),
+                        CustLedgEntry.SetRange("Customer No.", Rec."No.");
+                        CustLedgEntry.SetRange("Posting Date", AccountingPeriod.GetFiscalYearStartDate(WORKDATE),
                             AccountingPeriod.GetFiscalYearEndDate(WORKDATE));
-                        PAGE.RUNMODAL(PAGE::"Customer Ledger Entries", CustLedgEntry);
+                        Page.RunMODAL(Page::"Customer Ledger Entries", CustLedgEntry);
                     end;
                 }
                 field(GetInvoicedPrepmtAmountLCY2; Rec.GetInvoicedPrepmtAmountLCY())
@@ -393,7 +403,17 @@ pageextension 80110 "BA Cust. Statistics Factbox" extends "Customer Statistics F
     var
         NonLCYCustStatFactbox: Page "BA Non-LCY Cust. Stat. Factbox";
         [InDataSet]
-
-
         ShowLCYBalances: Boolean;
+
+    local procedure BalanceDrillDown()
+    var
+        CustLedgEntry: Record "Cust. Ledger Entry";
+        DtldCustLedgEntry: Record "Detailed Cust. Ledg. Entry";
+    begin
+        DtldCustLedgEntry.SetRange("Customer No.", "No.");
+        Rec.CopyFilter("Global Dimension 1 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 1");
+        Rec.CopyFilter("Global Dimension 2 Filter", DtldCustLedgEntry."Initial Entry Global Dim. 2");
+        Rec.CopyFilter("Currency Filter", DtldCustLedgEntry."Currency Code");
+        CustLedgEntry.DrillDownOnEntries(DtldCustLedgEntry);
+    end;
 }
