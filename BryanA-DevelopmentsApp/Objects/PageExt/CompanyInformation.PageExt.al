@@ -7,13 +7,13 @@ pageextension 80130 "BA Company Information" extends "Company Information"
             ApplicationArea = all;
             Editable = false;
         }
-        addlast("System Indicator")
-        {
-            field("BA Environment Name"; Rec."BA Environment Name")
-            {
-                ApplicationArea = all;
-                ShowMandatory = true;
-            }
-        }
+        // addlast("System Indicator")
+        // {
+        //     field("BA Environment Name"; Rec."BA Environment Name")
+        //     {
+        //         ApplicationArea = all;
+        //         ShowMandatory = true;
+        //     }
+        // }
     }
 }
