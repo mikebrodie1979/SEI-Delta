@@ -13,15 +13,11 @@ pageextension 80148 "BA P. Service Cr.Memo Subpage" extends "Posted Serv. Cr. Me
 
     actions
     {
-        addfirst(Processing)
+        addlast("&Line")
         {
             action("Omit Selected Lines")
             {
                 ApplicationArea = all;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
                 Image = MakeOrder;
 
                 trigger OnAction()
