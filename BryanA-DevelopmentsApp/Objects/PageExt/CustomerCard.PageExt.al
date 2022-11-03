@@ -176,7 +176,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
                     trigger OnDrillDown()
                     begin
-                        OpenCustomerLedgerEntries(false);
+                        Rec.OpenCustomerLedgerEntries(false);
                     end;
                 }
                 field("BA Balance Due (LCY)"; "Balance Due (LCY)")
@@ -186,7 +186,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
                     trigger OnDrillDown()
                     begin
-                        OpenCustomerLedgerEntries(true);
+                        Rec.OpenCustomerLedgerEntries(true);
                     end;
                 }
             }
@@ -207,7 +207,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
                     trigger OnDrillDown()
                     begin
-                        OpenCustomerLedgerEntries(false);
+                        Rec.OpenCustomerLedgerEntries(false);
                     end;
                 }
                 field("BA Balance Due"; "Balance Due")
@@ -217,7 +217,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
                     trigger OnDrillDown()
                     begin
-                        OpenCustomerLedgerEntries(true);
+                        Rec.OpenCustomerLedgerEntries(true);
                     end;
                 }
             }
@@ -230,7 +230,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         [InDataSet]
         StyleTxt: Text;
         NonLCYCustomerStatistics: Page "BA Non-LCY Cust. Stat. Factbox";
-        AccountingPeriod: Record "Accounting Period";
 
 
     trigger OnAfterGetRecord()
