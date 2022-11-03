@@ -13,15 +13,11 @@ pageextension 80146 "BA P. Sales Cr.Memo Subpage" extends "Posted Sales Cr. Memo
 
     actions
     {
-        addfirst(Processing)
+        addlast("&Line")
         {
             action("Omit Selected Lines")
             {
                 ApplicationArea = all;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
                 Image = MakeOrder;
 
                 trigger OnAction()

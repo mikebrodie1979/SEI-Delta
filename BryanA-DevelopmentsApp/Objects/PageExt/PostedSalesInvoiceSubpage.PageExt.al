@@ -15,15 +15,11 @@ pageextension 80145 "BA Posted Sales Inv. Subpage" extends "Posted Sales Invoice
 
     actions
     {
-        addfirst(Processing)
+        addlast("&Line")
         {
             action("Omit Selected Lines")
             {
                 ApplicationArea = all;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
                 Image = MakeOrder;
 
                 trigger OnAction()

@@ -13,15 +13,11 @@ pageextension 80147 "BA Posted Service Inv. Subpage" extends "Posted Service Inv
 
     actions
     {
-        addfirst(Processing)
+        addlast("&Line")
         {
             action("Omit Selected Lines")
             {
                 ApplicationArea = all;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
                 Image = MakeOrder;
 
                 trigger OnAction()
