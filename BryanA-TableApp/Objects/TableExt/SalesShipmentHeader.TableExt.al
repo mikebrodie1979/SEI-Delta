@@ -20,6 +20,18 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Caption = 'Province/State Fullname';
             Editable = false;
         }
+        field(80020; "BA Has Non-G/L Lines"; Boolean)
+        {
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account')));
+        }
+        field(80021; "BA Has Only Empty Lines"; Boolean)
+        {
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = - exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
+        }
         field(80025; "BA Sales Source"; Text[30])
         {
             DataClassification = CustomerContent;
