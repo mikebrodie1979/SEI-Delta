@@ -26,6 +26,12 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Editable = false;
             CalcFormula = exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account')));
         }
+        field(80021; "BA Has Only Empty Lines"; Boolean)
+        {
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = - exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
+        }
         field(80025; "BA Sales Source"; Text[30])
         {
             DataClassification = CustomerContent;
@@ -38,12 +44,6 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             DataClassification = CustomerContent;
             Caption = 'Web Lead Date';
             Editable = false;
-        }
-        field(80021; "BA Has Only Empty Lines"; Boolean)
-        {
-            FieldClass = FlowField;
-            Editable = false;
-            CalcFormula = - exist ("Sales Shipment Line" where ("Document No." = field ("No."), Type = filter ('<>G/L Account'), Quantity = filter ('<>0')));
         }
     }
 }

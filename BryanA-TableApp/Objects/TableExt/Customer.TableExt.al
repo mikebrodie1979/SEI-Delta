@@ -73,5 +73,19 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Credit Limit';
         }
+        field(80026; "BA Credit Limit Last Updated"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Credit Limit Last Updated';
+            Editable = false;
+        }
+        field(80027; "BA Credit Limit Updated By"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Credit Limit Updated By';
+            Editable = false;
+            TableRelation = "User Setup"."User ID";
+            ValidateTableRelation = false;
+        }
     }
 }
