@@ -173,11 +173,21 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+
+                    trigger OnDrillDown()
+                    begin
+                        Rec.OpenCustomerLedgerEntries(false);
+                    end;
                 }
                 field("BA Balance Due (LCY)"; "Balance Due (LCY)")
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies payments from the customer that are overdue per today''s date.';
+
+                    trigger OnDrillDown()
+                    begin
+                        Rec.OpenCustomerLedgerEntries(true);
+                    end;
                 }
             }
             group("BA Non-Local Balances")
@@ -194,29 +204,24 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies the payment amount that the customer owes for completed sales. This value is also known as the customer''s balance.';
+
+                    trigger OnDrillDown()
+                    begin
+                        Rec.OpenCustomerLedgerEntries(false);
+                    end;
                 }
                 field("BA Balance Due"; "Balance Due")
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies payments from the customer that are overdue per today''s date.';
+
+                    trigger OnDrillDown()
+                    begin
+                        Rec.OpenCustomerLedgerEntries(true);
+                    end;
                 }
             }
         }
-        // modify(CustomerStatisticsFactBox)
-        // {
-        //     Visible = ShowLCYBalances;
-        // }
-        // addafter(CustomerStatisticsFactBox)
-        // {
-        //     part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
-        //     {
-        //         SubPageLink = "No." = field ("No."), "Currency Filter" = FIELD ("Currency Filter"), "Date Filter" = FIELD ("Date Filter"),
-        //         "Global Dimension 1 Filter" = FIELD ("Global Dimension 1 Filter"),
-        //         "Global Dimension 2 Filter" = FIELD ("Global Dimension 2 Filter");
-        //         Visible = not ShowLCYBalances;
-        //         ApplicationArea = all;
-        //     }
-        // }
     }
 
     var
@@ -225,7 +230,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         [InDataSet]
         StyleTxt: Text;
         NonLCYCustomerStatistics: Page "BA Non-LCY Cust. Stat. Factbox";
-        AccountingPeriod: Record "Accounting Period";
 
 
     trigger OnAfterGetRecord()
@@ -277,91 +281,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         EXIT(Totals)
     end;
 
-
-    // local procedure CalculateStatistic(Customer: Record Customer; VAR AdjmtCost: Decimal; VAR AdjCustProfit: Decimal; VAR AdjProfitPct: Decimal; VAR CustInvDiscAmount: Decimal; VAR CustPayments: Decimal; VAR CustSales: Decimal; VAR CustProfit: Decimal)
-    // var
-    //     CostCalcuMgt: Codeunit "Cost Calculation Management";
-    //     StartDate: Date;
-    //     EndDate: Date;
-    // begin
-    //     WITH Customer DO BEGIN
-    //         StartDate := AccountingPeriod.GetFiscalYearStartDate(WorkDate());
-    //         EndDate := AccountingPeriod.GetFiscalYearEndDate(WorkDate());
-    //         SetRange("Date Filter", StartDate, EndDate);
-
-    //         CustSales := NonLCYCustomerStatistics.GetSales(Rec);
-    //         CustProfit := GetProfit() + CostCalcuMgt.NonInvtblCostAmt(Customer);
-    //         AdjmtCost := CustSales - CustProfit + CostCalcuMgt.CalcCustActualCostLCY(Customer);
-    //         AdjCustProfit := CustProfit + AdjmtCost;
-
-    //         IF CustSales <> 0 THEN
-    //             AdjProfitPct := ROUND(100 * AdjCustProfit / CustSales, 0.1)
-    //         ELSE
-    //             AdjProfitPct := 0;
-
-    //         CustInvDiscAmount := GetInvoiceDiscount();
-    //         CustPayments := Payments;
-    //     END;
-    // end;
-
-
-    // local procedure GetProfit(): Decimal
-    // var
-    //     CustLedgerEntry: Record "Cust. Ledger Entry";
-    //     TotalProfit: Decimal;
-    //     ExchangeRate: Decimal;
-    // begin
-    //     SetCustLedgeEntryFilters(CustLedgerEntry);
-    //     if not CustLedgerEntry.FindSet() then
-    //         exit(0);
-    //     repeat
-    //         CustLedgerEntry.CalcFields(Amount, "Amount (LCY)");
-    //         if (CustLedgerEntry."Amount (LCY)" <> 0) then begin
-    //             ExchangeRate := CustLedgerEntry.Amount / CustLedgerEntry."Amount (LCY)";
-    //             if ExchangeRate <> 0 then
-    //                 TotalProfit += CustLedgerEntry."Profit (LCY)" * ExchangeRate;
-    //         end;
-    //     until CustLedgerEntry.Next() = 0;
-    //     exit(TotalProfit);
-    // end;
-
-
-
-    // local procedure SetCustLedgeEntryFilters(var CustLedgerEntry: Record "Cust. Ledger Entry")
-    // var
-    //     StartDate: Date;
-    //     EndDate: Date;
-    // begin
-    //     StartDate := AccountingPeriod.GetFiscalYearStartDate(WorkDate());
-    //     EndDate := AccountingPeriod.GetFiscalYearEndDate(WorkDate());
-    //     CustLedgerEntry.SetRange("Customer No.", Rec."No.");
-    //     CustLedgerEntry.SetRange("Global Dimension 1 Code", Rec."Global Dimension 1 Code");
-    //     CustLedgerEntry.SetRange("Global Dimension 2 Code", Rec."Global Dimension 2 Code");
-    //     CustLedgerEntry.SetRange("Posting Date", StartDate, EndDate);
-    //     CustLedgerEntry.SetRange("Currency Code", Rec."Currency Code");
-    // end;
-
-    // local procedure GetInvoiceDiscount(): Decimal
-    // var
-    //     CustLedgerEntry: Record "Cust. Ledger Entry";
-    //     TotalProfit: Decimal;
-    //     ExchangeRate: Decimal;
-    //     StartDate: Date;
-    //     EndDate: Date;
-    // begin
-    //     SetCustLedgeEntryFilters(CustLedgerEntry);
-    //     if CustLedgerEntry.FindSet() then
-    //         exit(0);
-    //     repeat
-    //         CustLedgerEntry.CalcFields(Amount, "Amount (LCY)");
-    //         if (CustLedgerEntry."Amount (LCY)" <> 0) then begin
-    //             ExchangeRate := CustLedgerEntry.Amount / CustLedgerEntry."Amount (LCY)";
-    //             if ExchangeRate <> 0 then
-    //                 TotalProfit += CustLedgerEntry."Inv. Discount (LCY)" * ExchangeRate;
-    //         end;
-    //     until CustLedgerEntry.Next() = 0;
-    //     exit(TotalProfit);
-    // end;
 
 
     var
