@@ -850,6 +850,17 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterValidateEvent', 'Credit Limit (LCY)', false, false)]
+    local procedure CustomerNoAfterValidateCreditLimit(var Rec: Record Customer; var xRec: Record Customer)
+    begin
+        if Rec."Credit Limit (LCY)" = xRec."Credit Limit (LCY)" then
+            exit;
+        Rec."BA Credit Limit Last Updated" := CurrentDateTime();
+        Rec."BA Credit Limit Updated By" := UserId();
+        Rec.Modify(true);
+    end;
+
+
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';

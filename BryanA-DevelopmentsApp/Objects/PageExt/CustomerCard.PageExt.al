@@ -169,6 +169,14 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                     StyleExpr = StyleTxt;
                     ToolTip = 'Specifies the maximum amount you allow the customer to exceed the payment balance before warnings are issued.';
                 }
+                field("BA Credit Limit Last Updated2"; Rec."BA Credit Limit Last Updated")
+                {
+                    ApplicationArea = all;
+                }
+                field("BA Credit Limit Updated By2"; Rec."BA Credit Limit Updated By")
+                {
+                    ApplicationArea = all;
+                }
                 field("BA Balance (LCY)"; "Balance (LCY)")
                 {
                     ApplicationArea = all;
@@ -199,6 +207,14 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                     ApplicationArea = all;
                     StyleExpr = StyleTxt;
                     ToolTip = 'Specifies the maximum amount you allow the customer to exceed the payment balance before warnings are issued.';
+                }
+                field("BA Credit Limit Last Updated"; Rec."BA Credit Limit Last Updated")
+                {
+                    ApplicationArea = all;
+                }
+                field("BA Credit Limit Updated By"; Rec."BA Credit Limit Updated By")
+                {
+                    ApplicationArea = all;
                 }
                 field("BA Balance"; Balance)
                 {
