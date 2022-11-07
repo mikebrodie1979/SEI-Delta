@@ -45,7 +45,7 @@ tableextension 80012 "BA Item" extends Item
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = lookup ("Item Cross Reference"."Cross-Reference Type No." where ("Item No." = field ("No."),
-                "Cross-Reference Type" = const (Vendor), "Cross-Reference No." = field ("BA Default Cross-Ref. No.")));
+                "Cross-Reference Type" = const (Vendor), "Cross-Reference No." = field ("BA Default Cross-Ref. No."), "BA Default Cross Refernce No." = const (true)));
         }
         field(80021; "BA Default Cross-Ref. No."; Code[20])
         {
