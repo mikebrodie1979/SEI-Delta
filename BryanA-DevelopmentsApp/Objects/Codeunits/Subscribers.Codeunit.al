@@ -778,14 +778,55 @@ codeunit 75010 "BA SEI Subscibers"
             ItemJournalLine."BA Updated" := true;
     end;
 
+    [EventSubscriber(ObjectType::Report, Report::"Calculate Inventory", 'OnAfterPostItemDataItem', '', false, false)]
+    local procedure CalcInventoryOnAfterPostItemDataItem(var ItemJnlLine: Record "Item Journal Line")
+    begin
+        ItemJnlLine.Reset();
+        ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
+        if DoesItemJnlHaveMultipleItemLines(ItemJnlLine) then
+            Message('Inventory calculation completed with warnings.');
+    end;
+
+    procedure DoesItemJnlHaveMultipleItemLines(var ItemJnlLine: Record "Item Journal Line"): Boolean
+    var
+        TempItemJnlLine: Record "Item Journal Line" temporary;
+        ItemNos: List of [Code[20]];
+        ItemNo: Code[20];
+        HasWarnings: Boolean;
+    begin
+        if ItemJnlLine.IsEmpty() then
+            exit(false);
+        ItemJnlLine.SetFilter("BA Warning Message", '<>%1', '');
+        ItemJnlLine.ModifyAll("BA Warning Message", '');
+        ItemJnlLine.SetRange("BA Warning Message");
+        if not ItemJnlLine.FindSet() then
+            exit(false);
+        repeat
+            if ItemNos.Contains(ItemJnlLine."Item No.") then begin
+                TempItemJnlLine := ItemJnlLine;
+                TempItemJnlLine.Insert(false);
+            end else
+                ItemNos.Add(ItemJnlLine."Item No.");
+        until ItemJnlLine.Next() = 0;
+        if not TempItemJnlLine.FindSet() then
+            exit(false);
+        repeat
+            ItemJnlLine.SetRange("Item No.", TempItemJnlLine."Item No.");
+            if ItemJnlLine.Count() > 1 then begin
+                HasWarnings := true;
+                ItemJnlLine.ModifyAll("BA Warning Message", StrSubstNo('Item %1 occurs on multiple lines.', TempItemJnlLine."Item No."));
+            end;
+        until TempItemJnlLine.Next() = 0;
+        exit(HasWarnings);
+    end;
+
     [EventSubscriber(ObjectType::Page, Page::"Phys. Inventory Journal", 'OnAfterActionEvent', 'CalculateInventory', false, false)]
     local procedure PhysInvJournalOnAfterCalculateInventory(var Rec: Record "Item Journal Line")
     begin
         Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
         Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
         Rec.SetRange("BA Created At", 0DT);
-        if not Confirm(StrSubstNo('%1 -> %2', Rec.GetFilters, Rec.count)) then
-            Error('');
         Rec.ModifyAll("BA Created At", CurrentDateTime());
     end;
 
