@@ -69,7 +69,9 @@ report 50080 "BA Physical Inventory Import"
     local procedure ImportExcelToPhysicalItemJnl()
     var
         ExcelBuffer: Record "Excel Buffer" temporary;
+        ExcelBuffer2: Record "Excel Buffer" temporary;
         ItemJnlLine: Record "Item Journal Line";
+        Subsrcibers: Codeunit "BA SEI Subscibers";
         Window: Dialog;
         ItemNo: Code[20];
         QtyList: List of [Decimal];
@@ -80,6 +82,11 @@ report 50080 "BA Physical Inventory Import"
     begin
         if not ImportFile(ExcelBuffer, ImportDialogTitle) then
             exit;
+        ItemJnlLine.SetRange("Journal Template Name", TemplateName);
+        ItemJnlLine.SetRange("Journal Batch Name", BatchName);
+        if Subsrcibers.DoesItemJnlHaveMultipleItemLines(ItemJnlLine) then
+            if not Confirm(StrSubstNo('Batch %1 has multiple lines for the same item, continue with inventory import?', BatchName)) then
+                exit;
         ClearErrors();
         ExcelBuffer.SetFilter("Row No.", '>%1', 1);
         if not ExcelBuffer.FindSet() then
@@ -95,8 +102,6 @@ report 50080 "BA Physical Inventory Import"
                 Qty := -1;
             QtyList.Add(Qty);
         until ExcelBuffer.Next() = 0;
-        ItemJnlLine.SetRange("Journal Template Name", TemplateName);
-        ItemJnlLine.SetRange("Journal Batch Name", BatchName);
         if ItemJnlLine.FindLast() then
             LineNo := ItemJnlLine."Line No.";
         Window.Update(1, 'Importing Lines');
@@ -119,10 +124,8 @@ report 50080 "BA Physical Inventory Import"
                         CreateItemJnlLine(LineNo, ItemNo, Qty);
         until ExcelBuffer.Next() = 0;
         Window.Close();
-
         ItemJnlLine.SetRange("Item No.", '');
         ItemJnlLine.DeleteAll(true);
-
         ViewErrors();
     end;
 
@@ -189,7 +192,7 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.Validate("Qty. (Calculated)", 0);
         ItemJnlLine.Validate("Qty. (Phys. Inventory)", Qty);
         ItemJnlLine."BA Updated" := true;
-        ItemJnlLine."BA Created At" := CurrentDateTime();
+        // ItemJnlLine."BA Created At" := CurrentDateTime();
         ItemJnlLine.Insert(true);
     end;
 

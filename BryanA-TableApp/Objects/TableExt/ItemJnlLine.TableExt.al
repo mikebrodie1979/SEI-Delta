@@ -15,5 +15,11 @@ tableextension 80049 "BA Item Jnl. Line" extends "Item Journal Line"
             Caption = 'Created At';
             Editable = false;
         }
+        field(80002; "BA Warning Message"; Text[256])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Warning Message';
+            Editable = false;
+        }
     }
 }

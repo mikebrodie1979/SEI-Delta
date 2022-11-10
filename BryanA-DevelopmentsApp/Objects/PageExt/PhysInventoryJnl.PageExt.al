@@ -2,6 +2,15 @@ pageextension 80087 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
 {
     layout
     {
+        addfirst(Control1)
+        {
+            field("BA Warning Message"; Rec."BA Warning Message")
+            {
+                ApplicationArea = all;
+                Style = Unfavorable;
+                Editable = false;
+            }
+        }
         addafter(Description)
         {
             field("BA Updated"; "BA Updated")
