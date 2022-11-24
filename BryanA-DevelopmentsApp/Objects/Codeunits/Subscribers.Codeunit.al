@@ -828,11 +828,15 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Page, Page::"Phys. Inventory Journal", 'OnAfterActionEvent', 'CalculateInventory', false, false)]
     local procedure PhysInvJournalOnAfterCalculateInventory(var Rec: Record "Item Journal Line")
+    var
+        ItemJnlLine: Record "Item Journal Line";
     begin
+        ItemJnlLine.CopyFilters(Rec);
         Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
         Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
         Rec.SetRange("BA Created At", 0DT);
         Rec.ModifyAll("BA Created At", CurrentDateTime());
+        Rec.CopyFilters(ItemJnlLine);
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Item Journal Line", 'OnAfterInsertEvent', '', false, false)]
