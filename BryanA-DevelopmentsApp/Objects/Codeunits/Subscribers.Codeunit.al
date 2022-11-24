@@ -808,12 +808,17 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Report, Report::"Calculate Inventory", 'OnAfterPostItemDataItem', '', false, false)]
     local procedure CalcInventoryOnAfterPostItemDataItem(var ItemJnlLine: Record "Item Journal Line")
+    var
+        ItemJnlLine2: Record "Item Journal Line";
     begin
+        ItemJnlLine2.CopyFilters(ItemJnlLine);
         ItemJnlLine.Reset();
         ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
         ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
         if DoesItemJnlHaveMultipleItemLines(ItemJnlLine) then
-            Message('Inventory calculation completed with warnings.');
+            Message(ImportWarningsMsg);
+        ItemJnlLine.Reset();
+        ItemJnlLine.CopyFilters(ItemJnlLine2);
     end;
 
     procedure DoesItemJnlHaveMultipleItemLines(var ItemJnlLine: Record "Item Journal Line"): Boolean
@@ -843,7 +848,7 @@ codeunit 75010 "BA SEI Subscibers"
             ItemJnlLine.SetRange("Item No.", TempItemJnlLine."Item No.");
             if ItemJnlLine.Count() > 1 then begin
                 HasWarnings := true;
-                ItemJnlLine.ModifyAll("BA Warning Message", StrSubstNo('Item %1 occurs on multiple lines.', TempItemJnlLine."Item No."));
+                ItemJnlLine.ModifyAll("BA Warning Message", StrSubstNo(MultiItemMsg, TempItemJnlLine."Item No."));
             end;
         until TempItemJnlLine.Next() = 0;
         exit(HasWarnings);
@@ -929,4 +934,6 @@ codeunit 75010 "BA SEI Subscibers"
         TooLongSuffixError: Label 'Numeral suffix length is greater than 7.';
         TooShortSuffixError: Label 'Numeral suffix length is less than 7.';
         ExchageRateUpdateMsg: Label 'Updated exchange rate to %1.';
+        MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
+        ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
 }
