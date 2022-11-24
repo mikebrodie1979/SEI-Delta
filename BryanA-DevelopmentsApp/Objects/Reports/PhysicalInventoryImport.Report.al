@@ -85,7 +85,7 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.SetRange("Journal Template Name", TemplateName);
         ItemJnlLine.SetRange("Journal Batch Name", BatchName);
         if Subsrcibers.DoesItemJnlHaveMultipleItemLines(ItemJnlLine) then
-            if not Confirm(StrSubstNo('Batch %1 has multiple lines for the same item, continue with inventory import?', BatchName)) then
+            if not Confirm(StrSubstNo(MultiItemLinesMsg, BatchName)) then
                 exit;
         ClearErrors();
         ExcelBuffer.SetFilter("Row No.", '>%1', 1);
@@ -192,7 +192,6 @@ report 50080 "BA Physical Inventory Import"
         ItemJnlLine.Validate("Qty. (Calculated)", 0);
         ItemJnlLine.Validate("Qty. (Phys. Inventory)", Qty);
         ItemJnlLine."BA Updated" := true;
-        // ItemJnlLine."BA Created At" := CurrentDateTime();
         ItemJnlLine.Insert(true);
     end;
 
@@ -254,6 +253,7 @@ report 50080 "BA Physical Inventory Import"
         FilePath: Text;
 
 
+        MultiItemLinesMsg: Label 'Batch %1 has multiple lines for the same item, continue with inventory import?';
         NoTemplateNameError: Label 'Template Name must be specified.';
         NoBatchNameError: Label 'Batch Name must be specified.';
         NoDocumentNoError: Label 'Document No. must be specified.';
