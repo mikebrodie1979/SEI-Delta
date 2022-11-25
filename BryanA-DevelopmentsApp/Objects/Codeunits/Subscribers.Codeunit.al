@@ -2,7 +2,8 @@ codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
                   tabledata "Purch. Rcpt. Header" = rimd,
-                  tabledata "Sales Shipment Line" = i;
+                  tabledata "Sales Shipment Line" = i,
+                  tabledata "Item Ledger Entry" = rimd;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -736,29 +737,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnPostSalesLineOnBeforeInsertShipmentLine', '', false, false)]
-    // local procedure SalesPostOnBeforeSalesShptLineInsert(var IsHandled: Boolean; SalesLine: Record "Sales Line")
-    // begin
-    //     if SalesLine.Type = SalesLine.Type::"G/L Account" then
-    //         IsHandled := true;
-    // end;
-
-    // [EventSubscriber(ObjectType::Codeunit, codeunit::"Sales-Post", 'OnAfterFinalizePostingOnBeforeCommit', '', false, false)]
-    // local procedure SalesPostOnAfterFinalizePostingOnBeforeCommit(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
-    // var
-    //     SalesShptLine: Record "Sales Shipment Line";
-    // begin
-    //     if (SalesShipmentHeader."No." = '') or not SalesHeader.Ship then
-    //         exit;
-    //     SalesShptLine.SetRange("Document No.", SalesShipmentHeader."No.");
-    //     if not SalesShptLine.IsEmpty() then begin
-    //         SalesShptLine.SetFilter(Quantity, '<>%1', 0);
-    //         if not SalesShptLine.IsEmpty() then
-    //             exit;
-    //     end;
-    //     SalesShipmentHeader."No. Printed" := -1;
-    //     SalesShipmentHeader.Delete(true);
-    // end;
 
 
     procedure AddMissingLineToShpt(ShptNo: Code[20])
@@ -860,6 +838,90 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Modify(true);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
+    local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
+    begin
+        if not ItemJournalLine."BA Updated" then
+            exit;
+        ItemLedgerEntry."BA Year-end Adjst." := true;
+        ItemLedgerEntry.Modify(false);
+    end;
+
+
+    [EventSubscriber(ObjectType::Report, Report::"Calculate Inventory", 'OnBeforeInsertItemJnlLine', '', false, false)]
+    local procedure CalcInventoryOnBeforeInsertItemJnlLine(var ItemJournalLine: Record "Item Journal Line"; YearEndInventoryAdjust: Boolean)
+    begin
+        if YearEndInventoryAdjust then
+            ItemJournalLine."BA Updated" := true;
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Calculate Inventory", 'OnAfterPostItemDataItem', '', false, false)]
+    local procedure CalcInventoryOnAfterPostItemDataItem(var ItemJnlLine: Record "Item Journal Line")
+    var
+        ItemJnlLine2: Record "Item Journal Line";
+    begin
+        ItemJnlLine2.CopyFilters(ItemJnlLine);
+        ItemJnlLine.Reset();
+        ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
+        if DoesItemJnlHaveMultipleItemLines(ItemJnlLine) then
+            Message(ImportWarningsMsg);
+        ItemJnlLine.Reset();
+        ItemJnlLine.CopyFilters(ItemJnlLine2);
+    end;
+
+    procedure DoesItemJnlHaveMultipleItemLines(var ItemJnlLine: Record "Item Journal Line"): Boolean
+    var
+        TempItemJnlLine: Record "Item Journal Line" temporary;
+        ItemNos: List of [Code[20]];
+        ItemNo: Code[20];
+        HasWarnings: Boolean;
+    begin
+        if ItemJnlLine.IsEmpty() then
+            exit(false);
+        ItemJnlLine.SetFilter("BA Warning Message", '<>%1', '');
+        ItemJnlLine.ModifyAll("BA Warning Message", '');
+        ItemJnlLine.SetRange("BA Warning Message");
+        if not ItemJnlLine.FindSet() then
+            exit(false);
+        repeat
+            if ItemNos.Contains(ItemJnlLine."Item No.") then begin
+                TempItemJnlLine := ItemJnlLine;
+                TempItemJnlLine.Insert(false);
+            end else
+                ItemNos.Add(ItemJnlLine."Item No.");
+        until ItemJnlLine.Next() = 0;
+        if not TempItemJnlLine.FindSet() then
+            exit(false);
+        repeat
+            ItemJnlLine.SetRange("Item No.", TempItemJnlLine."Item No.");
+            if ItemJnlLine.Count() > 1 then begin
+                HasWarnings := true;
+                ItemJnlLine.ModifyAll("BA Warning Message", StrSubstNo(MultiItemMsg, TempItemJnlLine."Item No."));
+            end;
+        until TempItemJnlLine.Next() = 0;
+        exit(HasWarnings);
+    end;
+
+    [EventSubscriber(ObjectType::Page, Page::"Phys. Inventory Journal", 'OnAfterActionEvent', 'CalculateInventory', false, false)]
+    local procedure PhysInvJournalOnAfterCalculateInventory(var Rec: Record "Item Journal Line")
+    var
+        ItemJnlLine: Record "Item Journal Line";
+    begin
+        ItemJnlLine.CopyFilters(Rec);
+        Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
+        Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
+        Rec.SetRange("BA Created At", 0DT);
+        Rec.ModifyAll("BA Created At", CurrentDateTime());
+        Rec.CopyFilters(ItemJnlLine);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Item Journal Line", 'OnAfterInsertEvent', '', false, false)]
+    local procedure ItemJounalLineOnAfterInsert(var Rec: Record "Item Journal Line")
+    begin
+        Rec."BA Created At" := CurrentDateTime();
+    end;
+
 
 
     var
@@ -872,4 +934,6 @@ codeunit 75010 "BA SEI Subscibers"
         TooLongSuffixError: Label 'Numeral suffix length is greater than 7.';
         TooShortSuffixError: Label 'Numeral suffix length is less than 7.';
         ExchageRateUpdateMsg: Label 'Updated exchange rate to %1.';
+        MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
+        ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
 }
