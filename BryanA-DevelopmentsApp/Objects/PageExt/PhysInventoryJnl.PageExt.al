@@ -53,7 +53,6 @@ pageextension 80090 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
                 PromotedOnly = true;
                 Image = PhysicalInventoryLedger;
                 Caption = 'View Inventory Import Errors';
-                RunObject = page "BA Phys. Invt. Import Errors";
 
                 trigger OnAction()
                 var
