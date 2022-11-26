@@ -54,6 +54,19 @@ pageextension 80087 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
                 Image = PhysicalInventoryLedger;
                 Caption = 'View Inventory Import Errors';
                 RunObject = page "BA Phys. Invt. Import Errors";
+
+                trigger OnAction()
+                var
+                    NameBuffer: Record "Name/Value Buffer" temporary;
+                    ItemJnlLine: Record "Item Journal Line";
+                    ErrorPage: Page "BA Phys. Invt. Import Errors";
+                begin
+                    ItemJnlLine.SetRange("Journal Template Name", Rec."Journal Template Name");
+                    ItemJnlLine.SetRange("Journal Batch Name", Rec."Journal Batch Name");
+                    ItemJnlLine.SetFilter("BA Warning Message", '<>%1', '');
+                    ErrorPage.PopulateRecords(ItemJnlLine);
+                    ErrorPage.RunModal();
+                end;
             }
         }
     }
