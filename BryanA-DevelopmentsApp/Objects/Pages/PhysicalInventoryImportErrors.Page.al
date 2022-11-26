@@ -1,7 +1,5 @@
 page 50069 "BA Phys. Invt. Import Errors"
 {
-    // ApplicationArea = all;
-    // UsageCategory = Lists;
     SourceTable = "Name/Value Buffer";
     PageType = List;
     Caption = 'Physical Inventory Import Errors';
@@ -28,7 +26,8 @@ page 50069 "BA Phys. Invt. Import Errors"
                 field(Error; Rec.Value)
                 {
                     ApplicationArea = all;
-                    Caption = 'Error';
+                    Caption = 'Error Message';
+                    Style = Unfavorable;
                 }
             }
         }
