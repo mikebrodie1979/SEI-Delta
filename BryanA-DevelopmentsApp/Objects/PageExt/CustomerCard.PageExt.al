@@ -240,6 +240,32 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         }
     }
 
+    actions
+    {
+        addlast(Creation)
+        {
+            action("BA Cancel Customer")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Category4;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = Cancel;
+                Caption = 'Cancel Customer';
+                ToolTip = 'Deletes a customer that has been accidently created.';
+
+                trigger OnAction()
+                begin
+                    if not Confirm('Cancel customer?') then
+                        exit;
+                    Rec."ENC Has Been Renamed" := true;
+                    Rec.Delete(true);
+                end;
+            }
+        }
+    }
+
     var
         [InDataSet]
         ShowLCYBalances: Boolean;
