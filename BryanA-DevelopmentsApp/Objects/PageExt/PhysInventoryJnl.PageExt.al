@@ -4,6 +4,11 @@ pageextension 80087 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
     {
         addfirst(Control1)
         {
+            field("Line No."; Rec."Line No.")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
             field("BA Warning Message"; Rec."BA Warning Message")
             {
                 ApplicationArea = all;

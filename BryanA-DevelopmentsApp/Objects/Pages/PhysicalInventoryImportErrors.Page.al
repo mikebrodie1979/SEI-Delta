@@ -17,11 +17,27 @@ page 50069 "BA Phys. Invt. Import Errors"
                 {
                     ApplicationArea = all;
                     Caption = 'Item No.';
+                    TableRelation = Item."No.";
                 }
                 field("Line No."; Rec.ID)
                 {
                     ApplicationArea = all;
                     Caption = 'Journal Line No.';
+
+                    trigger OnDrillDown()
+                    var
+                        ItemJnlLine: Record "Item Journal Line";
+                        RecID: RecordId;
+                        PhysicalInvJnl: Page "Phys. Inventory Journal";
+                    begin
+                        if not Evaluate(RecID, Rec."Value Long") or not ItemJnlLine.Get(RecID) then
+                            exit;
+                        ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
+                        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
+                        ItemJnlLine.SetRange("Item No.", ItemJnlLine."Item No.");
+                        PhysicalInvJnl.SetTableView(ItemJnlLine);
+                        PhysicalInvJnl.RunModal();
+                    end;
                 }
                 field(Error; Rec.Value)
                 {
@@ -41,6 +57,7 @@ page 50069 "BA Phys. Invt. Import Errors"
                 Rec.ID := ItemJnlLine."Line No.";
                 Rec.Name := ItemJnlLine."Item No.";
                 Rec.Value := ItemJnlLine."BA Warning Message";
+                Rec."Value Long" := Format(ItemJnlLine.RecordId());
                 Rec.Insert(false);
             until ItemJnlLine.Next() = 0;
     end;
