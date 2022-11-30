@@ -32,10 +32,12 @@ page 50067 "BA Phys. Invt. Import Errors"
                     begin
                         if not Evaluate(RecID, Rec."Value Long") or not ItemJnlLine.Get(RecID) then
                             exit;
+                        ItemJnlLine.FilterGroup(2);
                         ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
                         ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
                         ItemJnlLine.SetRange("Item No.", ItemJnlLine."Item No.");
                         PhysicalInvJnl.SetTableView(ItemJnlLine);
+                        ItemJnlLine.FilterGroup(0);
                         PhysicalInvJnl.RunModal();
                     end;
                 }
