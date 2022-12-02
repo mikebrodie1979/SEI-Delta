@@ -133,6 +133,12 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     }
 
     trigger OnAfterGetRecord()
+    begin
+        CheckToUpdateDimValues(Rec);
+    end;
+
+
+    procedure CheckToUpdateDimValues(var Item: Record Item): Boolean
     var
         GLSetup: Record "General Ledger Setup";
         DefaultDim: Record "Default Dimension";
@@ -140,31 +146,33 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         RecRef2: RecordRef;
         UpdateRec: Boolean;
     begin
-        if Rec."No." = '' then
-            exit;
-        RecRef.GetTable(Rec);
+        if Item."No." = '' then
+            exit(false);
+        RecRef.GetTable(Item);
         GLSetup.Get();
         RecRef2.GetTable(GLSetup);
 
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 3 Code"), Rec.FieldNo("ENC Shortcut Dimension 3 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 3 Code"), Item.FieldNo("ENC Shortcut Dimension 3 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 4 Code"), Rec.FieldNo("ENC Shortcut Dimension 4 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 4 Code"), Item.FieldNo("ENC Shortcut Dimension 4 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 5 Code"), Rec.FieldNo("ENC Shortcut Dimension 5 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 5 Code"), Item.FieldNo("ENC Shortcut Dimension 5 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 6 Code"), Rec.FieldNo("ENC Shortcut Dimension 6 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 6 Code"), Item.FieldNo("ENC Shortcut Dimension 6 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 7 Code"), Rec.FieldNo("ENC Shortcut Dimension 7 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 7 Code"), Item.FieldNo("ENC Shortcut Dimension 7 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 8 Code"), Rec.FieldNo("ENC Shortcut Dimension 8 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 8 Code"), Item.FieldNo("ENC Shortcut Dimension 8 Code")) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Rec.FieldNo("ENC Product ID Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code")) then
             UpdateRec := true;
 
+
         if UpdateRec then begin
-            RecRef.SetTable(Rec);
+            RecRef.SetTable(Item);
             CurrPage.Update(true);
         end;
+        exit(UpdateRec);
     end;
 
     local procedure UpdateDimValue(var RecRef: RecordRef; var GLRecRef: RecordRef; GLFldNo: Integer; DimFldNo: Integer): Boolean
@@ -176,17 +184,17 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         FldRef3: FieldRef;
     begin
         FldRef := GLRecRef.Field(GLFldNo);
-        if Format(FldRef.Value) = '' then
+        if Format(FldRef.Value()) = '' then
             exit(false);
         FldRef2 := RecRef.Field(Rec.FieldNo("No."));
         FldRef3 := RecRef.Field(DimFldNo);
-        if DefaultDim.Get(Database::Item, FldRef2.Value, FldRef.Value) then begin
+        if DefaultDim.Get(Database::Item, FldRef2.Value(), FldRef.Value()) then begin
             if Format(FldRef3.Value) <> DefaultDim."Dimension Value Code" then begin
                 FldRef3.Validate(DefaultDim."Dimension Value Code");
                 exit(true);
             end;
         end else
-            if Format(FldRef3.Value) <> '' then begin
+            if Format(FldRef3.Value()) <> '' then begin
                 FldRef3.Validate('');
                 exit(true);
             end;
