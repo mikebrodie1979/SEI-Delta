@@ -478,6 +478,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
+        DefaultDim: Record "Default Dimension";
     begin
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
@@ -505,7 +506,8 @@ codeunit 75010 "BA SEI Subscibers"
             else
                 exit;
         end;
-        Rec.Modify(true);
+        if DefaultDim.Get(Rec.RecordId()) then
+            Rec.Modify(true)
     end;
 
 
