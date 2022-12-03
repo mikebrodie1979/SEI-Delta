@@ -8,14 +8,14 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             {
                 ApplicationArea = all;
             }
-            field("BA Qty. on Closed Sales Quote"; "BA Qty. on Closed Sales Quote")
+            field("BA Qty. on Closed Sales Quote"; Rec."BA Qty. on Closed Sales Quote")
             {
                 ApplicationArea = all;
             }
         }
         addafter("Last Direct Cost")
         {
-            field("BA Last USD Purch. Cost"; "BA Last USD Purch. Cost")
+            field("BA Last USD Purch. Cost"; Rec."BA Last USD Purch. Cost")
             {
                 ApplicationArea = all;
                 ToolTip = 'Specifies the most recent USD purchase unit cost for the item.';
@@ -23,15 +23,15 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         addafter("Base Unit of Measure")
         {
-            field("ENC Is Fabric"; "ENC Is Fabric")
+            field("ENC Is Fabric"; Rec."ENC Is Fabric")
             {
                 ApplicationArea = all;
             }
-            field("BA ETL Approved Fabric"; "BA ETL Approved Fabric")
+            field("BA ETL Approved Fabric"; Rec."BA ETL Approved Fabric")
             {
                 ApplicationArea = all;
             }
-            field("ENC Fabric Brand Name"; "ENC Fabric Brand Name")
+            field("ENC Fabric Brand Name"; Rec."ENC Fabric Brand Name")
             {
                 ApplicationArea = all;
             }
@@ -41,47 +41,84 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             group("Dimensions")
             {
                 Caption = 'Dimensions';
-                field("Global Dimension 1 Code"; "Global Dimension 1 Code")
+                field("Global Dimension 1 Code"; Rec."Global Dimension 1 Code")
                 {
                     ApplicationArea = all;
                 }
-                field("Global Dimension 2 Code"; "Global Dimension 2 Code")
+                field("Global Dimension 2 Code"; Rec."Global Dimension 2 Code")
                 {
                     ApplicationArea = all;
                 }
-                field("ENC Shortcut Dimension 3 Code"; "ENC Shortcut Dimension 3 Code")
-                {
-                    ApplicationArea = all;
-                    Visible = false;
-                }
-                field("ENC Shortcut Dimension 4 Code"; "ENC Shortcut Dimension 4 Code")
+                field("ENC Shortcut Dimension 3 Code"; Rec."ENC Shortcut Dimension 3 Code")
                 {
                     ApplicationArea = all;
                     Visible = false;
                 }
-                field("ENC Shortcut Dimension 5 Code"; "ENC Shortcut Dimension 5 Code")
+                field("ENC Shortcut Dimension 4 Code"; Rec."ENC Shortcut Dimension 4 Code")
                 {
                     ApplicationArea = all;
                     Visible = false;
                 }
-                field("ENC Shortcut Dimension 6 Code"; "ENC Shortcut Dimension 6 Code")
+                field("ENC Shortcut Dimension 5 Code"; Rec."ENC Shortcut Dimension 5 Code")
                 {
                     ApplicationArea = all;
                     Visible = false;
                 }
-                field("ENC Shortcut Dimension 7 Code"; "ENC Shortcut Dimension 7 Code")
+                field("ENC Shortcut Dimension 6 Code"; Rec."ENC Shortcut Dimension 6 Code")
                 {
                     ApplicationArea = all;
                     Visible = false;
                 }
-                field("ENC Shortcut Dimension 8 Code"; "ENC Shortcut Dimension 8 Code")
+                field("ENC Shortcut Dimension 7 Code"; Rec."ENC Shortcut Dimension 7 Code")
+                {
+                    ApplicationArea = all;
+                    Visible = false;
+                }
+                field("ENC Shortcut Dimension 8 Code"; Rec."ENC Shortcut Dimension 8 Code")
                 {
                     ApplicationArea = all;
                 }
-                field("ENC Product ID Code"; "ENC Product ID Code")
+                field("ENC Product ID Code"; Rec."ENC Product ID Code")
                 {
                     ApplicationArea = all;
                 }
+            }
+            field("BA Product Profile Code"; Rec."BA Product Profile Code")
+            {
+                ApplicationArea = all;
+
+                trigger OnValidate()
+                var
+                    ProductProfile: Record "BA Product Profile";
+                    RecRef: RecordRef;
+                begin
+                    if (Rec."BA Product Profile Code" = xRec."BA Product Profile Code") or (Rec."BA Product Profile Code" = '') then
+                        exit;
+                    ProductProfile.Get(Rec."BA Product Profile Code");
+                    RecRef.GetTable(Rec);
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("Gen. Prod. Posting Group"), ProductProfile."Gen. Prod. Posting Group");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Manufacturing Dept."), ProductProfile."Manufacturing Dept.");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("Item Tracking Code"), ProductProfile."Item Tracking Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("Item Category Code"), ProductProfile."Item Category Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Core Product Code"), ProductProfile."Core Product Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Core Prod. Sub. Cat. Code"), ProductProfile."Core Prod. Sub. Cat. Code");
+                    RecRef.SetTable(Rec);
+                    CurrPage.Update(true);
+                    Rec.Get(Rec.RecordId());
+                    RecRef.GetTable(Rec);
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("Global Dimension 1 Code"), ProductProfile."Shortcut Dimension 1 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("Global Dimension 2 Code"), ProductProfile."Shortcut Dimension 2 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 3 Code"), ProductProfile."Shortcut Dimension 3 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 4 Code"), ProductProfile."Shortcut Dimension 4 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 5 Code"), ProductProfile."Shortcut Dimension 5 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 6 Code"), ProductProfile."Shortcut Dimension 6 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 7 Code"), ProductProfile."Shortcut Dimension 7 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 8 Code"), ProductProfile."Shortcut Dimension 8 Code");
+                    RecRef.SetTable(Rec);
+                    Rec.Modify(true);
+                    CurrPage.Update(false);
+                    Rec.Get(Rec.RecordId());
+                end;
             }
         }
         modify("Vendor Item No.")
@@ -96,7 +133,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         addafter("Vendor Item No.")
         {
-            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
+            field("BA Default Cross-Ref. No."; Rec."BA Default Cross-Ref. No.")
             {
                 ApplicationArea = all;
                 Editable = false;
@@ -114,7 +151,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Rec.CalcFields("BA Default Cross-Ref. No.", "BA Default Vendor No.");
                 end;
             }
-            field("BA Default Vendor No."; "BA Default Vendor No.")
+            field("BA Default Vendor No."; Rec."BA Default Vendor No.")
             {
                 ApplicationArea = all;
                 Editable = false;
@@ -191,5 +228,11 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 exit(true);
             end;
         exit(false);
+    end;
+
+    local procedure SetValueFromProductProfile(var RecRef: RecordRef; FldNo: Integer; FldValue: Variant)
+    begin
+        if Format(FldValue) <> '' then
+            RecRef.Field(FldNo).Validate(FldValue);
     end;
 }

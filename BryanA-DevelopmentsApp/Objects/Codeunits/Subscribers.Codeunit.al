@@ -924,6 +924,41 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    // [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'BA Product Profile Code', false, false)]
+    // local procedure ItemOnAfterValidateProductProfileCode(var Rec: Record Item; var xRec: Record Item)
+    // var
+    //     ProductProfile: Record "BA Product Profile";
+    //     FieldRec: Record Field;
+    //     FieldRec2: Record Field;
+    //     RecRef: RecordRef;
+    //     RecRef2: RecordRef;
+    //     FldRef: FieldRef;
+    //     DataTypeMgt: Codeunit "Data Type Management";
+    // begin
+    //     if (Rec."BA Product Profile Code" = xRec."BA Product Profile Code") or (Rec."BA Product Profile Code" = '') then
+    //         exit;
+
+    //     ProductProfile.Get(Rec."BA Product Profile Code");
+    //     RecRef.GetTable(ProductProfile);
+    //     FieldRec.SetRange(TableNo, Database::"BA Product Profile");
+    //     FieldRec.SetFilter("No.", '>%1', ProductProfile.FieldNo(Description));
+    //     RecRef2.GetTable(Rec);
+    //     FieldRec2.SetRange(TableNo, Database::Item);
+    //     FieldRec2.SetFilter(ObsoleteState, '<>%1', FieldRec2.ObsoleteState::Removed);
+
+    //     if FieldRec.FindSet() then
+    //         repeat
+    //             FieldRec2.SetRange("Field Caption", FieldRec."Field Caption");
+    //             FieldRec2.SetRange(RelationTableNo, FieldRec.RelationTableNo);
+    //             FieldRec2.SetRange(RelationFieldNo, FieldRec.RelationFieldNo);
+    //             if FieldRec2.FindFirst() then
+    //                 RecRef2.Field(FieldRec2."No.").Validate(RecRef.Field(FieldRec."No.").Value());
+    //         until FieldRec.Next() = 0;
+    //     RecRef2.Modify(true);
+    // end;
+
+
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
