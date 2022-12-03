@@ -179,6 +179,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     var
         GLSetup: Record "General Ledger Setup";
         DefaultDim: Record "Default Dimension";
+        DimValue: Record "Dimension Value";
         FldRef: FieldRef;
         FldRef2: FieldRef;
         FldRef3: FieldRef;
@@ -188,7 +189,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             exit(false);
         FldRef2 := RecRef.Field(Rec.FieldNo("No."));
         FldRef3 := RecRef.Field(DimFldNo);
-        if DefaultDim.Get(Database::Item, FldRef2.Value(), FldRef.Value()) then begin
+        if DefaultDim.Get(Database::Item, FldRef2.Value(), FldRef.Value()) and DimValue.Get(DefaultDim."Dimension Code", DefaultDim."Dimension Value Code") then begin
             if Format(FldRef3.Value) <> DefaultDim."Dimension Value Code" then begin
                 FldRef3.Validate(DefaultDim."Dimension Value Code");
                 exit(true);
@@ -200,4 +201,5 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             end;
         exit(false);
     end;
+
 }
