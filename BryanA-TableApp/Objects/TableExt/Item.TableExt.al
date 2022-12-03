@@ -55,6 +55,12 @@ tableextension 80012 "BA Item" extends Item
             CalcFormula = lookup ("Item Cross Reference"."Cross-Reference No." where ("Item No." = field ("No."),
                 "Cross-Reference Type" = const (Vendor), "BA Default Cross Refernce No." = const (true)));
         }
+        field(80030; "BA Product Profile Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Product Profile Code';
+            TableRelation = "BA Product Profile"."Product Code";
+        }
     }
 
     procedure SetLastCurrencyPurchCost(CurrCode: Code[10]; LastPurchCost: Decimal)
