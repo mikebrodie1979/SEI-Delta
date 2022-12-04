@@ -114,6 +114,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 6 Code"), ProductProfile."Shortcut Dimension 6 Code");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 7 Code"), ProductProfile."Shortcut Dimension 7 Code");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Shortcut Dimension 8 Code"), ProductProfile."Shortcut Dimension 8 Code");
+                    SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Product ID Code"), ProductProfile."Product ID Code");
                     RecRef.SetTable(Rec);
                     Rec.Modify(true);
                     CurrPage.Update(false);
