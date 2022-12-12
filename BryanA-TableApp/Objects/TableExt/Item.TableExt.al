@@ -59,7 +59,8 @@ tableextension 80012 "BA Item" extends Item
         {
             DataClassification = CustomerContent;
             Caption = 'Product Profile Code';
-            TableRelation = "BA Product Profile"."Product Code";
+            TableRelation = "BA Product Profile"."Profile Code";
+            Editable = false;
         }
     }
 

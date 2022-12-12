@@ -13,16 +13,42 @@ page 50072 "BA Product Profiles"
         {
             repeater(Line)
             {
-                field("Product Code"; Rec."Product Code")
+                field("Profile Code"; Rec."Profile Code")
                 {
                     ApplicationArea = all;
                     ShowMandatory = true;
                 }
-                field(Description; Description)
+                field(Description; Rec.Description)
                 {
                     ApplicationArea = all;
                 }
+                field(Type; Rec.Type)
+                {
+                    ApplicationArea = all;
+                }
+                field("Base Unit of Measure"; Rec."Base Unit of Measure")
+                {
+                    ApplicationArea = all;
+                }
+                field("Inventory Posting Group"; Rec."Inventory Posting Group")
+                {
+                    ApplicationArea = all;
+                }
+                field("Costing Method"; Rec."Costing Method")
+                {
+                    ApplicationArea = all;
+                }
+                field("Price/Profit Calculation"; Rec."Price/Profit Calculation")
+                {
+                    ApplicationArea = all;
+                }
+
+
                 field("Core Product Code"; Rec."Core Product Code")
+                {
+                    ApplicationArea = all;
+                }
+                field("Core Prod. Model Code"; Rec."Core Prod. Model Code")
                 {
                     ApplicationArea = all;
                 }
@@ -30,6 +56,7 @@ page 50072 "BA Product Profiles"
                 {
                     ApplicationArea = all;
                 }
+
                 field("Item Category Code"; Rec."Item Category Code")
                 {
                     ApplicationArea = all;
@@ -43,6 +70,54 @@ page 50072 "BA Product Profiles"
                     ApplicationArea = all;
                 }
                 field("Manufacturing Dept."; Rec."Manufacturing Dept.")
+                {
+                    ApplicationArea = all;
+                }
+                field("Manufacturing Policy"; Rec."Manufacturing Policy")
+                {
+                    ApplicationArea = all;
+                }
+                field("Replenishment System"; Rec."Replenishment System")
+                {
+                    ApplicationArea = all;
+                }
+                field("Assembly Policy"; Rec."Assembly Policy")
+                {
+                    ApplicationArea = all;
+                }
+                field("Reordering Policy"; Rec."Reordering Policy")
+                {
+                    ApplicationArea = all;
+                }
+                field(Reserve; Rec.Reserve)
+                {
+                    ApplicationArea = all;
+                }
+                field("International HS Code"; Rec."International HS Code")
+                {
+                    ApplicationArea = all;
+                }
+                field("US HS Code"; Rec."US HS Code")
+                {
+                    ApplicationArea = all;
+                }
+                field(CUSMA; Rec.CUSMA)
+                {
+                    ApplicationArea = all;
+                }
+                field(Producer; Rec.Producer)
+                {
+                    ApplicationArea = all;
+                }
+                field("Preference Criterion"; Rec."Preference Criterion")
+                {
+                    ApplicationArea = all;
+                }
+                field("Country/Region of Origin Code"; Rec."Country/Region of Origin Code")
+                {
+                    ApplicationArea = all;
+                }
+                field("Net Cost"; Rec."Net Cost")
                 {
                     ApplicationArea = all;
                 }
