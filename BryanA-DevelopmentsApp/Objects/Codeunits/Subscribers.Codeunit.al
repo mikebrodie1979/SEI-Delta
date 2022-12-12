@@ -853,6 +853,7 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
     [EventSubscriber(ObjectType::Table, Database::"Currency Exchange Rate", 'OnAfterValidateEvent', 'Relational Exch. Rate Amount', false, false)]
     local procedure CurrencyExchangeRateOnAfterValidateRelationExchRateAmount(var Rec: Record "Currency Exchange Rate"; var xRec: Record "Currency Exchange Rate")
     var
@@ -906,41 +907,45 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'CopyCustomTemplateFieldsOnAfterSetFilters', '', false, false)]
+    local procedure CopyCustomTemplateFieldsOnAfterSetFilters(var FieldRec: Record Field)
+    begin
+        AddFieldFilter(FieldRec);
+        // if not Confirm(StrSubstNo('CopyCustomTemplateFieldsOnAfterSetFilters\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
+    end;
 
-    // [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'BA Product Profile Code', false, false)]
-    // local procedure ItemOnAfterValidateProductProfileCode(var Rec: Record Item; var xRec: Record Item)
-    // var
-    //     ProductProfile: Record "BA Product Profile";
-    //     FieldRec: Record Field;
-    //     FieldRec2: Record Field;
-    //     RecRef: RecordRef;
-    //     RecRef2: RecordRef;
-    //     FldRef: FieldRef;
-    //     DataTypeMgt: Codeunit "Data Type Management";
-    // begin
-    //     if (Rec."BA Product Profile Code" = xRec."BA Product Profile Code") or (Rec."BA Product Profile Code" = '') then
-    //         exit;
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters1', '', false, false)]
+    local procedure AssignCustomTemplateFieldsOnAfterSetFilters1(var FieldRec: Record Field)
+    begin
+        AddFieldFilter(FieldRec);
+        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters1\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
+    end;
 
-    //     ProductProfile.Get(Rec."BA Product Profile Code");
-    //     RecRef.GetTable(ProductProfile);
-    //     FieldRec.SetRange(TableNo, Database::"BA Product Profile");
-    //     FieldRec.SetFilter("No.", '>%1', ProductProfile.FieldNo(Description));
-    //     RecRef2.GetTable(Rec);
-    //     FieldRec2.SetRange(TableNo, Database::Item);
-    //     FieldRec2.SetFilter(ObsoleteState, '<>%1', FieldRec2.ObsoleteState::Removed);
-
-    //     if FieldRec.FindSet() then
-    //         repeat
-    //             FieldRec2.SetRange("Field Caption", FieldRec."Field Caption");
-    //             FieldRec2.SetRange(RelationTableNo, FieldRec.RelationTableNo);
-    //             FieldRec2.SetRange(RelationFieldNo, FieldRec.RelationFieldNo);
-    //             if FieldRec2.FindFirst() then
-    //                 RecRef2.Field(FieldRec2."No.").Validate(RecRef.Field(FieldRec."No.").Value());
-    //         until FieldRec.Next() = 0;
-    //     RecRef2.Modify(true);
-    // end;
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters2', '', false, false)]
+    local procedure AssignCustomTemplateFieldsOnAfterSetFilters2(var FieldRec: Record Field)
+    begin
+        AddFieldFilter(FieldRec);
+        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters2\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
+    end;
 
 
+    local procedure AddFieldFilter(var FieldRec: Record Field)
+    var
+        FilterText: Text;
+        MinValue: Integer;
+        MaxValue: Integer;
+    begin
+        MinValue := 80000;
+        MaxValue := 80199;
+        FilterText := FieldRec.GetFilter("No.");
+        if FilterText <> '' then
+            FieldRec.SetFilter("No.", StrSubstNo('%1|%2', FilterText, StrSubstNo('%1..%2', MinValue, MaxValue)))
+        else
+            FieldRec.SetRange("No.", MinValue, MaxValue);
+    end;
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
