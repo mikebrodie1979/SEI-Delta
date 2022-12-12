@@ -18,6 +18,14 @@ page 50072 "BA Product Profiles"
                     ApplicationArea = all;
                     ShowMandatory = true;
                 }
+                field("Created By"; "Created By")
+                {
+                    ApplicationArea = all;
+                }
+                field("Creation Date"; "Creation Date")
+                {
+                    ApplicationArea = all;
+                }
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = all;
