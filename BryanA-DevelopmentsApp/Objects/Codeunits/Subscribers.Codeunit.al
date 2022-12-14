@@ -923,6 +923,78 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    procedure ReuseItemNo(ItemNo: Code[20])
+    var
+        InventorySetup: Record "Inventory Setup";
+        NoSeriesLine: Record "No. Series Line";
+        NoSeriesLine2: Record "No. Series Line";
+        LineNo: Integer;
+    begin
+        InventorySetup.Get();
+        InventorySetup.TestField("Item Nos.");
+        NoSeriesLine2.SetRange("Series Code", InventorySetup."Item Nos.");
+        if NoSeriesLine2.FindLast() then
+            LineNo := NoSeriesLine2."Line No.";
+        NoSeriesLine.Init();
+        NoSeriesLine.Validate("Series Code", InventorySetup."Item Nos.");
+        NoSeriesLine."Line No." := LineNo + 10000;
+        NoSeriesLine."Last No. Used" := ItemNo;
+        NoSeriesLine."BA Replacement" := true;
+        NoSeriesLine."BA Replacement DateTime" := CurrentDateTime;
+        NoSeriesLine.Open := false;
+        NoSeriesLine.Insert(false);
+    end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::NoSeriesManagement, 'OnBeforeDoGetNextNo', '', false, false)]
+    local procedure NoSeriesMgtOnBeforeDoGetNextNo(var ModifySeries: Boolean; var NoSeriesCode: Code[20])
+    var
+        InventorySetup: Record "Inventory Setup";
+    begin
+        InventorySetup.Get();
+        if (InventorySetup."Item Nos." = '') or (InventorySetup."Item Nos." <> NoSeriesCode) then
+            exit;
+        ModifySeries := false;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::NoSeriesManagement, 'OnAfterGetNextNo3', '', false, false)]
+    local procedure NoSeriesMgtOnAfterGetNextNo3(var NoSeriesLine: Record "No. Series Line")
+    var
+        InventorySetup: Record "Inventory Setup";
+        NoSeriesLine2: Record "No. Series Line";
+    begin
+        InventorySetup.Get();
+        if (InventorySetup."Item Nos." = '') or (InventorySetup."Item Nos." <> NoSeriesLine."Series Code") then
+            exit;
+        SetSeriesLineFilters(NoSeriesLine2, InventorySetup."Item Nos.");
+        if NoSeriesLine2.FindFirst() then
+            NoSeriesLine."Last No. Used" := NoSeriesLine2."Last No. Used";
+    end;
+
+    local procedure SetSeriesLineFilters(var NoSeriesLine2: Record "No. Series Line"; SeriesCode: Code[20])
+    begin
+        NoSeriesLine2.SetRange("Series Code", SeriesCode);
+        NoSeriesLine2.SetRange("BA Replacement", true);
+        NoSeriesLine2.SetCurrentKey("Series Code", "Line No.", "BA Replacement DateTime");
+        NoSeriesLine2.SetAscending(NoSeriesLine2."BA Replacement DateTime", true);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterInsertEvent', '', false, false)]
+    local procedure ItemOnAfterInsert(var Rec: Record Item)
+    var
+        InventorySetup: Record "Inventory Setup";
+        NoSeriesLine: Record "No. Series Line";
+    begin
+        InventorySetup.Get();
+        if (InventorySetup."Item Nos." = '') then
+            exit;
+        NoSeriesLine.SetRange("Series Code", InventorySetup."Item Nos.");
+        NoSeriesLine.SetRange("Last No. Used", Rec."No.");
+        NoSeriesLine.SetRange("BA Replacement", true);
+        if NoSeriesLine.FindFirst() then
+            NoSeriesLine.Delete(true);
+    end;
+
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';

@@ -132,6 +132,35 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
     }
 
+    actions
+    {
+        addlast(Processing)
+        {
+            action("BA Cancel Item")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Category4;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = Cancel;
+                Caption = 'Cancel Item';
+                ToolTip = 'Deletes an item that has been accidently created.';
+
+                trigger OnAction()
+                var
+                    ItemNo: Code[20];
+                begin
+                    if not Confirm(CancelMsg) then
+                        exit;
+                    ItemNo := Rec."No.";
+                    Rec.Delete(true);
+                    Subscribers.ReuseItemNo(ItemNo);
+                end;
+            }
+        }
+    }
+
     trigger OnAfterGetRecord()
     var
         GLSetup: Record "General Ledger Setup";
@@ -192,4 +221,29 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             end;
         exit(false);
     end;
+
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+        ItemNo: Code[20];
+    begin
+        if (Rec."No." = '') or (Rec.Description <> '') or Deleted then
+            exit;
+        if not Confirm(StrSubstNo(CancelItemMsg, Rec."No.")) then
+            exit;
+        ItemNo := Rec."No.";
+        Rec.Delete(true);
+        Subscribers.ReuseItemNo(ItemNo);
+    end;
+
+    trigger OnDeleteRecord(): Boolean
+    begin
+        Deleted := true;
+    end;
+
+    var
+        Subscribers: Codeunit "BA SEI Subscibers";
+        Deleted: Boolean;
+        CancelItemMsg: Label 'Do you want to cancel creating Item No. %1?';
+        CancelMsg: Label 'Cancel item?';
 }
