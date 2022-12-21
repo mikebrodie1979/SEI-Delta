@@ -23,7 +23,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         addlast(Item)
         {
-            group("Dimensions")
+            group("BA Dimensions")
             {
                 Caption = 'Dimensions';
                 field("Global Dimension 1 Code"; Rec."Global Dimension 1 Code")
