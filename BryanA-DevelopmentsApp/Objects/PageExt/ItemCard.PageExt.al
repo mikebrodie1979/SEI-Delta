@@ -49,34 +49,82 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                 }
-                field("ENC Shortcut Dimension 3 Code"; "ENC Shortcut Dimension 3 Code")
+                field("ENC Shortcut Dimension 3 Code"; DimValue[3])
                 {
                     ApplicationArea = all;
                     Visible = false;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (3), Blocked = const (false));
+                    CaptionClass = '1,2,3';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 3 Code", DimValue[3]);
+                        Rec."ENC Shortcut Dimension 3 Code" := DimValue[3];
+                    end;
                 }
-                field("ENC Shortcut Dimension 4 Code"; "ENC Shortcut Dimension 4 Code")
+                field("ENC Shortcut Dimension 4 Code"; DimValue[4])
                 {
                     ApplicationArea = all;
                     Visible = false;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (4), Blocked = const (false));
+                    CaptionClass = '1,2,4';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 4 Code", DimValue[4]);
+                        Rec."ENC Shortcut Dimension 4 Code" := DimValue[4];
+                    end;
                 }
-                field("ENC Shortcut Dimension 5 Code"; "ENC Shortcut Dimension 5 Code")
+                field("ENC Shortcut Dimension 5 Code"; DimValue[5])
                 {
                     ApplicationArea = all;
                     Visible = false;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (5), Blocked = const (false));
+                    CaptionClass = '1,2,5';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 5 Code", DimValue[5]);
+                        Rec."ENC Shortcut Dimension 5 Code" := DimValue[5];
+                    end;
                 }
-                field("ENC Shortcut Dimension 6 Code"; "ENC Shortcut Dimension 6 Code")
+                field("ENC Shortcut Dimension 6 Code"; DimValue[6])
                 {
                     ApplicationArea = all;
                     Visible = false;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (6), Blocked = const (false));
+                    CaptionClass = '1,2,6';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 6 Code", DimValue[6]);
+                        Rec."ENC Shortcut Dimension 6 Code" := DimValue[6];
+                    end;
                 }
-                field("ENC Shortcut Dimension 7 Code"; "ENC Shortcut Dimension 7 Code")
+                field("ENC Shortcut Dimension 7 Code"; DimValue[7])
                 {
                     ApplicationArea = all;
                     Visible = false;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (7), Blocked = const (false));
+                    CaptionClass = '1,2,7';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 7 Code", DimValue[7]);
+                        Rec."ENC Shortcut Dimension 7 Code" := DimValue[7];
+                    end;
                 }
-                field("ENC Shortcut Dimension 8 Code"; "ENC Shortcut Dimension 8 Code")
+                field("ENC Shortcut Dimension 8 Code"; DimValue[8])
                 {
                     ApplicationArea = all;
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (8), Blocked = const (false));
+                    CaptionClass = '1,2,8';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Shortcut Dimension 8 Code", DimValue[8]);
+                        Rec."ENC Shortcut Dimension 8 Code" := DimValue[8];
+                    end;
                 }
                 field("ENC Product ID Code"; "ENC Product ID Code")
                 {
@@ -138,17 +186,21 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     end;
 
 
+
     procedure CheckToUpdateDimValues(var Item: Record Item): Boolean
     var
-        GLSetup: Record "General Ledger Setup";
         DefaultDim: Record "Default Dimension";
         RecRef: RecordRef;
         RecRef2: RecordRef;
         UpdateRec: Boolean;
+        i: Integer;
     begin
         if Item."No." = '' then
             exit(false);
+
         RecRef.GetTable(Item);
+        for i := 3 to 8 do
+            DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
         GLSetup.Get();
         RecRef2.GetTable(GLSetup);
 
@@ -169,6 +221,8 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 
 
         if UpdateRec then begin
+            for i := 3 to 8 do
+                DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
             RecRef.SetTable(Item);
             CurrPage.Update(true);
         end;
@@ -202,4 +256,8 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         exit(false);
     end;
 
+
+    var
+        GLSetup: Record "General Ledger Setup";
+        DimValue: array[8] of Code[20];
 }
