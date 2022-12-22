@@ -960,14 +960,31 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::NoSeriesManagement, 'OnAfterGetNextNo3', '', false, false)]
     local procedure NoSeriesMgtOnAfterGetNextNo3(var NoSeriesLine: Record "No. Series Line")
     var
+        Item: Record Item;
         InventorySetup: Record "Inventory Setup";
         NoSeriesLine2: Record "No. Series Line";
+        TempNoSeriesLine: Record "No. Series Line" temporary;
+        Reuse: Boolean;
     begin
         InventorySetup.Get();
         if (InventorySetup."Item Nos." = '') or (InventorySetup."Item Nos." <> NoSeriesLine."Series Code") then
             exit;
         SetSeriesLineFilters(NoSeriesLine2, InventorySetup."Item Nos.");
-        if NoSeriesLine2.FindFirst() then
+        if not NoSeriesLine2.FindSet() then
+            exit;
+        repeat
+            if Item.Get(NoSeriesLine2."Last No. Used") then begin
+                TempNoSeriesLine := NoSeriesLine2;
+                TempNoSeriesLine.Insert(false);
+            end else
+                Reuse := true;
+        until Reuse or (NoSeriesLine2.Next() = 0);
+        if TempNoSeriesLine.FindSet() then
+            repeat
+                NoSeriesLine2.Get(TempNoSeriesLine.RecordId());
+                NoSeriesLine2.Delete(true);
+            until TempNoSeriesLine.Next() = 0;
+        if Reuse then
             NoSeriesLine."Last No. Used" := NoSeriesLine2."Last No. Used";
     end;
 
