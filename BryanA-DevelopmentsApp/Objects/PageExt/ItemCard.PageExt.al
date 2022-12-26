@@ -209,6 +209,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     if not Confirm(CancelMsg) then
                         exit;
                     ItemNo := Rec."No.";
+                    Cancelled := true;
                     Rec.Delete(true);
                     Subscribers.ReuseItemNo(ItemNo);
                 end;
@@ -231,7 +232,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         UpdateRec: Boolean;
         i: Integer;
     begin
-        if Item."No." = '' then
+        if (Item."No." = '') or Cancelled then
             exit(false);
 
         RecRef.GetTable(Item);
@@ -297,7 +298,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     var
         ItemNo: Code[20];
     begin
-        if (Rec."No." = '') or (Rec.Description <> '') or Deleted then
+        if (Rec."No." = '') or (Rec.Description <> '') or Deleted or Cancelled then
             exit;
         if not Confirm(StrSubstNo(CancelItemMsg, Rec."No.")) then
             exit;
@@ -316,6 +317,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         Subscribers: Codeunit "BA SEI Subscibers";
         DimValue: array[8] of Code[20];
         Deleted: Boolean;
+        Cancelled: Boolean;
         CancelItemMsg: Label 'Do you want to cancel creating Item No. %1?';
         CancelMsg: Label 'Cancel item?';
 
