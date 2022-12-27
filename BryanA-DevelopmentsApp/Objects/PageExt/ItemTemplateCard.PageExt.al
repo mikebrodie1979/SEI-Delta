@@ -78,6 +78,21 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
             ApplicationArea = all;
             Visible = false;
         }
+        modify("Item Category Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Gen. Prod. Posting Group")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Inventory Posting Group")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
         addlast(Categorization)
         {
             field("BA International HS Code"; Rec."BA International HS Code")
@@ -132,6 +147,10 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
                 ApplicationArea = all;
             }
             field("Inventory Posting Group2"; Rec."Inventory Posting Group")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Item Tracking Code"; "BA Item Tracking Code")
             {
                 ApplicationArea = all;
             }
