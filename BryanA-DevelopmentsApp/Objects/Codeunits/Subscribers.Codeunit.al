@@ -924,6 +924,18 @@ codeunit 75010 "BA SEI Subscibers"
         Rec."BA Created At" := CurrentDateTime();
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Config. Package Management", 'OnApplyItemDimension', '', false, false)]
+    local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20])
+    var
+        Item: Record Item;
+        ItemCard: Page "Item Card";
+    begin
+        if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item) then begin
+            Item.Modify(true);
+            Commit();
+        end;
+    end;
+
 
 
     var
