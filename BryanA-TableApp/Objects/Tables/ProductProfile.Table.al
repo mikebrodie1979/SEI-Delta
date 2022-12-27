@@ -240,6 +240,5 @@ table 75014 "BA Product Profile"
     begin
         "Created By" := UserId();
         "Creation Date" := CurrentDateTime();
-        Modify(false);
     end;
 }
