@@ -301,7 +301,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         if (Rec."No." = '') or (Rec.Description <> '') or Deleted or Cancelled then
             exit;
         if not Confirm(StrSubstNo(CancelItemMsg, Rec."No.")) then
-            exit;
+            Error('');
         ItemNo := Rec."No.";
         Rec.Delete(true);
         Subscribers.ReuseItemNo(ItemNo);
