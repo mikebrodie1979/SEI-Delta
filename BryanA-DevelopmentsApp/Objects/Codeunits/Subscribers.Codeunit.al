@@ -992,8 +992,8 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         NoSeriesLine2.SetRange("Series Code", SeriesCode);
         NoSeriesLine2.SetRange("BA Replacement", true);
-        NoSeriesLine2.SetCurrentKey("Series Code", "Line No.", "BA Replacement DateTime");
-        NoSeriesLine2.SetAscending(NoSeriesLine2."BA Replacement DateTime", true);
+        NoSeriesLine2.SetCurrentKey("Series Code", "Line No.", "Last No. Used");
+        NoSeriesLine2.SetAscending(NoSeriesLine2."Last No. Used", true);
     end;
 
     [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterInsertEvent', '', false, false)]
