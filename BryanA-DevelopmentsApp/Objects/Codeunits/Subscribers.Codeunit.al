@@ -926,24 +926,24 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure CopyCustomTemplateFieldsOnAfterSetFilters(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        // if not Confirm(StrSubstNo('CopyCustomTemplateFieldsOnAfterSetFilters\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-        //     Error('');
+        if not Confirm(StrSubstNo('CopyCustomTemplateFieldsOnAfterSetFilters\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+            Error('');
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters1', '', false, false)]
     local procedure AssignCustomTemplateFieldsOnAfterSetFilters1(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters1\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-        //     Error('');
+        if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters1\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+            Error('');
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters2', '', false, false)]
     local procedure AssignCustomTemplateFieldsOnAfterSetFilters2(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters2\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-        //     Error('');
+        if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters2\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+            Error('');
     end;
 
     local procedure AddFieldFilter(var FieldRec: Record Field)
