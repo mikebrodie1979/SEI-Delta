@@ -926,24 +926,24 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure CopyCustomTemplateFieldsOnAfterSetFilters(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        if not Confirm(StrSubstNo('CopyCustomTemplateFieldsOnAfterSetFilters\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-            Error('');
+        // if not Confirm(StrSubstNo('CopyCustomTemplateFieldsOnAfterSetFilters\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters1', '', false, false)]
     local procedure AssignCustomTemplateFieldsOnAfterSetFilters1(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters1\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-            Error('');
+        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters1\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'AssignCustomTemplateFieldsOnAfterSetFilters2', '', false, false)]
     local procedure AssignCustomTemplateFieldsOnAfterSetFilters2(var FieldRec: Record Field)
     begin
         AddFieldFilter(FieldRec);
-        if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters2\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
-            Error('');
+        // if not Confirm(StrSubstNo('AssignCustomTemplateFieldsOnAfterSetFilters2\%1 -> %2', FieldRec.GetFilters, FieldRec.Count())) then
+        //     Error('');
     end;
 
     local procedure AddFieldFilter(var FieldRec: Record Field)
@@ -963,25 +963,23 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
-    [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Replenishment System', false, false)]
-    local procedure ProductProfileOnAfterValidateReplenishmentSystem(var Rec: Record "BA Product Profile")
-    begin
-        if Rec."Replenishment System" <> Rec."Replenishment System"::Assembly then
-            Rec.TestField("Assembly Policy", Rec."Assembly Policy"::"Assemble-to-Stock");
-        if Rec."Replenishment System" <> Rec."Replenishment System"::Purchase then
-            Rec.TestField(Type, Rec.Type::Inventory);
-    end;
-
-
-    [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Assembly Policy', false, false)]
-    local procedure ProductProfileOnAfterValidateAssemblyPolicy(var Rec: Record "BA Product Profile")
-    begin
-        if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Stock" then
-            Rec.TestField("Replenishment System", Rec."Replenishment System"::Assembly);
-        if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Order" then
-            if not (Rec.Type in [Rec.Type::"Non-Inventory", Rec.Type::Service]) then
-                Rec.FieldError(Type);
-    end;
+    // [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Replenishment System', false, false)]
+    // local procedure ProductProfileOnAfterValidateReplenishmentSystem(var Rec: Record "BA Product Profile")
+    // begin
+    //     if Rec."Replenishment System" <> Rec."Replenishment System"::Assembly then
+    //         Rec.TestField("Assembly Policy", Rec."Assembly Policy"::"Assemble-to-Stock");
+    //     if Rec."Replenishment System" <> Rec."Replenishment System"::Purchase then
+    //         Rec.TestField(Type, Rec.Type::Inventory);
+    // end;
+    // [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Assembly Policy', false, false)]
+    // local procedure ProductProfileOnAfterValidateAssemblyPolicy(var Rec: Record "BA Product Profile")
+    // begin
+    //     if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Stock" then
+    //         Rec.TestField("Replenishment System", Rec."Replenishment System"::Assembly);
+    //     if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Order" then
+    //         if not (Rec.Type in [Rec.Type::"Non-Inventory", Rec.Type::Service]) then
+    //             Rec.FieldError(Type);
+    // end;
 
 
 
