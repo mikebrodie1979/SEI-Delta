@@ -1037,25 +1037,23 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
-    [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Replenishment System', false, false)]
-    local procedure ProductProfileOnAfterValidateReplenishmentSystem(var Rec: Record "BA Product Profile")
-    begin
-        if Rec."Replenishment System" <> Rec."Replenishment System"::Assembly then
-            Rec.TestField("Assembly Policy", Rec."Assembly Policy"::"Assemble-to-Stock");
-        if Rec."Replenishment System" <> Rec."Replenishment System"::Purchase then
-            Rec.TestField(Type, Rec.Type::Inventory);
-    end;
-
-
-    [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Assembly Policy', false, false)]
-    local procedure ProductProfileOnAfterValidateAssemblyPolicy(var Rec: Record "BA Product Profile")
-    begin
-        if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Stock" then
-            Rec.TestField("Replenishment System", Rec."Replenishment System"::Assembly);
-        if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Order" then
-            if not (Rec.Type in [Rec.Type::"Non-Inventory", Rec.Type::Service]) then
-                Rec.FieldError(Type);
-    end;
+    // [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Replenishment System', false, false)]
+    // local procedure ProductProfileOnAfterValidateReplenishmentSystem(var Rec: Record "BA Product Profile")
+    // begin
+    //     if Rec."Replenishment System" <> Rec."Replenishment System"::Assembly then
+    //         Rec.TestField("Assembly Policy", Rec."Assembly Policy"::"Assemble-to-Stock");
+    //     if Rec."Replenishment System" <> Rec."Replenishment System"::Purchase then
+    //         Rec.TestField(Type, Rec.Type::Inventory);
+    // end;
+    // [EventSubscriber(ObjectType::Table, Database::"BA Product Profile", 'OnAfterValidateEvent', 'Assembly Policy', false, false)]
+    // local procedure ProductProfileOnAfterValidateAssemblyPolicy(var Rec: Record "BA Product Profile")
+    // begin
+    //     if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Stock" then
+    //         Rec.TestField("Replenishment System", Rec."Replenishment System"::Assembly);
+    //     if Rec."Assembly Policy" = Rec."Assembly Policy"::"Assemble-to-Order" then
+    //         if not (Rec.Type in [Rec.Type::"Non-Inventory", Rec.Type::Service]) then
+    //             Rec.FieldError(Type);
+    // end;
 
 
 

@@ -50,22 +50,7 @@ page 50072 "BA Product Profiles"
                 {
                     ApplicationArea = all;
                 }
-
-
                 field("Core Product Code"; Rec."Core Product Code")
-                {
-                    ApplicationArea = all;
-                }
-                field("Core Prod. Model Code"; Rec."Core Prod. Model Code")
-                {
-                    ApplicationArea = all;
-                }
-                field("Core Prod. Sub. Cat. Code"; Rec."Core Prod. Sub. Cat. Code")
-                {
-                    ApplicationArea = all;
-                }
-
-                field("Item Category Code"; Rec."Item Category Code")
                 {
                     ApplicationArea = all;
                 }

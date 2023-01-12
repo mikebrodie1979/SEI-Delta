@@ -44,8 +44,8 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Reordering Policy"), ProductProfile."Reordering Policy");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Reserve"), ProductProfile.Reserve);
                     RecRef.SetTable(Rec);
-                    Rec.Validate("ENC Assembly Policy");
-                    Rec.Validate("ENC Replenishment System");
+                    // Rec.Validate("ENC Assembly Policy");
+                    // Rec.Validate("ENC Replenishment System");
                     CurrPage.Update(true);
                     Rec.Get(Rec.RecordId());
                     RecRef.GetTable(Rec);
@@ -316,27 +316,6 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
             RecRef.Field(FldNo).Validate(FldValue)
         else
             RecRef.Field(FldNo).Value(FldValue);
-
-        // case FldNo of
-        //     Rec.FieldNo("ENC Shortcut Dimension 1 Code"):
-        //         ValidateDimCode(1);
-        //     Rec.FieldNo("ENC Shortcut Dimension 2 Code"):
-        //         ValidateDimCode(2);
-        //     Rec.FieldNo("ENC Shortcut Dimension 3 Code"):
-        //         ValidateDimCode(3);
-        //     Rec.FieldNo("ENC Shortcut Dimension 4 Code"):
-        //         ValidateDimCode(4);
-        //     Rec.FieldNo("ENC Shortcut Dimension 5 Code"):
-        //         ValidateDimCode(5);
-        //     Rec.FieldNo("ENC Shortcut Dimension 6 Code"):
-        //         ValidateDimCode(6);
-        //     Rec.FieldNo("ENC Shortcut Dimension 7 Code"):
-        //         ValidateDimCode(7);
-        //     Rec.FieldNo("ENC Shortcut Dimension 8 Code"):
-        //         ValidateDimCode(8);
-        //     Rec.FieldNo("ENC Product ID Code"):
-        //         ValidateDimCode(9);
-        // end;
     end;
 
 
