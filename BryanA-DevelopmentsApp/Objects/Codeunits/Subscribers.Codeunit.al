@@ -138,7 +138,8 @@ codeunit 75010 "BA SEI Subscibers"
             repeat
                 WhseActivityLine.SetRange("Source Line No.", SalesLine."Line No.");
                 if WhseActivityLine.IsEmpty() then begin
-                    SalesLine.Validate("Qty. to Ship", SalesLine."BA Org. Qty. To Ship");
+                    if SalesHeader.Invoice then
+                        SalesLine.Validate("Qty. to Ship", SalesLine."BA Org. Qty. To Ship");
                     SalesLine.Validate("Qty. to Invoice", SalesLine."BA Org. Qty. To Invoice");
                     SalesLine.Modify(true);
                 end;
