@@ -298,7 +298,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     var
         ItemNo: Code[20];
     begin
-        if (Rec."No." = '') or (Rec.Description <> '') or Deleted or Cancelled then
+        if (Rec."No." = '') or (Rec.Description <> '') or Deleted or (Rec."ENC Created Date" <> Today()) then
             exit;
         if not Confirm(StrSubstNo(CancelItemMsg, Rec."No.")) then
             Error('');
