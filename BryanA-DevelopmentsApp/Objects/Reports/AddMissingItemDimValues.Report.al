@@ -4,7 +4,6 @@ report 50083 "BA Add Missing Item Dims."
     ApplicationArea = all;
     ProcessingOnly = true;
     Caption = 'Add Missing Item Dimensions';
-    // Permissions = tabledata item
 
     dataset
     {
@@ -28,7 +27,6 @@ report 50083 "BA Add Missing Item Dims."
 
             trigger OnAfterGetRecord()
             var
-                ItemCard: Page "Item Card";
                 Item: Record Item;
                 RecRef: RecordRef;
                 RecRef2: RecordRef;
@@ -52,24 +50,17 @@ report 50083 "BA Add Missing Item Dims."
                     else
                         FldNo2 := Item.FieldNo("ENC Shortcut Dimension 3 Code") + i - 2;
                     if ("Dimension Code" = Format(RecRef.Field(FldNo + i).Value()))
-                            and (Format(RecRef2.Field(FldNo2)) = '') then begin
-                        // RecRef2.Field(FldNo2).Validate("Dimension Value Code");
+                            and (Format(RecRef2.Field(FldNo2)) = '') then
                         if TryUpdate(RecRef2, FldNo2, "Dimension Code", "Dimension Value Code") then
                             SaveRec := true
                         else
                             ErrorCount += 1;
-                    end;
                 end;
-                // RecRef2.SetTable(Item);
-                if ("Dimension Code" = GLSetup."ENC Product ID Dim. Code") and (Item."ENC Product ID Code" = '') then begin
-                    // Item.Validate("ENC Product ID Code", "Dimension Value Code");
-
+                if ("Dimension Code" = GLSetup."ENC Product ID Dim. Code") and (Item."ENC Product ID Code" = '') then
                     if TryUpdate(RecRef2, Item.FieldNo("ENC Product ID Code"), "Dimension Code", "Dimension Value Code") then
                         SaveRec := true
                     else
                         ErrorCount += 1;
-
-                end;
                 if SaveRec then begin
                     RecRef2.Modify(true);
                     UpdateCount += 1;
@@ -90,7 +81,6 @@ report 50083 "BA Add Missing Item Dims."
     }
 
     var
-        // i: Integer;
         InventorySetup: Record "Inventory Setup";
         DefaultCode: Code[20];
         Window: Dialog;
@@ -100,12 +90,11 @@ report 50083 "BA Add Missing Item Dims."
         Index: Integer;
         GLSetup: Record "General Ledger Setup";
 
-        // [TryFunction]
+
     local procedure TryUpdate(var RecRef: RecordRef; FldNo: Integer; DimCode: Code[20]; DimValue: Code[20]): Boolean
     var
         DimValueRec: Record "Dimension Value";
     begin
-        // if DimValue
         if not DimValueRec.Get(DimCode, DimValue) then
             exit(false);
         RecRef.Field(FldNo).Validate(DimValue);
