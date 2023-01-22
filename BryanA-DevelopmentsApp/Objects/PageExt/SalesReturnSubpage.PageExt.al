@@ -1,4 +1,4 @@
-pageextension 80139 "BA Sales Return Subpage" extends "Sales Return Order Subform"
+pageextension 80159 "BA Sales Return Subpage" extends "Sales Return Order Subform"
 {
     layout
     {

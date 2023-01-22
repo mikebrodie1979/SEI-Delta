@@ -1,4 +1,4 @@
-pageextension 80135 "BA Warehouse Shpt." extends "Warehouse Shipment"
+pageextension 80155 "BA Warehouse Shpt." extends "Warehouse Shipment"
 {
     layout
     {
