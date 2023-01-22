@@ -50,7 +50,7 @@ report 50083 "BA Add Missing Item Dims."
                     else
                         FldNo2 := Item.FieldNo("ENC Shortcut Dimension 3 Code") + i - 2;
                     if ("Dimension Code" = Format(RecRef.Field(FldNo + i).Value()))
-                            and (Format(RecRef2.Field(FldNo2)) = '') then
+                            and ((Format(RecRef2.Field(FldNo2).Value()) = '') or (RecRef.Field(FldNo + i).Value() <> RecRef2.Field(FldNo2).Value())) then
                         if TryUpdate(RecRef2, FldNo2, "Dimension Code", "Dimension Value Code") then
                             SaveRec := true
                         else
