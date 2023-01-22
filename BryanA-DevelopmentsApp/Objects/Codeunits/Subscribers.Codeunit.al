@@ -962,6 +962,18 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::Location, 'OnBeforeFindLocations', '', false, false)]
+    local procedure LocationOnBeforeFindLocations(var Location: Record Location)
+    begin
+        Location.SetRange("BA Inactive", false);
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Create Warehouse Location", 'OnLocationLookup', '', false, false)]
+    local procedure CreateWarehouseLocationOnLocationLookup(var Location: Record Location; var LocCode: Code[10])
+    begin
+        LocCode := LocationListLookup();
+    end;
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
