@@ -8,7 +8,7 @@ pageextension 80087 "BA Phys. Inventory Jnl." extends "Phys. Inventory Journal"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }
