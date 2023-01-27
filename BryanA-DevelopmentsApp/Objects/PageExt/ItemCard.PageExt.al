@@ -226,6 +226,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
             RecRef.SetTable(Item);
             CurrPage.Update(true);
+            Rec.Get(Rec.RecordId());
         end;
         exit(UpdateRec);
     end;
