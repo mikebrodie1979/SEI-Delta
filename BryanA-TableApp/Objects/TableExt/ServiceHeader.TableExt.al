@@ -2,6 +2,10 @@ tableextension 80026 "BA Service Header" extends "Service Header"
 {
     fields
     {
+        modify("Location Filter")
+        {
+            TableRelation = Location.Code where ("BA Inactive" = const (false));
+        }
         modify(County)
         {
             TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));

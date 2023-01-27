@@ -2,6 +2,10 @@ tableextension 80012 "BA Item" extends Item
 {
     fields
     {
+        modify("Location Filter")
+        {
+            TableRelation = Location.Code where ("BA Inactive" = const (false));
+        }
         Field(80000; "BA Qty. on Sales Quote"; Decimal)
         {
             Caption = 'Qty. on Open Sales Quote';
