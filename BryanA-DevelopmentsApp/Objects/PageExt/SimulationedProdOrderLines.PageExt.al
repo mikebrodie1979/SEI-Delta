@@ -8,7 +8,7 @@ pageextension 80115 "BA Simulated Prod. Order Lines" extends "Simulated Prod. Or
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

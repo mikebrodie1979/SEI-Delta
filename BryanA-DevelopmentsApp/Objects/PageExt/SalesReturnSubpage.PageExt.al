@@ -8,7 +8,7 @@ pageextension 80159 "BA Sales Return Subpage" extends "Sales Return Order Subfor
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

@@ -8,7 +8,7 @@ pageextension 80142 "BA Service Invoice Subpage" extends "Service Invoice Subfor
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

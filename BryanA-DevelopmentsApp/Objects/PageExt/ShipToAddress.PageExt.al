@@ -8,7 +8,7 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

@@ -8,7 +8,7 @@ pageextension 80143 "BA Purch. Quote Subform" extends "Purchase Quote Subform"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

@@ -8,7 +8,7 @@ pageextension 80149 "BA Purch. Cr.Memo" extends "Purchase Credit Memo"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

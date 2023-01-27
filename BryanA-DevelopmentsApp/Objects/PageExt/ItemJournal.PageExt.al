@@ -8,7 +8,7 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

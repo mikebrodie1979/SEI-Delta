@@ -8,7 +8,7 @@ pageextension 80137 "BA Sales Invoice Subpage" extends "Sales Invoice Subform"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }
