@@ -2,7 +2,7 @@ pageextension 80036 "BA Transfer Order" extends "Transfer Order"
 {
     layout
     {
-        modify("Transfer-from")
+        modify("Transfer-from Code")
         {
             trigger OnLookup(var Text: Text): Boolean
             var
@@ -12,7 +12,7 @@ pageextension 80036 "BA Transfer Order" extends "Transfer Order"
                 exit(Text <> '');
             end;
         }
-        modify("Transfer-to")
+        modify("Transfer-to Code")
         {
             trigger OnLookup(var Text: Text): Boolean
             var
