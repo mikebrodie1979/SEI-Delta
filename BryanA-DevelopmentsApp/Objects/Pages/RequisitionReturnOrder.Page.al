@@ -312,7 +312,7 @@ page 50050 "BA Requsition Return Order"
                     var
                         Subscribers: Codeunit "BA SEI Subscibers";
                     begin
-                        Text := Subscribers.LocationListLookup(true);
+                        Text := Subscribers.LocationListLookup();
                         exit(Text <> '');
                     end;
                 }

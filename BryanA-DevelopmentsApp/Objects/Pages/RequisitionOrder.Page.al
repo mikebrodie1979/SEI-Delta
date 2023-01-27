@@ -461,7 +461,7 @@ page 50097 "BA Requisition Order"
                                     var
                                         Subscribers: Codeunit "BA SEI Subscibers";
                                     begin
-                                        Text := Subscribers.LocationListLookup(true);
+                                        Text := Subscribers.LocationListLookup();
                                         exit(Text <> '');
                                     end;
                                 }

@@ -8,7 +8,7 @@ pageextension 80138 "BA Sales Cr.Memo Subpage" extends "Sales Cr. Memo Subform"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }

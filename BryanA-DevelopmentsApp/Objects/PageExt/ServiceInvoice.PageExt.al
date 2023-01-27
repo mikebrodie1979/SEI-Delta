@@ -8,7 +8,7 @@ pageextension 80141 "BA Service Invoice" extends "Service Invoice"
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
             begin
-                Text := Subscribers.LocationListLookup(true);
+                Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
         }
