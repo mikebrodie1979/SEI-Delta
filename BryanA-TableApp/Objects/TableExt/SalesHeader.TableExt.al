@@ -2,6 +2,10 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
 {
     fields
     {
+        modify("Location Filter")
+        {
+            TableRelation = Location.Code where ("BA Inactive" = const (false));
+        }
         field(80000; "BA Copied Doc."; Boolean)
         {
             DataClassification = CustomerContent;
