@@ -561,8 +561,6 @@ codeunit 75010 "BA SEI Subscibers"
         ToSalesPrice.SetRange("Starting Date");
     end;
 
-
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
     local procedure SalesPriceMgtOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
     var
@@ -577,7 +575,7 @@ codeunit 75010 "BA SEI Subscibers"
         if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
             exit;
         SalesRecSetup.TestField("BA Single Price Currency");
-        if not FoundSalesPrice then begin
+        if not FoundSalesPrice and (SalesLine."Unit Price" <> 0) then begin
             TempSalesPrice."Unit Price" := SalesLine."Unit Price";
             exit;
         end;
@@ -589,10 +587,9 @@ codeunit 75010 "BA SEI Subscibers"
         SalesPrice.SetRange("Currency Code", CurrencyCode);
         SalesPrice.SetRange("Starting Date", 0D, WorkDate());
         SalesPrice.SetAscending("Starting Date", true);
-        if not SalesPrice.FindLast() then begin
-            FoundSalesPrice := false;
+        FoundSalesPrice := SalesPrice.FindLast();
+        if not FoundSalesPrice then
             exit;
-        end;
         TempSalesPrice := SalesPrice;
         if not (SalesLine."Document Type" in [SalesLine."Document Type"::Quote, SalesLine."Document Type"::Order]) then
             exit;
