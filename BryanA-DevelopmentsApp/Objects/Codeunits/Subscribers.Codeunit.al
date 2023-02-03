@@ -479,7 +479,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
-        // DefaultDim: Record "Default Dimension";
+        DefaultDim: Record "Default Dimension";
     begin
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
@@ -507,8 +507,8 @@ codeunit 75010 "BA SEI Subscibers"
             else
                 exit;
         end;
-        // if DefaultDim.Get(Rec.RecordId()) then
-        Rec.Modify(true)
+        if DefaultDim.Get(Rec.RecordId()) then
+            Rec.Modify(true)
     end;
 
 
@@ -847,6 +847,18 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure ItemJounalLineOnAfterInsert(var Rec: Record "Item Journal Line")
     begin
         Rec."BA Created At" := CurrentDateTime();
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Config. Package Management", 'OnApplyItemDimension', '', false, false)]
+    local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20])
+    var
+        Item: Record Item;
+        ItemCard: Page "Item Card";
+    begin
+        if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item) then begin
+            Item.Modify(true);
+            Commit();
+        end;
     end;
 
 
