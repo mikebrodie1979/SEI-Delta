@@ -1,4 +1,4 @@
-pageextension 80139 "BA Item Template" extends "Item Template Card"
+pageextension 80170 "BA Item Template" extends "Item Template Card"
 {
     layout
     {

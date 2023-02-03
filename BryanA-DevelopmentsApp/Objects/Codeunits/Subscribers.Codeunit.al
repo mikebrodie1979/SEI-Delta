@@ -849,7 +849,6 @@ codeunit 75010 "BA SEI Subscibers"
         Rec."BA Created At" := CurrentDateTime();
     end;
 
-<<<<<<< HEAD
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Config. Package Management", 'OnApplyItemDimension', '', false, false)]
     local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20])
     var
@@ -1068,7 +1067,7 @@ codeunit 75010 "BA SEI Subscibers"
         ProductionOrder."BA Source Version" := ProdBOMHeader."ENC Active Version No.";
         ProductionOrder.Modify(true);
     end;
-=======
+
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"ENC SEI Functions", 'CopyCustomTemplateFieldsOnAfterSetFilters', '', false, false)]
     local procedure CopyCustomTemplateFieldsOnAfterSetFilters(var FieldRec: Record Field)
     begin
@@ -1129,7 +1128,6 @@ codeunit 75010 "BA SEI Subscibers"
     // end;
 
 
->>>>>>> productprofile
 
 
     var

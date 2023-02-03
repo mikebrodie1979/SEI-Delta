@@ -132,21 +132,6 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 }
             }
         }
-        addafter("Base Unit of Measure")
-        {
-            field("ENC Is Fabric"; "ENC Is Fabric")
-            {
-                ApplicationArea = all;
-            }
-            field("BA ETL Approved Fabric"; "BA ETL Approved Fabric")
-            {
-                ApplicationArea = all;
-            }
-            field("ENC Fabric Brand Name"; "ENC Fabric Brand Name")
-            {
-                ApplicationArea = all;
-            }
-        }
         addbefore(Blocked)
         {
             field("BA Product Profile Code"; Rec."BA Product Profile Code")
