@@ -8,17 +8,32 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             {
                 ApplicationArea = all;
             }
-            field("BA Qty. on Closed Sales Quote"; "BA Qty. on Closed Sales Quote")
+            field("BA Qty. on Closed Sales Quote"; Rec."BA Qty. on Closed Sales Quote")
             {
                 ApplicationArea = all;
             }
         }
         addafter("Last Direct Cost")
         {
-            field("BA Last USD Purch. Cost"; "BA Last USD Purch. Cost")
+            field("BA Last USD Purch. Cost"; Rec."BA Last USD Purch. Cost")
             {
                 ApplicationArea = all;
                 ToolTip = 'Specifies the most recent USD purchase unit cost for the item.';
+            }
+        }
+        addafter("Base Unit of Measure")
+        {
+            field("ENC Is Fabric"; Rec."ENC Is Fabric")
+            {
+                ApplicationArea = all;
+            }
+            field("BA ETL Approved Fabric"; Rec."BA ETL Approved Fabric")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC Fabric Brand Name"; Rec."ENC Fabric Brand Name")
+            {
+                ApplicationArea = all;
             }
         }
         addlast(Item)
@@ -26,11 +41,11 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             group("BA Dimensions")
             {
                 Caption = 'Dimensions';
-                field("Global Dimension 1 Code"; "Global Dimension 1 Code")
+                field("Global Dimension 1 Code"; Rec."Global Dimension 1 Code")
                 {
                     ApplicationArea = all;
                 }
-                field("Global Dimension 2 Code"; "Global Dimension 2 Code")
+                field("Global Dimension 2 Code"; Rec."Global Dimension 2 Code")
                 {
                     ApplicationArea = all;
                 }
@@ -111,7 +126,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                         Rec."ENC Shortcut Dimension 8 Code" := DimValue[8];
                     end;
                 }
-                field("ENC Product ID Code"; "ENC Product ID Code")
+                field("ENC Product ID Code"; Rec."ENC Product ID Code")
                 {
                     ApplicationArea = all;
                 }
@@ -132,6 +147,13 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 ApplicationArea = all;
             }
         }
+        addbefore(Blocked)
+        {
+            field("BA Product Profile Code"; Rec."BA Product Profile Code")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Vendor Item No.")
         {
             ApplicationArea = all;
@@ -144,7 +166,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         addafter("Vendor Item No.")
         {
-            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
+            field("BA Default Cross-Ref. No."; Rec."BA Default Cross-Ref. No.")
             {
                 ApplicationArea = all;
                 Editable = false;
@@ -162,7 +184,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Rec.CalcFields("BA Default Cross-Ref. No.", "BA Default Vendor No.");
                 end;
             }
-            field("BA Default Vendor No."; "BA Default Vendor No.")
+            field("BA Default Vendor No."; Rec."BA Default Vendor No.")
             {
                 ApplicationArea = all;
                 Editable = false;
