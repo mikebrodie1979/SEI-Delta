@@ -139,7 +139,8 @@ codeunit 75010 "BA SEI Subscibers"
             repeat
                 WhseActivityLine.SetRange("Source Line No.", SalesLine."Line No.");
                 if WhseActivityLine.IsEmpty() then begin
-                    SalesLine.Validate("Qty. to Ship", SalesLine."BA Org. Qty. To Ship");
+                    if SalesHeader.Invoice then
+                        SalesLine.Validate("Qty. to Ship", SalesLine."BA Org. Qty. To Ship");
                     SalesLine.Validate("Qty. to Invoice", SalesLine."BA Org. Qty. To Invoice");
                     SalesLine.Modify(true);
                 end;
@@ -478,6 +479,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
+        // DefaultDim: Record "Default Dimension";
     begin
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
@@ -505,7 +507,8 @@ codeunit 75010 "BA SEI Subscibers"
             else
                 exit;
         end;
-        Rec.Modify(true);
+        // if DefaultDim.Get(Rec.RecordId()) then
+        Rec.Modify(true)
     end;
 
 
@@ -557,8 +560,6 @@ codeunit 75010 "BA SEI Subscibers"
         ToSalesPrice.DeleteAll(false);
         ToSalesPrice.SetRange("Starting Date");
     end;
-
-
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Price Calc. Mgt.", 'OnAfterFindSalesLineItemPrice', '', false, false)]
     local procedure SalesPriceMgtOnAfterFindSalesLineItemPrice(var SalesLine: Record "Sales Line"; var TempSalesPrice: Record "Sales Price"; var FoundSalesPrice: Boolean)
@@ -849,59 +850,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    [EventSubscriber(ObjectType::Table, Database::"Currency Exchange Rate", 'OnAfterValidateEvent', 'Relational Exch. Rate Amount', false, false)]
-    local procedure CurrencyExchangeRateOnAfterValidateRelationExchRateAmount(var Rec: Record "Currency Exchange Rate"; var xRec: Record "Currency Exchange Rate")
-    var
-        Customer: Record Customer;
-        Window: Dialog;
-        RecCount: Integer;
-        i: Integer;
-    begin
-        if (Rec."Currency Code" <> 'USD') or (Rec."Relational Exch. Rate Amount" = xRec."Relational Exch. Rate Amount") then
-            exit;
-        UpdateSystemIndicator(Rec);
-        Customer.SetFilter("BA Credit Limit", '<>%1', 0);
-        if not Customer.FindSet(true) then
-            exit;
-        RecCount := Customer.Count;
-        if not Confirm(UpdateCreditLimitMsg) then
-            exit;
-        Window.Open(UpdateCreditLimitDialog);
-        repeat
-            i += 1;
-            Window.Update(1, StrSubstNo('%1 of %2', i, RecCount));
-            Customer.Validate("Credit Limit (LCY)", Customer."BA Credit Limit" * Rec."Relational Exch. Rate Amount");
-            Customer.Modify(true);
-        until Customer.Next() = 0;
-        Window.Close();
-    end;
-
-
-    local procedure UpdateSystemIndicator(var CurrExchRate: Record "Currency Exchange Rate")
-    var
-        CompInfo: Record "Company Information";
-        DateRec: Record Date;
-    begin
-        CompInfo.Get('');
-        DateRec.SetRange("Period Type", DateRec."Period Type"::Month);
-        DateRec.SetRange("Period Start", DMY2Date(1, Date2DMY(CurrExchRate."Starting Date", 2), 2000));
-        DateRec.FindFirst();
-        CompInfo."Custom System Indicator Text" := CopyStr(StrSubstNo('%1 - USD Exch. Rate %2 (%3)', CompanyName(), CurrExchRate."Relational Exch. Rate Amount", DateRec."Period Name"), 1, MaxStrLen(CompInfo."Custom System Indicator Text"));
-        CompInfo.Modify(false);
-    end;
-
-
-    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterValidateEvent', 'Credit Limit (LCY)', false, false)]
-    local procedure CustomerNoAfterValidateCreditLimit(var Rec: Record Customer; var xRec: Record Customer)
-    begin
-        if Rec."Credit Limit (LCY)" = xRec."Credit Limit (LCY)" then
-            exit;
-        Rec."BA Credit Limit Last Updated" := CurrentDateTime();
-        Rec."BA Credit Limit Updated By" := UserId();
-        Rec.Modify(true);
-    end;
-
-
     procedure ReuseItemNo(ItemNo: Code[20])
     var
         InventorySetup: Record "Inventory Setup";
@@ -990,6 +938,61 @@ codeunit 75010 "BA SEI Subscibers"
         if NoSeriesLine.FindFirst() then
             NoSeriesLine.Delete(true);
     end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Currency Exchange Rate", 'OnAfterValidateEvent', 'Relational Exch. Rate Amount', false, false)]
+    local procedure CurrencyExchangeRateOnAfterValidateRelationExchRateAmount(var Rec: Record "Currency Exchange Rate"; var xRec: Record "Currency Exchange Rate")
+    var
+        Customer: Record Customer;
+        Window: Dialog;
+        RecCount: Integer;
+        i: Integer;
+    begin
+        if (Rec."Currency Code" <> 'USD') or (Rec."Relational Exch. Rate Amount" = xRec."Relational Exch. Rate Amount") then
+            exit;
+        UpdateSystemIndicator(Rec);
+        Customer.SetFilter("BA Credit Limit", '<>%1', 0);
+        if not Customer.FindSet(true) then
+            exit;
+        RecCount := Customer.Count;
+        if not Confirm(UpdateCreditLimitMsg) then
+            exit;
+        Window.Open(UpdateCreditLimitDialog);
+        repeat
+            i += 1;
+            Window.Update(1, StrSubstNo('%1 of %2', i, RecCount));
+            Customer.Validate("Credit Limit (LCY)", Customer."BA Credit Limit" * Rec."Relational Exch. Rate Amount");
+            Customer.Modify(true);
+        until Customer.Next() = 0;
+        Window.Close();
+    end;
+
+
+    local procedure UpdateSystemIndicator(var CurrExchRate: Record "Currency Exchange Rate")
+    var
+        CompInfo: Record "Company Information";
+        DateRec: Record Date;
+    begin
+        CompInfo.Get('');
+        DateRec.SetRange("Period Type", DateRec."Period Type"::Month);
+        DateRec.SetRange("Period Start", DMY2Date(1, Date2DMY(CurrExchRate."Starting Date", 2), 2000));
+        DateRec.FindFirst();
+        CompInfo."Custom System Indicator Text" := CopyStr(StrSubstNo('%1 - USD Exch. Rate %2 (%3)', CompanyName(), CurrExchRate."Relational Exch. Rate Amount", DateRec."Period Name"), 1, MaxStrLen(CompInfo."Custom System Indicator Text"));
+        CompInfo.Modify(false);
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterValidateEvent', 'Credit Limit (LCY)', false, false)]
+    local procedure CustomerNoAfterValidateCreditLimit(var Rec: Record Customer; var xRec: Record Customer)
+    begin
+        if Rec."Credit Limit (LCY)" = xRec."Credit Limit (LCY)" then
+            exit;
+        Rec."BA Credit Limit Last Updated" := CurrentDateTime();
+        Rec."BA Credit Limit Updated By" := UserId();
+        Rec.Modify(true);
+    end;
+
+
 
 
     var
