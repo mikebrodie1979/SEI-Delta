@@ -1045,6 +1045,18 @@ codeunit 75010 "BA SEI Subscibers"
         LocCode := LocationListLookup();
     end;
 
+    [EventSubscriber(ObjectType::Report, Report::"Refresh Production Order", 'OnAfterRefreshProdOrder', '', false, false)]
+    local procedure RefreshProdOrderOnAfterRefreshProdOrder(var ProductionOrder: Record "Production Order"; ErrorOccured: Boolean)
+    var
+        ProdBOMHeader: Record "Production BOM Header";
+    begin
+        if ErrorOccured or (ProductionOrder."Source Type" <> ProductionOrder."Source Type"::Item) or not ProdBOMHeader.Get(ProductionOrder."Source No.") then
+            exit;
+        ProductionOrder."BA Source Version" := ProdBOMHeader."ENC Active Version No.";
+        ProductionOrder.Modify(true);
+    end;
+
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
