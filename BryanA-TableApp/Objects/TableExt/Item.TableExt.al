@@ -2,6 +2,12 @@ tableextension 80012 "BA Item" extends Item
 {
     fields
     {
+        field(80030; "BA Location Filter"; Code[20])
+        {
+            Caption = 'Location Filter';
+            FieldClass = FlowFilter;
+            TableRelation = Location.Code where ("BA Inactive" = const (false));
+        }
         Field(80000; "BA Qty. on Sales Quote"; Decimal)
         {
             Caption = 'Qty. on Open Sales Quote';
