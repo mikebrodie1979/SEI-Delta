@@ -2,6 +2,10 @@ tableextension 80007 "BA Purchase Header" extends "Purchase Header"
 {
     fields
     {
+        modify("Location Filter")
+        {
+            TableRelation = Location.Code where ("BA Inactive" = const (false));
+        }
         field(80000; "BA Requisition Order"; Boolean)
         {
             DataClassification = CustomerContent;

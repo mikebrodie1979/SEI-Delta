@@ -995,6 +995,56 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    procedure LocationListLookup(): Code[20]
+    begin
+        exit(LocationListLookup(false));
+    end;
+
+
+    procedure LocationListLookup(WarehouseLookup: Boolean): Code[20]
+    var
+        Location: Record Location;
+        LocationList: Page "Location List";
+        WarehouseEmployee: Record "Warehouse Employee";
+        FilterStr: Text;
+    begin
+        Location.FilterGroup(2);
+        Location.SetRange("BA Inactive", false);
+        if WarehouseLookup and (UserId() <> '') then begin
+            WarehouseEmployee.SetRange("User ID", UserId());
+            if WarehouseEmployee.FindSet() then
+                repeat
+                    if FilterStr = '' then
+                        FilterStr := WarehouseEmployee."Location Code"
+                    else
+                        FilterStr += '|' + WarehouseEmployee."Location Code";
+                until WarehouseEmployee.Next() = 0
+            else
+                Error('%1 must be setup as an %2', UserId(), WarehouseEmployee.TableCaption());
+            Location.SetFilter(Code, FilterStr);
+        end;
+        Location.FilterGroup(0);
+        LocationList.SetTableView(Location);
+        LocationList.LookupMode(true);
+        if LocationList.RunModal() <> Action::LookupOK then
+            exit('');
+        LocationList.GetRecord(Location);
+        exit(Location.Code);
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::Location, 'OnBeforeFindLocations', '', false, false)]
+    local procedure LocationOnBeforeFindLocations(var Location: Record Location)
+    begin
+        Location.SetRange("BA Inactive", false);
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Create Warehouse Location", 'OnLocationLookup', '', false, false)]
+    local procedure CreateWarehouseLocationOnLocationLookup(var Location: Record Location; var LocCode: Code[10])
+    begin
+        LocCode := LocationListLookup();
+    end;
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';

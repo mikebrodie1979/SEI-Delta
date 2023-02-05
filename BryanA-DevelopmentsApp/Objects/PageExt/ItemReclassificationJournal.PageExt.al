@@ -1,8 +1,8 @@
-pageextension 80036 "BA Transfer Order" extends "Transfer Order"
+pageextension 80165 "BA Item Reclass. Jnl." extends "Item Reclass. Journal"
 {
     layout
     {
-        modify("Transfer-from Code")
+        modify("Location Code")
         {
             trigger OnLookup(var Text: Text): Boolean
             var
@@ -12,7 +12,7 @@ pageextension 80036 "BA Transfer Order" extends "Transfer Order"
                 exit(Text <> '');
             end;
         }
-        modify("Transfer-to Code")
+        modify("New Location Code")
         {
             trigger OnLookup(var Text: Text): Boolean
             var
@@ -21,17 +21,6 @@ pageextension 80036 "BA Transfer Order" extends "Transfer Order"
                 Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
-        }
-        addlast("Transfer-to")
-        {
-            field("BA Transfer-To Phone No."; Rec."BA Transfer-To Phone No.")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Transfer-To FID No."; Rec."BA Transfer-To FID No.")
-            {
-                ApplicationArea = all;
-            }
         }
     }
 }
