@@ -12,7 +12,7 @@ report 50070 "BA Production BOM"
 
             column(No; "No.") { }
             column(TotalUnitCost; Round("ENC Total Unit Cost", 0.01)) { }
-            column(ActiveVersionNo; "ENC Active Version No.") { }
+            column(ActiveVersionNo; "BA Active Version") { }
             column(Description; Description) { }
             column(Description2; "Description 2") { }
             column(UoM; "Unit of Measure Code") { }
@@ -27,7 +27,7 @@ report 50070 "BA Production BOM"
 
             dataitem("Production BOM Line"; "Production BOM Line")
             {
-                DataItemLink = "Production BOM No." = field ("No."), "Version Code" = field ("ENC Active Version No.");
+                DataItemLink = "Production BOM No." = field ("No."), "Version Code" = field ("BA Active Version");
 
                 column(Line_ProdBOMNo; "Production BOM No.") { }
                 column(Line_LineNo; "Line No.") { }

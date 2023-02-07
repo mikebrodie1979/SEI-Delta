@@ -1,5 +1,31 @@
 pageextension 80006 "BA Production BOM" extends "Production BOM"
 {
+    layout
+    {
+        modify(ActiveVersionCode)
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        addafter(ActiveVersionCode)
+        {
+            field("BA Active Version"; Rec."BA Active Version")
+            {
+                ApplicationArea = all;
+
+                trigger OnLookup(var Text: Text): Boolean
+                var
+                    ProdBOMVersion: Record "Production BOM Version";
+                begin
+                    Rec.CalcFields("BA Active Version");
+                    ProdBOMVersion.SETRANGE("Production BOM No.", Rec."No.");
+                    ProdBOMVersion.SETRANGE("Version Code", Rec."BA Active Version");
+                    PAGE.RUNMODAL(PAGE::"Production BOM Version", ProdBOMVersion);
+                end;
+            }
+        }
+    }
+
     actions
     {
         addfirst("&Prod. BOM")

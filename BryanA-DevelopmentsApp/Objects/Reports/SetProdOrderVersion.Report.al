@@ -24,9 +24,10 @@ report 50085 "BA Set Prod. Order Version"
             begin
                 i += 1;
                 Window.Update(1, StrSubstNo('%1 of %2', i, RecCount));
-                if not BOMHeader.Get("Source No.") or (BOMHeader."ENC Active Version No." = '') then
+                if not BOMHeader.Get("Source No.") then
                     exit;
-                "Production Order"."BA Source Version" := BOMHeader."ENC Active Version No.";
+                BOMHeader.CalcFields("BA Active Version");
+                "Production Order"."BA Source Version" := BOMHeader."BA Active Version";
                 "Production Order".Modify(false);
                 UpdateCount += 1;
             end;

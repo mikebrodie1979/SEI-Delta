@@ -34,5 +34,12 @@ tableextension 80070 "BA Prod. BOM Header" extends "Production BOM Header"
             Editable = false;
             CalcFormula = lookup (Item."Gen. Prod. Posting Group" where ("No." = field ("No.")));
         }
+        field(80010; "BA Active Version"; Code[20])
+        {
+            FieldClass = FlowField;
+            CalcFormula = lookup ("Production BOM Version"."Version Code" where ("Production BOM No." = field ("No."), "BA Active" = const (true)));
+            Editable = false;
+            Caption = 'Active Version';
+        }
     }
 }
