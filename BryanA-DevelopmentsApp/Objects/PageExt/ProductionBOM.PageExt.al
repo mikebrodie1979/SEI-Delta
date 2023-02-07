@@ -21,6 +21,7 @@ pageextension 80006 "BA Production BOM" extends "Production BOM"
                     ProdBOMVersion.SETRANGE("Production BOM No.", Rec."No.");
                     ProdBOMVersion.SETRANGE("Version Code", Rec."BA Active Version");
                     PAGE.RUNMODAL(PAGE::"Production BOM Version", ProdBOMVersion);
+                    CalcFields("BA Active Version");
                 end;
             }
         }
