@@ -4,7 +4,8 @@ codeunit 75010 "BA SEI Subscibers"
                   tabledata "Purch. Rcpt. Header" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
                   tabledata "Sales Shipment Header" = rimd,
-                  tabledata "Item Ledger Entry" = rimd;
+                  tabledata "Item Ledger Entry" = rimd,
+                  tabledata "Approval Entry" = rimd;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -757,6 +758,8 @@ codeunit 75010 "BA SEI Subscibers"
         if not ItemJournalLine."BA Updated" then
             exit;
         ItemLedgerEntry."BA Year-end Adjst." := true;
+        ItemLedgerEntry."BA Adjust. Reason" := ItemJournalLine."BA Adjust. Reason";
+        ItemLedgerEntry."BA Approved By" := ItemJournalLine."BA Approved By";
         ItemLedgerEntry.Modify(false);
     end;
 
@@ -1045,6 +1048,174 @@ codeunit 75010 "BA SEI Subscibers"
         LocCode := LocationListLookup();
     end;
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Check Line", 'OnBeforeCheckLocation', '', false, false)]
+    local procedure ItemJnlCheckLineOnBeforeCheckLocation(var ItemJournalLine: Record "Item Journal Line")
+    begin
+        ItemJournalLine.TestField("BA Adjust. Reason");
+        if not CheckInventoryLimit(ItemJournalLine) then
+            Error(JnlLimitError);
+    end;
+
+    procedure CheckInventoryLimit(var ItemJournalLine: Record "Item Journal Line"): Boolean
+    var
+        InventorySetup: Record "Inventory Setup";
+        ItemJnlLine: Record "Item Journal Line";
+    begin
+        InventorySetup.Get();
+        if not InventorySetup."BA Approval Required" or (InventorySetup."BA Approval Limit" = 0) then
+            exit(true);
+        ItemJnlLine.SetRange("Journal Template Name", ItemJournalLine."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJournalLine."Journal Batch Name");
+        ItemJnlLine.SetFilter(Amount, '>%1', InventorySetup."BA Approval Limit");
+        exit(ItemJnlLine.IsEmpty());
+    end;
+
+    procedure SendItemJnlApproval(var ItemJnlLine: Record "Item Journal Line"; Cancelled: Boolean)
+    var
+        ItemJnlBatch: Record "Item Journal Batch";
+        InventorySetup: Record "Inventory Setup";
+        FilterRec: Record "Item Journal Line";
+        ApprovalEntry: Record "Approval Entry";
+        // ApprovalMsg: Codeunit "Approvals Mgmt.";
+        EntryNo: Integer;
+        ApprovalAmt: Decimal;
+        TempGUID: Guid;
+        EntryList: List of [Integer];
+    begin
+        InventorySetup.Get();
+        if not InventorySetup."BA Approval Required" then
+            exit;
+        if (InventorySetup."BA Approval Admin1" = '') and (InventorySetup."BA Approval Admin2" = '') then
+            Error('An inventory approval admin must be set before approvals can be sent.');
+        InventorySetup.TestField("BA Approval Code");
+
+        ItemJnlBatch.Get(ItemJnlLine."Journal Template Name", ItemJnlLine."Journal Batch Name");
+
+        FilterRec.CopyFilters(ItemJnlLine);
+        ItemJnlLine.Reset();
+        ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlLine."Journal Batch Name");
+        ItemJnlLine.SetRange("BA Locked For Approval", true);
+        if Cancelled then begin
+            if ItemJnlLine.IsEmpty() then
+                Error('%1 has not been submitted for approval.', ItemJnlBatch.RecordId());
+
+            ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
+            ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
+            ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Approved);
+            ApprovalEntry.SetRange("Workflow Step Instance ID", ItemJnlLine."BA Approval GUID");
+            if not ApprovalEntry.IsEmpty() then
+                Error('Cannot cancel approval request as it as been approved by one or more approvers.');
+        end else
+            if not Cancelled and not ItemJnlLine.IsEmpty() then
+                Error('%1 has already been submitted for approval.', ItemJnlBatch.RecordId());
+
+        ItemJnlLine.SetRange("BA Locked For Approval");
+        ItemJnlLine.FindSet(true);
+        if Cancelled then begin
+            repeat
+                ItemJnlLine.Validate("BA Locked For Approval", false);
+                ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::" ");
+                ItemJnlLine.Modify(false);
+            until ItemJnlLine.Next() = 0;
+            ItemJnlLine.Reset();
+            ItemJnlLine.CopyFilters(FilterRec);
+            ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
+            ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
+            ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+            ApprovalEntry.SetRange("Workflow Step Instance ID", ItemJnlLine."BA Approval GUID");
+            ApprovalEntry.SetRange("Sender ID", UserId());
+            if ApprovalEntry.FindSet(true) then
+                repeat
+                    EntryList.Add(ApprovalEntry."Entry No.");
+
+                until ApprovalEntry.Next() = 0;
+
+            foreach EntryNo in EntryList do begin
+                ApprovalEntry.Get(EntryNo);
+                ApprovalEntry.Validate(Status, ApprovalEntry.Status::Canceled);
+                ApprovalEntry.Modify(true);
+            end;
+
+            Message('Cancelled approval request.');
+            exit;
+        end;
+
+        TempGUID := CreateGuid();
+        repeat
+            ItemJnlLine.Validate("BA Locked For Approval", true);
+            ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Pending);
+            ItemJnlLine."BA Approval GUID" := TempGUID;
+            ItemJnlLine.Modify(false);
+            ApprovalAmt += ItemJnlLine.Amount;
+        until ItemJnlLine.Next() = 0;
+        // ItemJnlLine.ModifyAll("BA Status", ItemJnlLine."BA Status"::Pending);
+
+        if CheckInventoryLimit(ItemJnlLine) then
+            Message('Inventory adjustment is within the limit, no approval needed.')
+        else begin
+            Message('An approval request has been sent.');
+
+            ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
+            ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
+            ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+            if not ApprovalEntry.IsEmpty() then
+                Error('%1 is already awaiting approval.', ItemJnlBatch.RecordId());
+
+            ApprovalEntry.Reset();
+            if ApprovalEntry.FindLast() then
+                EntryNo := ApprovalEntry."Entry No.";
+            if InventorySetup."BA Approval Admin1" <> '' then
+                AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin1", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
+            if InventorySetup."BA Approval Admin2" <> '' then
+                AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin2", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
+        end;
+
+        ItemJnlLine.Reset();
+        ItemJnlLine.CopyFilters(FilterRec);
+    end;
+
+    local procedure AddItemJnlBatchApprovalEntry(var EntryNo: Integer; ItemJnlBatch: Record "Item Journal Batch"; Approver: Code[50]; ApprovalAmt: Decimal; ApprovalCode: Code[20]; WorkflowGUID: Guid)
+    var
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        EntryNo += 1;
+        ApprovalEntry.Init();
+        ApprovalEntry."Entry No." := EntryNo;
+        ApprovalEntry.Validate("Table ID", Database::"Item Journal Batch");
+        ApprovalEntry.Validate("Sender ID", UserId());
+        ApprovalEntry.Validate("Record ID to Approve", ItemJnlBatch.RecordId());
+        ApprovalEntry.Validate(Status, ApprovalEntry.Status::Open);
+        ApprovalEntry.Validate("Date-Time Sent for Approval", CurrentDateTime());
+        ApprovalEntry.Validate("Due Date", WorkDate());
+        ApprovalEntry.Validate(Amount, ApprovalAmt);
+        ApprovalEntry.Validate("Amount (LCY)", ApprovalAmt);
+        ApprovalEntry.Validate("Approval Type", ApprovalEntry."Approval Type"::Approver);
+        ApprovalEntry.Validate("Limit Type", ApprovalEntry."Limit Type"::"No Limits");
+        ApprovalEntry.Validate("Approval Code", ApprovalCode);
+        ApprovalEntry.Validate("Document Type", ApprovalEntry."Document Type"::" ");
+        ApprovalEntry.Validate("Approver ID", Approver);
+        ApprovalEntry.Insert(true);
+        ApprovalEntry.Validate("BA Journal Batch Name", ItemJnlBatch.Name);
+        ApprovalEntry.Validate("Workflow Step Instance ID", WorkflowGUID);
+        ApprovalEntry.Modify(true);
+    end;
+
+
+    procedure ClearApprovalEntries()
+    var
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
+        ApprovalEntry.DeleteAll(true);
+
+    end;
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
@@ -1057,4 +1228,5 @@ codeunit 75010 "BA SEI Subscibers"
         ExchageRateUpdateMsg: Label 'Updated exchange rate to %1.';
         MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
+        JnlLimitError: Label 'This journal adjustment is outside the limit, please request approval.';
 }
