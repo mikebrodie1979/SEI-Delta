@@ -108,7 +108,6 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
                         Rec.Modify(false);
                     until Rec.Next() = 0;
                     CurrPage.Update(false);
-
                 end;
             }
         }
@@ -122,19 +121,27 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
         ItemJnlLine.SetRange("Journal Batch Name", Rec."Journal Batch Name");
         ItemJnlLine.SetRange("BA Locked For Approval", true);
         if not ItemJnlLine.IsEmpty() then
-            Error('Cannot add new lines after submitting journal batch approval.');
+            Error('Cannot add new lines after submitting journal for approval.');
+        ItemJnlLine.SetRange("BA Locked For Approval");
+        ItemJnlLine.SetRange("BA Status", Rec."BA Status"::Released);
+        if not ItemJnlLine.IsEmpty() then
+            Error('Cannot add new lines after journal has been approved.');
     end;
 
     trigger OnModifyRecord(): Boolean
     begin
         if Rec."BA Locked For Approval" then
             Error('Line %1 cannot be modified after being sent for approval.', Rec."Line No.");
+        if Rec."BA Status" = Rec."BA Status"::Released then
+            Error('Line %1 cannot be modified after being approved.', Rec."Line No.");
     end;
 
     trigger OnDeleteRecord(): Boolean
     begin
         if Rec."BA Locked For Approval" then
             Error('Line %1 cannot be deleted after being sent for approval.', Rec."Line No.");
+        if Rec."BA Status" = Rec."BA Status"::Released then
+            Error('Line %1 cannot be deleted after being approved.', Rec."Line No.");
     end;
 
     local procedure CheckForApprovalEntries(Cancel: Boolean): Boolean
@@ -159,8 +166,8 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
 
     trigger OnAfterGetCurrRecord()
     begin
-        Cancel := not CheckForApprovalEntries(true);
-        Approve := CheckForApprovalEntries(false);
+        Cancel := not CheckForApprovalEntries(true) and (Rec."BA Status" <> Rec."BA Status"::Rejected);
+        Approve := CheckForApprovalEntries(false) and (Rec."BA Status" <> Rec."BA Status"::Released);
     end;
 
     var

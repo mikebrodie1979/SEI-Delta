@@ -5,6 +5,10 @@ page 50070 "BA Item Jnls. to Approval"
     ApplicationArea = all;
     UsageCategory = Lists;
     PageType = List;
+    SourceTableView = order(ascending) where ("Table ID" = const (233));
+    Editable = false;
+    LinksAllowed = false;
+    PromotedActionCategories = 'New,Process,Report,Navigate';
 
     layout
     {
@@ -12,27 +16,40 @@ page 50070 "BA Item Jnls. to Approval"
         {
             repeater(Line)
             {
-                field("Table ID"; "Table ID")
+                field("Table ID"; Rec."Table ID")
                 {
                     ApplicationArea = all;
                 }
-                field("BA Journal Batch Name"; "BA Journal Batch Name")
+                field("Entry No."; Rec."Entry No.")
                 {
                     ApplicationArea = all;
                 }
-                field("Date-Time Sent for Approval"; "Date-Time Sent for Approval")
+                field(Status; Rec.Status)
                 {
                     ApplicationArea = all;
                 }
-                field("Due Date"; "Due Date")
+                field("BA Journal Batch Name"; Rec."BA Journal Batch Name")
+                {
+                    ApplicationArea = all;
+
+                    trigger OnLookup(var Text: Text): Boolean
+                    begin
+                        OpenJournalPage();
+                    end;
+                }
+                field("Date-Time Sent for Approval"; Rec."Date-Time Sent for Approval")
                 {
                     ApplicationArea = all;
                 }
-                field("Approver ID"; "Approver ID")
+                field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = all;
                 }
-                field("Approval Code"; "Approval Code")
+                field("Sender ID"; Rec."Sender ID")
+                {
+                    ApplicationArea = all;
+                }
+                field("Approval Code"; Rec."Approval Code")
                 {
                     ApplicationArea = all;
                 }
@@ -58,8 +75,11 @@ page 50070 "BA Item Jnls. to Approval"
                 Image = Approve;
 
                 trigger OnAction()
+                var
+                    ApprovalEntry: Record "Approval Entry";
                 begin
-                    Message('approve');
+                    CurrPage.SetSelectionFilter(ApprovalEntry);
+                    ApprovalMgt.ApproveApprovalRequests(ApprovalEntry);
                 end;
             }
             action(Reject)
@@ -72,10 +92,68 @@ page 50070 "BA Item Jnls. to Approval"
                 Image = Reject;
 
                 trigger OnAction()
+                var
+                    ApprovalEntry: Record "Approval Entry";
                 begin
-                    Message('reject');
+                    CurrPage.SetSelectionFilter(ApprovalEntry);
+                    ApprovalMgt.RejectApprovalRequests(ApprovalEntry);
+                end;
+            }
+        }
+        area(Navigation)
+        {
+            action(Comments)
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Category4;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = Comment;
+
+                trigger OnAction()
+                var
+                    RecRef: RecordRef;
+                begin
+                    RecRef.Get(Rec."Record ID to Approve");
+                    Clear(ApprovalMgt);
+                    ApprovalMgt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, Rec."Workflow Step Instance ID");
+                end;
+            }
+            action("Open Record")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Category4;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = OpenJournal;
+
+                trigger OnAction()
+                begin
+                    OpenJournalPage();
                 end;
             }
         }
     }
+
+    var
+        ApprovalMgt: Codeunit "Approvals Mgmt.";
+
+    trigger OnOpenPage()
+    begin
+        Rec.FilterGroup(2);
+        Rec.SetRange(Status, Status::Open);
+        Rec.SetRange("Approver ID", UserId);
+        Rec.FilterGroup(0);
+    end;
+
+    local procedure OpenJournalPage()
+    var
+        ItemJnlBatch: Record "Item Journal Batch";
+        ItemJnlMgt: Codeunit ItemJnlManagement;
+    begin
+        ItemJnlBatch.Get('ITEM', "BA Journal Batch Name");
+        ItemJnlMgt.TemplateSelectionFromBatch(ItemJnlBatch);
+    end;
 }

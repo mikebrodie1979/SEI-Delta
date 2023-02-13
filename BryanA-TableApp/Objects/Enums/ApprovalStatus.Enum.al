@@ -17,4 +17,8 @@ enum 50000 "BA Approval Status"
     {
         Caption = 'Cancelled';
     }
+    value(4; "Rejected")
+    {
+        Caption = 'Rejected';
+    }
 }

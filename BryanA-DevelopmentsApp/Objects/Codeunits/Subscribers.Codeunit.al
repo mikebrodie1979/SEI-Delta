@@ -742,24 +742,15 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
-    // procedure AddMissingLineToShpt(ShptNo: Code[20])
-    // var
-    //     SalesShptHeader: Record "Sales Shipment Header";
-    //     SalesShptLine: Record "Sales Shipment Line";
-    //     SalesHeader: Record "Sales Header";
-    //     SalesLine: Record "Sales Line";
-    // begin
-    //     SalesShptHeader.Get(ShptNo);
-    //     SalesHeader.Get(SalesHeader."Document Type"::Order, SalesShptHeader."Order No.");
+
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
     local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
     begin
-        if not ItemJournalLine."BA Updated" then
-            exit;
-        ItemLedgerEntry."BA Year-end Adjst." := true;
         ItemLedgerEntry."BA Adjust. Reason" := ItemJournalLine."BA Adjust. Reason";
         ItemLedgerEntry."BA Approved By" := ItemJournalLine."BA Approved By";
+        if ItemJournalLine."BA Updated" then
+            ItemLedgerEntry."BA Year-end Adjst." := true;
         ItemLedgerEntry.Modify(false);
     end;
 
@@ -1050,12 +1041,82 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Check Line", 'OnBeforeCheckLocation', '', false, false)]
-    local procedure ItemJnlCheckLineOnBeforeCheckLocation(var ItemJournalLine: Record "Item Journal Line")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnBeforeRunWithCheck', '', false, false)]
+    local procedure ItemJnlPostLineOnBeforeRunWithCheck(var ItemJournalLine: Record "Item Journal Line")
     begin
         ItemJournalLine.TestField("BA Adjust. Reason");
-        if not CheckInventoryLimit(ItemJournalLine) then
+        if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Rejected then
+            Error('Line %1 has been rejected and must be re-submitted for approval.', ItemJournalLine."Line No.");
+        if (ItemJournalLine."BA Status" <> ItemJournalLine."BA Status"::Released) and not CheckInventoryLimit(ItemJournalLine) then
             Error(JnlLimitError);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnApproveApprovalRequest', '', false, false)]
+    local procedure ApprovalsMgtOnApproveApprovalRequest(var ApprovalEntry: Record "Approval Entry")
+    var
+        ItemJnlBatch: Record "Item Journal Batch";
+    begin
+        if (ApprovalEntry."Table ID" <> Database::"Item Journal Batch") or not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
+            exit;
+        UpdateItemLineApprovalStatus(ItemJnlBatch, false);
+        UpdateOtherApprovalEntries(ApprovalEntry, false);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', false, false)]
+    local procedure ApprovalsMgtOnRejectApprovalRequest(var ApprovalEntry: Record "Approval Entry")
+    var
+        ItemJnlBatch: Record "Item Journal Batch";
+    begin
+        if (ApprovalEntry."Table ID" <> Database::"Item Journal Batch") or not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
+            exit;
+        UpdateItemLineApprovalStatus(ItemJnlBatch, true);
+        UpdateOtherApprovalEntries(ApprovalEntry, true);
+    end;
+
+
+    local procedure UpdateOtherApprovalEntries(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
+    var
+        OtherEntry: Record "Approval Entry";
+        NewStatus: Option;
+    begin
+        if Rejected then
+            NewStatus := ApprovalEntry.Status::Rejected
+        else
+            NewStatus := ApprovalEntry.Status::Approved;
+        OtherEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
+        OtherEntry.SetRange("Table ID", Database::"Item Journal Batch");
+        OtherEntry.SetRange("Record ID to Approve", ApprovalEntry."Record ID to Approve");
+        OtherEntry.SetRange(Status, OtherEntry.Status::Open);
+        OtherEntry.SetRange("Workflow Step Instance ID", ApprovalEntry."Workflow Step Instance ID");
+        OtherEntry.ModifyAll(Status, NewStatus, true);
+    end;
+
+    local procedure UpdateItemLineApprovalStatus(var ItemJnlBatch: Record "Item Journal Batch"; Rejected: Boolean)
+    var
+        ItemJnlLine: Record "Item Journal Line";
+        RecIDList: List of [RecordId];
+        RecID: RecordId;
+    begin
+        ItemJnlLine.SetRange("Journal Template Name", ItemJnlBatch."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlBatch.Name);
+        ItemJnlLine.SetRange("BA Locked For Approval", true);
+        ItemJnlLine.SetRange("BA Status", ItemJnlLine."BA Status"::Pending);
+        if not ItemJnlLine.FindSet() then
+            exit;
+        repeat
+            RecIDList.Add(ItemJnlLine.RecordId());
+        until ItemJnlLine.Next() = 0;
+        foreach RecID in RecIDList do begin
+            ItemJnlLine.Get(RecID);
+            ItemJnlLine.Validate("BA Locked For Approval", false);
+            if Rejected then
+                ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Rejected)
+            else begin
+                ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Released);
+                ItemJnlLine.Validate("BA Approved By", UserId());
+            end;
+            ItemJnlLine.Modify(false);
+        end;
     end;
 
     procedure CheckInventoryLimit(var ItemJournalLine: Record "Item Journal Line"): Boolean
@@ -1078,11 +1139,11 @@ codeunit 75010 "BA SEI Subscibers"
         InventorySetup: Record "Inventory Setup";
         FilterRec: Record "Item Journal Line";
         ApprovalEntry: Record "Approval Entry";
-        // ApprovalMsg: Codeunit "Approvals Mgmt.";
-        EntryNo: Integer;
+        CheckItemJnlLine: Codeunit "Item Jnl.-Check Line";
         ApprovalAmt: Decimal;
         TempGUID: Guid;
         EntryList: List of [Integer];
+        EntryNo: Integer;
     begin
         InventorySetup.Get();
         if not InventorySetup."BA Approval Required" then
@@ -1132,33 +1193,41 @@ codeunit 75010 "BA SEI Subscibers"
             if ApprovalEntry.FindSet(true) then
                 repeat
                     EntryList.Add(ApprovalEntry."Entry No.");
-
                 until ApprovalEntry.Next() = 0;
-
             foreach EntryNo in EntryList do begin
                 ApprovalEntry.Get(EntryNo);
                 ApprovalEntry.Validate(Status, ApprovalEntry.Status::Canceled);
                 ApprovalEntry.Modify(true);
             end;
-
             Message('Cancelled approval request.');
             exit;
         end;
 
+        ItemJnlLine.SetRange("BA Adjust. Reason", '');
+        if not ItemJnlLine.IsEmpty() then
+            Error('%1 has not been specified for one or mores.', ItemJnlLine.FieldCaption("BA Adjust. Reason"));
+        ItemJnlLine.SetRange("BA Adjust. Reason");
         TempGUID := CreateGuid();
         repeat
-            ItemJnlLine.Validate("BA Locked For Approval", true);
-            ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Pending);
-            ItemJnlLine."BA Approval GUID" := TempGUID;
-            ItemJnlLine.Modify(false);
+            CheckItemJnlLine.RunCheck(ItemJnlLine);
             ApprovalAmt += ItemJnlLine.Amount;
         until ItemJnlLine.Next() = 0;
-        // ItemJnlLine.ModifyAll("BA Status", ItemJnlLine."BA Status"::Pending);
 
-        if CheckInventoryLimit(ItemJnlLine) then
-            Message('Inventory adjustment is within the limit, no approval needed.')
-        else begin
-            Message('An approval request has been sent.');
+        ItemJnlLine.FindSet(true);
+        if CheckInventoryLimit(ItemJnlLine) then begin
+            repeat
+                ItemJnlLine.Validate("BA Locked For Approval", false);
+                ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Released);
+                ItemJnlLine.Modify(false);
+            until ItemJnlLine.Next() = 0;
+            Message('Inventory adjustment is within the limit, no approval needed.');
+        end else begin
+            repeat
+                ItemJnlLine.Validate("BA Locked For Approval", true);
+                ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Pending);
+                ItemJnlLine."BA Approval GUID" := TempGUID;
+                ItemJnlLine.Modify(false);
+            until ItemJnlLine.Next() = 0;
 
             ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
             ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
@@ -1174,6 +1243,7 @@ codeunit 75010 "BA SEI Subscibers"
                 AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin1", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
             if InventorySetup."BA Approval Admin2" <> '' then
                 AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin2", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
+            Message('An approval request has been sent.');
         end;
 
         ItemJnlLine.Reset();
@@ -1206,14 +1276,12 @@ codeunit 75010 "BA SEI Subscibers"
         ApprovalEntry.Modify(true);
     end;
 
-
     procedure ClearApprovalEntries()
     var
         ApprovalEntry: Record "Approval Entry";
     begin
         ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
         ApprovalEntry.DeleteAll(true);
-
     end;
 
     var
