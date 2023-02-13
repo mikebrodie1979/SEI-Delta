@@ -1,6 +1,6 @@
-page 50070 "BA Item Jnls. to Approval"
+page 50070 "BA Item Jnls. to Approve"
 {
-    Caption = 'Item Journals to Approval';
+    Caption = 'Item Journals to Approve';
     SourceTable = "Approval Entry";
     ApplicationArea = all;
     UsageCategory = Lists;

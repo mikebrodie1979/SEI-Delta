@@ -465,7 +465,7 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         CustPostGroup.Get(Rec."Customer Posting Group");
         if CustPostGroup."BA Blocked" then
-            Error('%1 %2 is blocked', CustPostGroup.TableCaption, CustPostGroup.Code);
+            Error(CustGroupBlockedError, CustPostGroup.TableCaption, CustPostGroup.Code);
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeAutoReserve', '', false, false)]
@@ -971,7 +971,7 @@ codeunit 75010 "BA SEI Subscibers"
         DateRec.SetRange("Period Type", DateRec."Period Type"::Month);
         DateRec.SetRange("Period Start", DMY2Date(1, Date2DMY(CurrExchRate."Starting Date", 2), 2000));
         DateRec.FindFirst();
-        CompInfo."Custom System Indicator Text" := CopyStr(StrSubstNo('%1 - USD Exch. Rate %2 (%3)', CompanyName(), CurrExchRate."Relational Exch. Rate Amount", DateRec."Period Name"), 1, MaxStrLen(CompInfo."Custom System Indicator Text"));
+        CompInfo."Custom System Indicator Text" := CopyStr(StrSubstNo(ExchangeRateText, CompanyName(), CurrExchRate."Relational Exch. Rate Amount", DateRec."Period Name"), 1, MaxStrLen(CompInfo."Custom System Indicator Text"));
         CompInfo.Modify(false);
     end;
 
@@ -1014,7 +1014,7 @@ codeunit 75010 "BA SEI Subscibers"
                         FilterStr += '|' + WarehouseEmployee."Location Code";
                 until WarehouseEmployee.Next() = 0
             else
-                Error('%1 must be setup as an %2', UserId(), WarehouseEmployee.TableCaption());
+                Error(WarehouseEmployeeSetupError, UserId(), WarehouseEmployee.TableCaption());
             Location.SetFilter(Code, FilterStr);
         end;
         Location.FilterGroup(0);
@@ -1046,7 +1046,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         ItemJournalLine.TestField("BA Adjust. Reason");
         if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Rejected then
-            Error('Line %1 has been rejected and must be re-submitted for approval.', ItemJournalLine."Line No.");
+            Error(RejectedLineError, ItemJournalLine."Line No.");
         if (ItemJournalLine."BA Status" <> ItemJournalLine."BA Status"::Released) and not CheckInventoryLimit(ItemJournalLine) then
             Error(JnlLimitError);
     end;
@@ -1060,6 +1060,8 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         UpdateItemLineApprovalStatus(ItemJnlBatch, false);
         UpdateOtherApprovalEntries(ApprovalEntry, false);
+        // SendApprovalEmail(ApprovalEntry, false);
+        SendApprovalNotification(ApprovalEntry);
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', false, false)]
@@ -1071,7 +1073,40 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         UpdateItemLineApprovalStatus(ItemJnlBatch, true);
         UpdateOtherApprovalEntries(ApprovalEntry, true);
+        // SendApprovalEmail(ApprovalEntry, true);
+        SendApprovalNotification(ApprovalEntry);
     end;
+
+    // local procedure SendApprovalEmail(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
+    // var
+    //     UserSetup: Record "User Setup";
+    //     ApprovalComment: Record "Approval Comment Line";
+    //     BodyText: TextBuilder;
+    //     Subject: Text;
+    //     Result: Text;
+    // begin
+    //     if not UserSetup.Get(ApprovalEntry."Sender ID") or (UserSetup."E-Mail" = '') then
+    //         exit;
+    //     if Rejected then
+    //         Subject := RejectedSubject
+    //     else
+    //         Subject := ApprovedSubject;
+    //     BodyText.AppendLine(StrSubstNo(ApprovalUpdateBody, ApprovalEntry."Entry No.", Format(ApprovalEntry.Status), ApprovalEntry."Approver ID"));
+
+    //     ApprovalComment.SetCurrentKey("Table ID", "Document Type", "Document No.", "Record ID to Approve");
+    //     ApprovalComment.SetRange("Table ID", Database::"Item Journal Batch");
+    //     ApprovalComment.SetRange("Record ID to Approve", ApprovalEntry."Record ID to Approve");
+    //     ApprovalComment.SetRange("User ID", ApprovalEntry."Approver ID");
+    //     ApprovalComment.SetRange("Workflow Step Instance ID", ApprovalEntry."Workflow Step Instance ID");
+    //     if ApprovalComment.FindSet() then begin
+    //         BodyText.AppendLine('');
+    //         BodyText.AppendLine('Comments:');
+    //         repeat
+    //             BodyText.AppendLine(ApprovalComment.Comment);
+    //         until ApprovalComment.Next() = 0;
+    //     end;
+    //     SendApprovalEmail(Subject, BodyText.ToText(), UserSetup."E-Mail", ApprovalEntry."BA Journal Batch Name");
+    // end;
 
 
     local procedure UpdateOtherApprovalEntries(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
@@ -1149,7 +1184,7 @@ codeunit 75010 "BA SEI Subscibers"
         if not InventorySetup."BA Approval Required" then
             exit;
         if (InventorySetup."BA Approval Admin1" = '') and (InventorySetup."BA Approval Admin2" = '') then
-            Error('An inventory approval admin must be set before approvals can be sent.');
+            Error(NoApprovalAdminError);
         InventorySetup.TestField("BA Approval Code");
 
         ItemJnlBatch.Get(ItemJnlLine."Journal Template Name", ItemJnlLine."Journal Batch Name");
@@ -1161,7 +1196,7 @@ codeunit 75010 "BA SEI Subscibers"
         ItemJnlLine.SetRange("BA Locked For Approval", true);
         if Cancelled then begin
             if ItemJnlLine.IsEmpty() then
-                Error('%1 has not been submitted for approval.', ItemJnlBatch.RecordId());
+                Error(NoApprovalToCancelError, ItemJnlBatch.RecordId());
 
             ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
             ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
@@ -1169,10 +1204,10 @@ codeunit 75010 "BA SEI Subscibers"
             ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Approved);
             ApprovalEntry.SetRange("Workflow Step Instance ID", ItemJnlLine."BA Approval GUID");
             if not ApprovalEntry.IsEmpty() then
-                Error('Cannot cancel approval request as it as been approved by one or more approvers.');
+                Error(AlreadyApprovedError);
         end else
             if not Cancelled and not ItemJnlLine.IsEmpty() then
-                Error('%1 has already been submitted for approval.', ItemJnlBatch.RecordId());
+                Error(AlreadySubmittedError, ItemJnlBatch.RecordId());
 
         ItemJnlLine.SetRange("BA Locked For Approval");
         ItemJnlLine.FindSet(true);
@@ -1199,13 +1234,13 @@ codeunit 75010 "BA SEI Subscibers"
                 ApprovalEntry.Validate(Status, ApprovalEntry.Status::Canceled);
                 ApprovalEntry.Modify(true);
             end;
-            Message('Cancelled approval request.');
+            Message(CancelRequestMsg);
             exit;
         end;
 
         ItemJnlLine.SetRange("BA Adjust. Reason", '');
         if not ItemJnlLine.IsEmpty() then
-            Error('%1 has not been specified for one or mores.', ItemJnlLine.FieldCaption("BA Adjust. Reason"));
+            Error(NoAdjustReasonError, ItemJnlLine.FieldCaption("BA Adjust. Reason"));
         ItemJnlLine.SetRange("BA Adjust. Reason");
         TempGUID := CreateGuid();
         repeat
@@ -1220,7 +1255,7 @@ codeunit 75010 "BA SEI Subscibers"
                 ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Released);
                 ItemJnlLine.Modify(false);
             until ItemJnlLine.Next() = 0;
-            Message('Inventory adjustment is within the limit, no approval needed.');
+            Message(NoApprovalNeededMsg);
         end else begin
             repeat
                 ItemJnlLine.Validate("BA Locked For Approval", true);
@@ -1234,7 +1269,7 @@ codeunit 75010 "BA SEI Subscibers"
             ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
             ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
             if not ApprovalEntry.IsEmpty() then
-                Error('%1 is already awaiting approval.', ItemJnlBatch.RecordId());
+                Error(AlreadyAwaitingApprovalError, ItemJnlBatch.RecordId());
 
             ApprovalEntry.Reset();
             if ApprovalEntry.FindLast() then
@@ -1243,7 +1278,7 @@ codeunit 75010 "BA SEI Subscibers"
                 AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin1", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
             if InventorySetup."BA Approval Admin2" <> '' then
                 AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin2", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
-            Message('An approval request has been sent.');
+            Message(RequestSentMsg);
         end;
 
         ItemJnlLine.Reset();
@@ -1252,8 +1287,13 @@ codeunit 75010 "BA SEI Subscibers"
 
     local procedure AddItemJnlBatchApprovalEntry(var EntryNo: Integer; ItemJnlBatch: Record "Item Journal Batch"; Approver: Code[50]; ApprovalAmt: Decimal; ApprovalCode: Code[20]; WorkflowGUID: Guid)
     var
+        // ItemJnlLine: Record "Item Journal Line";
         ApprovalEntry: Record "Approval Entry";
+        // UserSetup: Record "User Setup";
+        // BodyText: Text;
+        // NewLine: Text[1];
     begin
+        // NewLine[1] := 10;
         EntryNo += 1;
         ApprovalEntry.Init();
         ApprovalEntry."Entry No." := EntryNo;
@@ -1274,14 +1314,62 @@ codeunit 75010 "BA SEI Subscibers"
         ApprovalEntry.Validate("BA Journal Batch Name", ItemJnlBatch.Name);
         ApprovalEntry.Validate("Workflow Step Instance ID", WorkflowGUID);
         ApprovalEntry.Modify(true);
+        // ItemJnlLine.SetRange("Journal Template Name", ItemJnlBatch."Journal Template Name");
+        // ItemJnlLine.SetRange("Journal Batch Name", ItemJnlBatch.Name);
+        // UserSetup.Get(Approver);
+        // UserSetup.TestField("E-Mail");
+        // BodyText := StrSubstNo(ApprovalEmailBody, ItemJnlBatch.Name, Approver, GetUrl(CurrentClientType, CompanyName, ObjectType::Page, Page::"BA Item Jnls. to Approve", ApprovalEntry), NewLine, ItemJnlLine.Count());
+        // SendApprovalEmail(ApprovalRequestSubject, BodyText, UserSetup."E-Mail", ItemJnlBatch.Name);
+        SendApprovalNotification(ApprovalEntry);
     end;
 
     procedure ClearApprovalEntries()
     var
         ApprovalEntry: Record "Approval Entry";
     begin
+        if UserId <> 'ENCORE' then
+            exit;
         ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
         ApprovalEntry.DeleteAll(true);
+    end;
+
+
+    local procedure SendApprovalNotification(var ApprovalEntry: Record "Approval Entry")
+    var
+        NotificationEntry: Record "Notification Entry";
+        ItemJnlBatch: Record "Item Journal Batch";
+        ItemJnlLine: Record "Item Journal Line";
+    begin
+        if not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
+            exit;
+        ItemJnlLine.SetRange("Journal Template Name", ItemJnlBatch."Journal Template Name");
+        ItemJnlLine.SetRange("Journal Batch Name", ItemJnlBatch.Name);
+        if ItemJnlLine.FindFirst() then begin
+            NotificationEntry.CreateNew(NotificationEntry.Type::"New Record", ApprovalEntry."Approver ID",
+                ApprovalEntry, Page::"Item Journal", '');
+            if NotificationEntry.FindLast() then begin
+                NotificationEntry.Type := NotificationEntry.Type::Approval;
+                NotificationEntry."Sender User ID" := ApprovalEntry."Sender ID";
+                NotificationEntry.Modify(false);
+            end;
+        end;
+    end;
+
+    local procedure SendApprovalEmail(Subject: Text; Body: Text; SendTo: Text; JnlBatch: Code[20])
+    var
+        ServEmailQueue: Record "Service Email Queue";
+    begin
+        ServEmailQueue.Init;
+        ServEmailQueue."To Address" := SendTo;
+        ServEmailQueue."Copy-to Address" := '';
+        ServEmailQueue."Subject Line" := Subject;
+        ServEmailQueue."Body Line" := Body;
+        ServEmailQueue."Attachment Filename" := '';
+        ServEmailQueue."Document Type" := ServEmailQueue."Document Type"::" ";
+        ServEmailQueue."Document No." := JnlBatch;
+        ServEmailQueue.Status := ServEmailQueue.Status::" ";
+        ServEmailQueue.Insert(TRUE);
+        ServEmailQueue.ScheduleInJobQueue;
     end;
 
     var
@@ -1297,4 +1385,21 @@ codeunit 75010 "BA SEI Subscibers"
         MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
         JnlLimitError: Label 'This journal adjustment is outside the limit, please request approval.';
+        // ApprovalEmailBody: Label 'An inventory approval request for %5 lines in Item Journal %1 has been submited by %2.%4%4Please review the request at the following:%4%3';
+        ApprovalUpdateBody: Label 'Inventory approval request %1 has been %2 by %3.';
+        ApprovedSubject: Label 'Inventory Approval Rejected';
+        RejectedSubject: Label 'Inventory Approval Approved';
+        NoApprovalAdminError: Label 'An inventory approval admin must be set before approvals can be sent.';
+        NoApprovalToCancelError: Label '%1 has not been submitted for approval.';
+        AlreadyApprovedError: Label 'Cannot cancel approval request as it as been approved by one or more approvers.';
+        AlreadySubmittedError: Label '%1 has already been submitted for approval.';
+        CancelRequestMsg: Label 'Cancelled approval request.';
+        NoAdjustReasonError: Label '%1 has not been specified for one or mores.';
+        NoApprovalNeededMsg: Label 'Inventory adjustment is within the limit, no approval needed.';
+        AlreadyAwaitingApprovalError: Label '%1 is already awaiting approval.';
+        RequestSentMsg: Label 'An approval request has been sent.';
+        RejectedLineError: Label 'Line %1 has been rejected and must be re-submitted for approval.';
+        CustGroupBlockedError: Label '%1 %2 is blocked';
+        ExchangeRateText: Label '%1 - USD Exch. Rate %2 (%3)';
+        WarehouseEmployeeSetupError: Label '%1 must be setup as an %2';
 }

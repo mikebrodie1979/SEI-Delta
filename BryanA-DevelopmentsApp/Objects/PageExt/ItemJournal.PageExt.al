@@ -34,14 +34,6 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
             {
                 ApplicationArea = all;
             }
-            field("BA Locked For Approval"; Rec."BA Locked For Approval")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Approval GUID"; Rec."BA Approval GUID")
-            {
-                ApplicationArea = all;
-            }
         }
     }
 
@@ -81,35 +73,35 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
                     Subscribers.SendItemJnlApproval(Rec, true);
                 end;
             }
-            action("BA Clear Entries")
-            {
-                ApplicationArea = all;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                PromotedOnly = true;
-                Image = ClearLog;
-                Caption = 'Clear Entries';
+            // action("BA Clear Entries")
+            // {
+            //     ApplicationArea = all;
+            //     Promoted = true;
+            //     PromotedCategory = Process;
+            //     PromotedIsBig = true;
+            //     PromotedOnly = true;
+            //     Image = ClearLog;
+            //     Caption = 'Clear Entries';
 
-                trigger OnAction()
-                var
-                    TempGUID: Guid;
-                begin
-                    Subscribers.ClearApprovalEntries();
-                    Rec.Reset();
-                    Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
-                    Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
-                    if not Rec.FindSet() then
-                        exit;
-                    repeat
-                        Rec."BA Locked For Approval" := false;
-                        Rec."BA Status" := Rec."BA Status"::" ";
-                        Rec."BA Approval GUID" := TempGUID;
-                        Rec.Modify(false);
-                    until Rec.Next() = 0;
-                    CurrPage.Update(false);
-                end;
-            }
+            //     trigger OnAction()
+            //     var
+            //         TempGUID: Guid;
+            //     begin
+            //         Subscribers.ClearApprovalEntries();
+            //         Rec.Reset();
+            //         Rec.SetRange("Journal Template Name", Rec."Journal Template Name");
+            //         Rec.SetRange("Journal Batch Name", Rec."Journal Batch Name");
+            //         if not Rec.FindSet() then
+            //             exit;
+            //         repeat
+            //             Rec."BA Locked For Approval" := false;
+            //             Rec."BA Status" := Rec."BA Status"::" ";
+            //             Rec."BA Approval GUID" := TempGUID;
+            //             Rec.Modify(false);
+            //         until Rec.Next() = 0;
+            //         CurrPage.Update(false);
+            //     end;
+            // }
         }
     }
 
