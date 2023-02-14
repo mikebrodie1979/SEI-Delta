@@ -34,5 +34,11 @@ tableextension 80072 "BA Prod. BOM Version" extends "Production BOM Version"
             Editable = false;
             CalcFormula = lookup (Item."Gen. Prod. Posting Group" where ("No." = field ("Production BOM No.")));
         }
+        field(80010; "BA Active"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Active2';
+            Editable = false;
+        }
     }
 }
