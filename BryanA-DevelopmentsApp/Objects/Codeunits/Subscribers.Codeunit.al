@@ -1060,7 +1060,6 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         UpdateItemLineApprovalStatus(ItemJnlBatch, false);
         UpdateOtherApprovalEntries(ApprovalEntry, false);
-        // SendApprovalEmail(ApprovalEntry, false);
         SendApprovalNotification(ApprovalEntry);
     end;
 
@@ -1073,41 +1072,8 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         UpdateItemLineApprovalStatus(ItemJnlBatch, true);
         UpdateOtherApprovalEntries(ApprovalEntry, true);
-        // SendApprovalEmail(ApprovalEntry, true);
         SendApprovalNotification(ApprovalEntry);
     end;
-
-    // local procedure SendApprovalEmail(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
-    // var
-    //     UserSetup: Record "User Setup";
-    //     ApprovalComment: Record "Approval Comment Line";
-    //     BodyText: TextBuilder;
-    //     Subject: Text;
-    //     Result: Text;
-    // begin
-    //     if not UserSetup.Get(ApprovalEntry."Sender ID") or (UserSetup."E-Mail" = '') then
-    //         exit;
-    //     if Rejected then
-    //         Subject := RejectedSubject
-    //     else
-    //         Subject := ApprovedSubject;
-    //     BodyText.AppendLine(StrSubstNo(ApprovalUpdateBody, ApprovalEntry."Entry No.", Format(ApprovalEntry.Status), ApprovalEntry."Approver ID"));
-
-    //     ApprovalComment.SetCurrentKey("Table ID", "Document Type", "Document No.", "Record ID to Approve");
-    //     ApprovalComment.SetRange("Table ID", Database::"Item Journal Batch");
-    //     ApprovalComment.SetRange("Record ID to Approve", ApprovalEntry."Record ID to Approve");
-    //     ApprovalComment.SetRange("User ID", ApprovalEntry."Approver ID");
-    //     ApprovalComment.SetRange("Workflow Step Instance ID", ApprovalEntry."Workflow Step Instance ID");
-    //     if ApprovalComment.FindSet() then begin
-    //         BodyText.AppendLine('');
-    //         BodyText.AppendLine('Comments:');
-    //         repeat
-    //             BodyText.AppendLine(ApprovalComment.Comment);
-    //         until ApprovalComment.Next() = 0;
-    //     end;
-    //     SendApprovalEmail(Subject, BodyText.ToText(), UserSetup."E-Mail", ApprovalEntry."BA Journal Batch Name");
-    // end;
-
 
     local procedure UpdateOtherApprovalEntries(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
     var
@@ -1186,9 +1152,7 @@ codeunit 75010 "BA SEI Subscibers"
         if (InventorySetup."BA Approval Admin1" = '') and (InventorySetup."BA Approval Admin2" = '') then
             Error(NoApprovalAdminError);
         InventorySetup.TestField("BA Approval Code");
-
         ItemJnlBatch.Get(ItemJnlLine."Journal Template Name", ItemJnlLine."Journal Batch Name");
-
         FilterRec.CopyFilters(ItemJnlLine);
         ItemJnlLine.Reset();
         ItemJnlLine.SetRange("Journal Template Name", ItemJnlLine."Journal Template Name");
@@ -1197,7 +1161,6 @@ codeunit 75010 "BA SEI Subscibers"
         if Cancelled then begin
             if ItemJnlLine.IsEmpty() then
                 Error(NoApprovalToCancelError, ItemJnlBatch.RecordId());
-
             ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
             ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
             ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
@@ -1270,7 +1233,6 @@ codeunit 75010 "BA SEI Subscibers"
             ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
             if not ApprovalEntry.IsEmpty() then
                 Error(AlreadyAwaitingApprovalError, ItemJnlBatch.RecordId());
-
             ApprovalEntry.Reset();
             if ApprovalEntry.FindLast() then
                 EntryNo := ApprovalEntry."Entry No.";
@@ -1280,20 +1242,14 @@ codeunit 75010 "BA SEI Subscibers"
                 AddItemJnlBatchApprovalEntry(EntryNo, ItemJnlBatch, InventorySetup."BA Approval Admin2", ApprovalAmt, InventorySetup."BA Approval Code", TempGUID);
             Message(RequestSentMsg);
         end;
-
         ItemJnlLine.Reset();
         ItemJnlLine.CopyFilters(FilterRec);
     end;
 
     local procedure AddItemJnlBatchApprovalEntry(var EntryNo: Integer; ItemJnlBatch: Record "Item Journal Batch"; Approver: Code[50]; ApprovalAmt: Decimal; ApprovalCode: Code[20]; WorkflowGUID: Guid)
     var
-        // ItemJnlLine: Record "Item Journal Line";
         ApprovalEntry: Record "Approval Entry";
-        // UserSetup: Record "User Setup";
-        // BodyText: Text;
-        // NewLine: Text[1];
     begin
-        // NewLine[1] := 10;
         EntryNo += 1;
         ApprovalEntry.Init();
         ApprovalEntry."Entry No." := EntryNo;
@@ -1314,12 +1270,6 @@ codeunit 75010 "BA SEI Subscibers"
         ApprovalEntry.Validate("BA Journal Batch Name", ItemJnlBatch.Name);
         ApprovalEntry.Validate("Workflow Step Instance ID", WorkflowGUID);
         ApprovalEntry.Modify(true);
-        // ItemJnlLine.SetRange("Journal Template Name", ItemJnlBatch."Journal Template Name");
-        // ItemJnlLine.SetRange("Journal Batch Name", ItemJnlBatch.Name);
-        // UserSetup.Get(Approver);
-        // UserSetup.TestField("E-Mail");
-        // BodyText := StrSubstNo(ApprovalEmailBody, ItemJnlBatch.Name, Approver, GetUrl(CurrentClientType, CompanyName, ObjectType::Page, Page::"BA Item Jnls. to Approve", ApprovalEntry), NewLine, ItemJnlLine.Count());
-        // SendApprovalEmail(ApprovalRequestSubject, BodyText, UserSetup."E-Mail", ItemJnlBatch.Name);
         SendApprovalNotification(ApprovalEntry);
     end;
 
@@ -1355,22 +1305,6 @@ codeunit 75010 "BA SEI Subscibers"
         end;
     end;
 
-    local procedure SendApprovalEmail(Subject: Text; Body: Text; SendTo: Text; JnlBatch: Code[20])
-    var
-        ServEmailQueue: Record "Service Email Queue";
-    begin
-        ServEmailQueue.Init;
-        ServEmailQueue."To Address" := SendTo;
-        ServEmailQueue."Copy-to Address" := '';
-        ServEmailQueue."Subject Line" := Subject;
-        ServEmailQueue."Body Line" := Body;
-        ServEmailQueue."Attachment Filename" := '';
-        ServEmailQueue."Document Type" := ServEmailQueue."Document Type"::" ";
-        ServEmailQueue."Document No." := JnlBatch;
-        ServEmailQueue.Status := ServEmailQueue.Status::" ";
-        ServEmailQueue.Insert(TRUE);
-        ServEmailQueue.ScheduleInJobQueue;
-    end;
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
@@ -1385,10 +1319,6 @@ codeunit 75010 "BA SEI Subscibers"
         MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
         JnlLimitError: Label 'This journal adjustment is outside the limit, please request approval.';
-        // ApprovalEmailBody: Label 'An inventory approval request for %5 lines in Item Journal %1 has been submited by %2.%4%4Please review the request at the following:%4%3';
-        ApprovalUpdateBody: Label 'Inventory approval request %1 has been %2 by %3.';
-        ApprovedSubject: Label 'Inventory Approval Rejected';
-        RejectedSubject: Label 'Inventory Approval Approved';
         NoApprovalAdminError: Label 'An inventory approval admin must be set before approvals can be sent.';
         NoApprovalToCancelError: Label '%1 has not been submitted for approval.';
         AlreadyApprovedError: Label 'Cannot cancel approval request as it as been approved by one or more approvers.';
