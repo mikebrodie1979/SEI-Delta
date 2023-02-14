@@ -16,15 +16,7 @@ page 50070 "BA Item Jnls. to Approve"
         {
             repeater(Line)
             {
-                field("Table ID"; Rec."Table ID")
-                {
-                    ApplicationArea = all;
-                }
                 field("Entry No."; Rec."Entry No.")
-                {
-                    ApplicationArea = all;
-                }
-                field(Status; Rec.Status)
                 {
                     ApplicationArea = all;
                 }
@@ -37,19 +29,15 @@ page 50070 "BA Item Jnls. to Approve"
                         OpenJournalPage();
                     end;
                 }
-                field("Date-Time Sent for Approval"; Rec."Date-Time Sent for Approval")
-                {
-                    ApplicationArea = all;
-                }
-                field("Due Date"; Rec."Due Date")
-                {
-                    ApplicationArea = all;
-                }
                 field("Sender ID"; Rec."Sender ID")
                 {
                     ApplicationArea = all;
                 }
-                field("Approval Code"; Rec."Approval Code")
+                field(Status; Rec.Status)
+                {
+                    ApplicationArea = all;
+                }
+                field("Date-Time Sent for Approval"; Rec."Date-Time Sent for Approval")
                 {
                     ApplicationArea = all;
                 }
