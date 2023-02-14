@@ -161,7 +161,7 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
     trigger OnAfterGetCurrRecord()
     begin
         Cancel := not CheckForApprovalEntries(true) and (Rec."BA Status" <> Rec."BA Status"::Rejected);
-        Approve := CheckForApprovalEntries(false) and (Rec."BA Status" <> Rec."BA Status"::Released);
+        Approve := CheckForApprovalEntries(false) and (Rec."BA Status" <> Rec."BA Status"::Released) and (Rec."Item No." <> '');
     end;
 
     trigger OnOpenPage()
