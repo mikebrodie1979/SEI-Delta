@@ -1127,6 +1127,8 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnBeforeRunWithCheck', '', false, false)]
     local procedure ItemJnlPostLineOnBeforeRunWithCheck(var ItemJournalLine: Record "Item Journal Line")
     begin
+        if not IsInventoryApprovalEnabled() then
+            exit;
         ItemJournalLine.TestField("BA Adjust. Reason");
         if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Rejected then
             Error(RejectedLineError, ItemJournalLine."Line No.");
@@ -1136,25 +1138,32 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnApproveApprovalRequest', '', false, false)]
     local procedure ApprovalsMgtOnApproveApprovalRequest(var ApprovalEntry: Record "Approval Entry")
-    var
-        ItemJnlBatch: Record "Item Journal Batch";
     begin
-        if (ApprovalEntry."Table ID" <> Database::"Item Journal Batch") or not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
-            exit;
-        UpdateItemLineApprovalStatus(ItemJnlBatch, false);
-        UpdateOtherApprovalEntries(ApprovalEntry, false);
-        SendApprovalNotification(ApprovalEntry);
+        ApprovalUpdateActions(ApprovalEntry, false);
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', false, false)]
     local procedure ApprovalsMgtOnRejectApprovalRequest(var ApprovalEntry: Record "Approval Entry")
+
+    begin
+        ApprovalUpdateActions(ApprovalEntry, true);
+    end;
+
+    local procedure IsInventoryApprovalEnabled(): Boolean;
+    var
+        InventorySetup: Record "Inventory Setup";
+    begin
+        exit(InventorySetup.Get() and InventorySetup."BA Approval Required");
+    end;
+
+    local procedure ApprovalUpdateActions(var ApprovalEntry: Record "Approval Entry"; Rejected: Boolean)
     var
         ItemJnlBatch: Record "Item Journal Batch";
     begin
-        if (ApprovalEntry."Table ID" <> Database::"Item Journal Batch") or not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
+        if not IsInventoryApprovalEnabled() or (ApprovalEntry."Table ID" <> Database::"Item Journal Batch") or not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
             exit;
-        UpdateItemLineApprovalStatus(ItemJnlBatch, true);
-        UpdateOtherApprovalEntries(ApprovalEntry, true);
+        UpdateItemLineApprovalStatus(ItemJnlBatch, Rejected);
+        UpdateOtherApprovalEntries(ApprovalEntry, Rejected);
         SendApprovalNotification(ApprovalEntry);
     end;
 
@@ -1231,7 +1240,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         InventorySetup.Get();
         if not InventorySetup."BA Approval Required" then
-            exit;
+            Error(InventoryAppDisabledError);
         if (InventorySetup."BA Approval Admin1" = '') and (InventorySetup."BA Approval Admin2" = '') then
             Error(NoApprovalAdminError);
         InventorySetup.TestField("BA Approval Code");
@@ -1415,4 +1424,5 @@ codeunit 75010 "BA SEI Subscibers"
         CustGroupBlockedError: Label '%1 %2 is blocked';
         ExchangeRateText: Label '%1 - USD Exch. Rate %2 (%3)';
         WarehouseEmployeeSetupError: Label '%1 must be setup as an %2';
+        InventoryAppDisabledError: Label 'Inventory Approval is not enabled.';
 }
