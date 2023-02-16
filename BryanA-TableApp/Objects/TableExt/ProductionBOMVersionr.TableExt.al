@@ -37,7 +37,7 @@ tableextension 80072 "BA Prod. BOM Version" extends "Production BOM Version"
         field(80010; "BA Active"; Boolean)
         {
             DataClassification = CustomerContent;
-            Caption = 'Active2';
+            Caption = 'Active';
             Editable = false;
         }
     }
