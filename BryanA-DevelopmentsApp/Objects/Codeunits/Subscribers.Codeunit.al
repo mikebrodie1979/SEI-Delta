@@ -1045,6 +1045,56 @@ codeunit 75010 "BA SEI Subscibers"
         LocCode := LocationListLookup();
     end;
 
+    [EventSubscriber(ObjectType::Report, Report::"Refresh Production Order", 'OnAfterRefreshProdOrder', '', false, false)]
+    local procedure RefreshProdOrderOnAfterRefreshProdOrder(var ProductionOrder: Record "Production Order"; ErrorOccured: Boolean)
+    var
+        ProdBOMHeader: Record "Production BOM Header";
+    begin
+        if ErrorOccured or (ProductionOrder."Source Type" <> ProductionOrder."Source Type"::Item) or not ProdBOMHeader.Get(ProductionOrder."Source No.") then
+            exit;
+        ProdBOMHeader.CalcFields("BA Active Version");
+        ProductionOrder."BA Source Version" := ProdBOMHeader."BA Active Version";
+        ProductionOrder.Modify(true);
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Production BOM Version", 'OnAfterValidateEvent', 'Starting Date', false, false)]
+    local procedure ProdBOMVersionOnAfterValidateStartingDate(var Rec: Record "Production BOM Version"; var xRec: Record "Production BOM Version")
+    begin
+        if xRec."Starting Date" = Rec."Starting Date" then
+            exit;
+        UpdateBOMActive(Rec);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Production BOM Version", 'OnAfterValidateEvent', 'Status', false, false)]
+    local procedure ProdBOMVersionOnAfterValidateStatus(var Rec: Record "Production BOM Version"; var xRec: Record "Production BOM Version")
+    begin
+        UpdateBOMActive(Rec);
+    end;
+
+    procedure UpdateBOMActive(var ProdBomVersion: Record "Production BOM Version")
+    var
+        ProdBOMVersion2: Record "Production BOM Version";
+        VersionMgt: Codeunit VersionManagement;
+        ActiveVersion: Code[20];
+    begin
+        ProdBomVersion.Modify(false);
+        ProdBomVersion.Get(ProdBomVersion.RecordId());
+        ActiveVersion := VersionMgt.GetBOMVersion(ProdBomVersion."Production BOM No.", WorkDate(), true);
+
+        ProdBomVersion."BA Active" := ProdBomVersion."Version Code" = ActiveVersion;
+        ProdBOMVersion2.SetRange("Production BOM No.", ProdBomVersion."Production BOM No.");
+        ProdBOMVersion2.SetFilter("Version Code", '<>%1', ActiveVersion);
+        ProdBOMVersion2.ModifyAll("BA Active", false, false);
+        if ProdBOMVersion2.Get(ProdBomVersion."Production BOM No.", ActiveVersion) then begin
+            ProdBomVersion2."BA Active" := true;
+            ProdBomVersion2.Modify(false);
+        end;
+        ProdBomVersion.Get(ProdBomVersion.RecordId());
+    end;
+
+
+
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';

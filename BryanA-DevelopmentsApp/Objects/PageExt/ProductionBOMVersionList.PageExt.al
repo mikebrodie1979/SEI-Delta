@@ -16,6 +16,11 @@ pageextension 80107 "BA Production BOM Version List" extends "Prod. BOM Version 
             {
                 ApplicationArea = all;
             }
+            field("BA Active"; Rec."BA Active")
+            {
+                ApplicationArea = all;
+                Caption = 'Active';
+            }
         }
     }
 }

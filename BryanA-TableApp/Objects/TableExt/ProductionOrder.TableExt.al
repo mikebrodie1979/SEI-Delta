@@ -14,5 +14,13 @@ tableextension 80018 "BA Production Order" extends "Production Order"
             CalcFormula = - exist ("Prod. Order Line" where ("Prod. Order No." = field ("No."), Status = field (Status), "Remaining Quantity" = filter ('<>0')));
             Editable = false;
         }
+        field(80015; "BA Source Version"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Source Version';
+            Editable = false;
+            TableRelation = "Production BOM Header"."ENC Active Version No." where ("No." = field ("Source No."));
+            // ValidateTableRelation = false;
+        }
     }
 }
