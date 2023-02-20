@@ -848,8 +848,6 @@ codeunit 75010 "BA SEI Subscibers"
         Item: Record Item;
         ItemCard: Page "Item Card";
     begin
-        // if not Confirm(StrSubstNo('%1, %2, %3', ItemNo, DimCode, DimValue)) then
-        //     Error('');
         if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item, DimValue) then begin
             Item.Modify(true);
             Commit();
