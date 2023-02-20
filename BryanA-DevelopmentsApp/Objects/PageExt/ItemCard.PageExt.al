@@ -270,6 +270,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             RecRef.SetTable(Item);
             CurrPage.Update(true);
             Rec.Get(Item."No.");
+            Item.Get(Item."No.");
         end;
         exit(UpdateRec);
     end;
