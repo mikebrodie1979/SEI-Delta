@@ -477,12 +477,12 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
-        DefaultDim: Record "Default Dimension";
     begin
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
             exit;
         GLSetup.Get();
+
         case true of
             Rec."Dimension Code" = GLSetup."Shortcut Dimension 1 Code":
                 Item."Global Dimension 1 Code" := Rec."Dimension Value Code";
@@ -505,8 +505,7 @@ codeunit 75010 "BA SEI Subscibers"
             else
                 exit;
         end;
-        if DefaultDim.Get(Rec.RecordId()) then
-            Rec.Modify(true)
+        Item.Modify(true);
     end;
 
 
@@ -925,12 +924,14 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Config. Package Management", 'OnApplyItemDimension', '', false, false)]
-    local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20])
+    local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20]; DimCode: Code[20]; DimValue: Code[20])
     var
         Item: Record Item;
         ItemCard: Page "Item Card";
     begin
-        if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item) then begin
+        // if not Confirm(StrSubstNo('%1, %2, %3', ItemNo, DimCode, DimValue)) then
+        //     Error('');
+        if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item, DimValue) then begin
             Item.Modify(true);
             Commit();
         end;
