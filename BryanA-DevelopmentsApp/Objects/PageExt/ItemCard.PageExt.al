@@ -225,12 +225,18 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 
 
     procedure CheckToUpdateDimValues(var Item: Record Item): Boolean
+    begin
+        exit(CheckToUpdateDimValues(Item, ''));
+    end;
+
+    procedure CheckToUpdateDimValues(var Item: Record Item; NewDimValue: Code[20]): Boolean
     var
         DefaultDim: Record "Default Dimension";
         RecRef: RecordRef;
         RecRef2: RecordRef;
-        UpdateRec: Boolean;
+        DimOffset: Integer;
         i: Integer;
+        UpdateRec: Boolean;
     begin
         if Item."No." = '' then
             exit(false);
@@ -241,19 +247,20 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         GLSetup.Get();
         RecRef2.GetTable(GLSetup);
 
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 3 Code"), Item.FieldNo("ENC Shortcut Dimension 3 Code")) then
+        DimOffset := GLSetup.FieldNo("Shortcut Dimension 3 Code") - 3;
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 3 Code"), Item.FieldNo("ENC Shortcut Dimension 3 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 4 Code"), Item.FieldNo("ENC Shortcut Dimension 4 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 4 Code"), Item.FieldNo("ENC Shortcut Dimension 4 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 5 Code"), Item.FieldNo("ENC Shortcut Dimension 5 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 5 Code"), Item.FieldNo("ENC Shortcut Dimension 5 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 6 Code"), Item.FieldNo("ENC Shortcut Dimension 6 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 6 Code"), Item.FieldNo("ENC Shortcut Dimension 6 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 7 Code"), Item.FieldNo("ENC Shortcut Dimension 7 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 7 Code"), Item.FieldNo("ENC Shortcut Dimension 7 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 8 Code"), Item.FieldNo("ENC Shortcut Dimension 8 Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 8 Code"), Item.FieldNo("ENC Shortcut Dimension 8 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code")) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code"), '', DimOffset) then
             UpdateRec := true;
 
 
@@ -267,7 +274,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         exit(UpdateRec);
     end;
 
-    local procedure UpdateDimValue(var RecRef: RecordRef; var GLRecRef: RecordRef; GLFldNo: Integer; DimFldNo: Integer): Boolean
+    local procedure UpdateDimValue(var RecRef: RecordRef; var GLRecRef: RecordRef; GLFldNo: Integer; DimFldNo: Integer; NewDimValue: Code[20]; DimOffset: Integer): Boolean
     var
         GLSetup: Record "General Ledger Setup";
         DefaultDim: Record "Default Dimension";
@@ -275,23 +282,41 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         FldRef: FieldRef;
         FldRef2: FieldRef;
         FldRef3: FieldRef;
+        FldRef4: FieldRef;
+        DimMgt: Codeunit DimensionManagement;
+        Result: Boolean;
     begin
         FldRef := GLRecRef.Field(GLFldNo);
         if Format(FldRef.Value()) = '' then
             exit(false);
         FldRef2 := RecRef.Field(Rec.FieldNo("No."));
         FldRef3 := RecRef.Field(DimFldNo);
-        if DefaultDim.Get(Database::Item, FldRef2.Value(), FldRef.Value()) and DimValue.Get(DefaultDim."Dimension Code", DefaultDim."Dimension Value Code") then begin
-            if Format(FldRef3.Value) <> DefaultDim."Dimension Value Code" then begin
-                FldRef3.Validate(DefaultDim."Dimension Value Code");
-                exit(true);
-            end;
+        if NewDimValue <> '' then
+            FldRef4 := RecRef.Field(Rec.FieldNo("ENC Skip Dimension Validation"));
+
+        if DefaultDim.Get(Database::Item, FldRef2.Value(), FldRef.Value()) then begin
+            if NewDimValue <> '' then begin
+                if DimValue.Get(DefaultDim."Dimension Code", NewDimValue) then begin
+                    if Format(FldRef3.Value) <> NewDimValue then begin
+                        FldRef4.Value(true);
+                        FldRef3.Validate(NewDimValue);
+                        FldRef4.Value(false);
+                        DimMgt.SaveDefaultDim(Database::Item, FldRef2.Value(), GLFldNo - DimOffset, NewDimValue);
+                        Result := true;
+                    end;
+                end;
+            end else
+                if DimValue.Get(DefaultDim."Dimension Code", DefaultDim."Dimension Value Code") then
+                    if Format(FldRef3.Value) <> DefaultDim."Dimension Value Code" then begin
+                        FldRef3.Validate(DefaultDim."Dimension Value Code");
+                        Result := true;
+                    end;
         end else
             if Format(FldRef3.Value()) <> '' then begin
                 FldRef3.Validate('');
-                exit(true);
+                Result := true;
             end;
-        exit(false);
+        exit(Result);
     end;
 
 
