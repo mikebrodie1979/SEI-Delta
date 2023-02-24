@@ -8,7 +8,7 @@ pageextension 80088 "BA Item Ledger Entries" extends "Item Ledger Entries"
             {
                 ApplicationArea = all;
             }
-            field("BA Adjust. Reason"; Rec."BA Adjust. Reason")
+            field("BA Adjust. Reason Code"; Rec."BA Adjust. Reason Code")
             {
                 ApplicationArea = all;
             }

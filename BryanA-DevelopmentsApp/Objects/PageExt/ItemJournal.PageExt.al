@@ -25,7 +25,7 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
             {
                 ApplicationArea = all;
             }
-            field("BA Adjust. Reason"; Rec."BA Adjust. Reason")
+            field("BA Adjust. Reason Code"; Rec."BA Adjust. Reason Code")
             {
                 ApplicationArea = all;
                 ShowMandatory = true;
@@ -49,7 +49,6 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
                 PromotedIsBig = true;
                 PromotedOnly = true;
                 Image = SendApprovalRequest;
-                Enabled = Approve;
                 Caption = 'Request Approval';
 
                 trigger OnAction()
@@ -65,12 +64,44 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
                 PromotedIsBig = true;
                 PromotedOnly = true;
                 Image = SendApprovalRequest;
-                Enabled = Cancel;
                 Caption = 'Cancel Approval Request';
 
                 trigger OnAction()
                 begin
                     Subscribers.SendItemJnlApproval(Rec, true);
+                end;
+            }
+            action("BA ReOpen Approval Request")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = ReOpen;
+                Caption = 'Reopen Approval Request';
+
+                trigger OnAction()
+                var
+                    ItemJnlLine: Record "Item Journal Line";
+                begin
+
+                    Subscribers.ReopenApprovalRequest(Rec);
+                    ItemJnlLine.SetRange("Journal Template Name", Rec."Journal Template Name");
+                    ItemJnlLine.SetRange("Journal Batch Name", Rec."Journal Batch Name");
+                    ItemJnlLine.SetFilter("BA Status", '%1|%2', Rec."BA Status"::Released, Rec."BA Status"::Rejected);
+                    if ItemJnlLine.IsEmpty() then
+                        Error('Approval request is already open.');
+                    ItemJnlLine.SetRange("BA Status");
+                    if ItemJnlLine.FindSet() then
+                        repeat
+                            ItemJnlLine."BA Status" := Rec."BA Status"::" ";
+                            ItemJnlLine."BA Locked For Approval" := false;
+                            ItemJnlLine."BA Approved By" := '';
+                            ItemJnlLine.Modify(true);
+                        until ItemJnlLine.Next() = 0;
+                    CurrPage.Update(false);
+                    Message('Reopened approval request.');
                 end;
             }
             action("BA Clear Entries")
@@ -115,54 +146,29 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
         ItemJnlLine.SetRange("Journal Batch Name", Rec."Journal Batch Name");
         ItemJnlLine.SetRange("BA Locked For Approval", true);
         if not ItemJnlLine.IsEmpty() then
-            Error('Cannot add new lines after submitting journal for approval.');
+            Error(NewLineError1);
         ItemJnlLine.SetRange("BA Locked For Approval");
         ItemJnlLine.SetRange("BA Status", Rec."BA Status"::Released);
         if not ItemJnlLine.IsEmpty() then
-            Error('Cannot add new lines after journal has been approved.');
+            Error(NewLineError2);
     end;
 
     trigger OnModifyRecord(): Boolean
     begin
         if Rec."BA Locked For Approval" then
-            Error('Line %1 cannot be modified after being sent for approval.', Rec."Line No.");
+            Error(ModifiedLineError1, Rec."Line No.");
         if Rec."BA Status" = Rec."BA Status"::Released then
-            Error('Line %1 cannot be modified after being approved.', Rec."Line No.");
+            Error(ModifiedLineError2, Rec."Line No.");
     end;
 
     trigger OnDeleteRecord(): Boolean
     begin
         if Rec."BA Locked For Approval" then
-            Error('Line %1 cannot be deleted after being sent for approval.', Rec."Line No.");
+            Error(DeletedLineError1, Rec."Line No.");
         if Rec."BA Status" = Rec."BA Status"::Released then
-            Error('Line %1 cannot be deleted after being approved.', Rec."Line No.");
+            Error(DeletedLineError2, Rec."Line No.");
     end;
 
-    local procedure CheckForApprovalEntries(Cancel: Boolean): Boolean
-    var
-        ApprovalEntry: Record "Approval Entry";
-        ItemJnlBatch: Record "Item Journal Batch";
-    begin
-        if not ItemJnlBatch.Get(Rec."Journal Template Name", Rec."Journal Batch Name") then
-            exit(false);
-        ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
-        ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
-        ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
-        ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
-        ApprovalEntry.SetRange("Workflow Step Instance ID", Rec."BA Approval GUID");
-        if Cancel then
-            ApprovalEntry.SetRange("Sender ID", UserId());
-        exit(ApprovalEntry.IsEmpty());
-    end;
-
-
-
-
-    trigger OnAfterGetCurrRecord()
-    begin
-        Cancel := not CheckForApprovalEntries(true) and (Rec."BA Status" <> Rec."BA Status"::Rejected);
-        Approve := CheckForApprovalEntries(false) and (Rec."BA Status" <> Rec."BA Status"::Released) and (Rec."Item No." <> '');
-    end;
 
     trigger OnOpenPage()
     begin
@@ -177,4 +183,11 @@ pageextension 80151 "BA Item Journal" extends "Item Journal"
         Approve: Boolean;
         [InDataSet]
         IsDebugUser: Boolean;
+
+        NewLineError1: Label 'Cannot add new lines after submitting journal for approval.';
+        NewLineError2: Label 'Cannot add new lines after journal has been approved.';
+        ModifiedLineError1: Label 'Line %1 cannot be modified after being sent for approval.';
+        ModifiedLineError2: Label 'Line %1 cannot be modified after being approved.';
+        DeletedLineError1: Label 'Line %1 cannot be deleted after being sent for approval.';
+        DeletedLineError2: Label 'Line %1 cannot be deleted after being approved.';
 }

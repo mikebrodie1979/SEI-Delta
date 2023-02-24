@@ -747,7 +747,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
     local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
     begin
-        ItemLedgerEntry."BA Adjust. Reason" := ItemJournalLine."BA Adjust. Reason";
+        ItemLedgerEntry."BA Adjust. Reason Code" := ItemJournalLine."BA Adjust. Reason Code";
         ItemLedgerEntry."BA Approved By" := ItemJournalLine."BA Approved By";
         if ItemJournalLine."BA Updated" then
             ItemLedgerEntry."BA Year-end Adjst." := true;
@@ -1046,9 +1046,11 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not IsInventoryApprovalEnabled() then
             exit;
-        ItemJournalLine.TestField("BA Adjust. Reason");
+        ItemJournalLine.TestField("BA Adjust. Reason Code");
         if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Rejected then
             Error(RejectedLineError, ItemJournalLine."Line No.");
+        if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Pending then
+            Error(PendingLineError, ItemJournalLine."Line No.");
         if (ItemJournalLine."BA Status" <> ItemJournalLine."BA Status"::Released) and not CheckInventoryLimit(ItemJournalLine) then
             Error(JnlLimitError);
     end;
@@ -1210,11 +1212,10 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         end;
 
-        ItemJnlLine.SetRange("BA Adjust. Reason", '');
+        ItemJnlLine.SetRange("BA Adjust. Reason Code", '');
         if not ItemJnlLine.IsEmpty() then
-            Error(NoAdjustReasonError, ItemJnlLine.FieldCaption("BA Adjust. Reason"));
-        ItemJnlLine.SetRange("BA Adjust. Reason");
-        TempGUID := CreateGuid();
+            Error(NoAdjustReasonError, ItemJnlLine.FieldCaption("BA Adjust. Reason Code"));
+        ItemJnlLine.SetRange("BA Adjust. Reason Code");
         repeat
             CheckItemJnlLine.RunCheck(ItemJnlLine);
             ApprovalAmt += ItemJnlLine.Amount;
@@ -1229,6 +1230,7 @@ codeunit 75010 "BA SEI Subscibers"
             until ItemJnlLine.Next() = 0;
             Message(NoApprovalNeededMsg);
         end else begin
+            TempGUID := CreateGuid();
             repeat
                 ItemJnlLine.Validate("BA Locked For Approval", true);
                 ItemJnlLine.Validate("BA Status", ItemJnlLine."BA Status"::Pending);
@@ -1240,6 +1242,7 @@ codeunit 75010 "BA SEI Subscibers"
             ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
             ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
             ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+            ApprovalEntry.SetRange("Workflow Step Instance ID", TempGUID);
             if not ApprovalEntry.IsEmpty() then
                 Error(AlreadyAwaitingApprovalError, ItemJnlBatch.RecordId());
             ApprovalEntry.Reset();
@@ -1253,6 +1256,24 @@ codeunit 75010 "BA SEI Subscibers"
         end;
         ItemJnlLine.Reset();
         ItemJnlLine.CopyFilters(FilterRec);
+    end;
+
+    procedure ReopenApprovalRequest(var ItemJnlLine: Record "Item Journal Line")
+    var
+        ApprovalEntry: Record "Approval Entry";
+        ItemJnlBatch: Record "Item Journal Batch";
+    begin
+        ItemJnlBatch.Get(ItemJnlLine."Journal Template Name", ItemJnlLine."Journal Batch Name");
+        ApprovalEntry.SetCurrentKey("Table ID", "Record ID to Approve", "Status", "Workflow Step Instance ID", "Sequence No.");
+        ApprovalEntry.SetRange("Table ID", Database::"Item Journal Batch");
+        ApprovalEntry.SetRange("Record ID to Approve", ItemJnlBatch.RecordId());
+        ApprovalEntry.SetFilter(Status, '%1|%2', ApprovalEntry.Status::Approved, ApprovalEntry.Status::Canceled);
+        ApprovalEntry.SetRange("Workflow Step Instance ID", ItemJnlLine."BA Approval GUID");
+        ApprovalEntry.SetRange("Sender ID", UserId());
+        ApprovalEntry.ModifyAll(Status, ApprovalEntry.Status::Canceled);
+        ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+        ApprovalEntry.SetRange("Workflow Step Instance ID");
+        ApprovalEntry.DeleteAll(true);
     end;
 
     local procedure AddItemJnlBatchApprovalEntry(var EntryNo: Integer; ItemJnlBatch: Record "Item Journal Batch"; Approver: Code[50]; ApprovalAmt: Decimal; ApprovalCode: Code[20]; WorkflowGUID: Guid)
@@ -1333,11 +1354,12 @@ codeunit 75010 "BA SEI Subscibers"
         AlreadyApprovedError: Label 'Cannot cancel approval request as it as been approved by one or more approvers.';
         AlreadySubmittedError: Label '%1 has already been submitted for approval.';
         CancelRequestMsg: Label 'Cancelled approval request.';
-        NoAdjustReasonError: Label '%1 has not been specified for one or mores.';
+        NoAdjustReasonError: Label '%1 has not been specified for one or more lines.';
         NoApprovalNeededMsg: Label 'Inventory adjustment is within the limit, no approval needed.';
         AlreadyAwaitingApprovalError: Label '%1 is already awaiting approval.';
         RequestSentMsg: Label 'An approval request has been sent.';
         RejectedLineError: Label 'Line %1 has been rejected and must be re-submitted for approval.';
+        PendingLineError: Label 'Line %1 is still awaiting approval.';
         CustGroupBlockedError: Label '%1 %2 is blocked';
         ExchangeRateText: Label '%1 - USD Exch. Rate %2 (%3)';
         WarehouseEmployeeSetupError: Label '%1 must be setup as an %2';
