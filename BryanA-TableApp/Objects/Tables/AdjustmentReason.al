@@ -1,4 +1,4 @@
-table 75014 "BA Adjustment Reason"
+table 75015 "BA Adjustment Reason"
 {
     DataClassification = CustomerContent;
     Caption = 'Adjumst Reasons';
