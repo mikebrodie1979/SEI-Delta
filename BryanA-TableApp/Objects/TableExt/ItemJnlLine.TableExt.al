@@ -22,10 +22,11 @@ tableextension 80049 "BA Item Jnl. Line" extends "Item Journal Line"
             Editable = false;
         }
 
-        field(80011; "BA Adjust. Reason"; Text[100])
+        field(80011; "BA Adjust. Reason Code"; Code[20])
         {
             DataClassification = CustomerContent;
-            Caption = 'Adjustment Reason';
+            Caption = 'Adjustment Reason Code';
+            TableRelation = "BA Adjustment Reason".Code;
         }
         field(80012; "BA Approved By"; Code[50])
         {
