@@ -1127,7 +1127,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnBeforeRunWithCheck', '', false, false)]
     local procedure ItemJnlPostLineOnBeforeRunWithCheck(var ItemJournalLine: Record "Item Journal Line")
     begin
-        if not IsInventoryApprovalEnabled() then
+        if not IsInventoryApprovalEnabled() or (ItemJournalLine."Journal Template Name" <> 'ITEM') then
             exit;
         ItemJournalLine.TestField("BA Adjust. Reason Code");
         if ItemJournalLine."BA Status" = ItemJournalLine."BA Status"::Rejected then
