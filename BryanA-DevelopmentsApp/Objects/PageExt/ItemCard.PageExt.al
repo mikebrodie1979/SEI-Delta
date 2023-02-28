@@ -53,7 +53,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                     Visible = false;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (3), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (3), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,3';
 
                     trigger OnValidate()
@@ -66,7 +66,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                     Visible = false;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (4), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (4), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,4';
 
                     trigger OnValidate()
@@ -79,7 +79,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                     Visible = false;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (5), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (5), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,5';
 
                     trigger OnValidate()
@@ -92,7 +92,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                     Visible = false;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (6), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (6), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,6';
 
                     trigger OnValidate()
@@ -105,7 +105,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 {
                     ApplicationArea = all;
                     Visible = false;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (7), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (7), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,7';
 
                     trigger OnValidate()
@@ -117,7 +117,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 field("ENC Shortcut Dimension 8 Code"; DimValue[8])
                 {
                     ApplicationArea = all;
-                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (8), Blocked = const (false));
+                    TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (8), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,8';
 
                     trigger OnValidate()
@@ -126,9 +126,17 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                         Rec."ENC Shortcut Dimension 8 Code" := DimValue[8];
                     end;
                 }
-                field("ENC Product ID Code"; "ENC Product ID Code")
+                field("ENC Product ID Code"; DimValue[9])
                 {
                     ApplicationArea = all;
+                    TableRelation = "Dimension Value".Code where ("Dimension Code" = CONST ('PRODUCT ID'), Blocked = const (false), "ENC Inactive" = const (false));
+                    Caption = 'Product ID Code';
+
+                    trigger OnValidate()
+                    begin
+                        Rec.Validate("ENC Product ID Code", DimValue[9]);
+                        Rec."ENC Product ID Code" := DimValue[9];
+                    end;
                 }
             }
         }
@@ -206,8 +214,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             exit(false);
 
         RecRef.GetTable(Item);
-        for i := 3 to 8 do
-            DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
+        UpdateDimArray(RecRef);
         GLSetup.Get();
         RecRef2.GetTable(GLSetup);
 
@@ -227,16 +234,23 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code"), '', DimOffset) then
             UpdateRec := true;
 
-
         if UpdateRec then begin
-            for i := 3 to 8 do
-                DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
+            UpdateDimArray(RecRef);
             RecRef.SetTable(Item);
             CurrPage.Update(true);
             Rec.Get(Item."No.");
             Item.Get(Item."No.");
         end;
         exit(UpdateRec);
+    end;
+
+    local procedure UpdateDimArray(var RecRef: RecordRef)
+    var
+        i: Integer;
+    begin
+        for i := 3 to 8 do
+            DimValue[i] := RecRef.Field(Rec.FieldNo("ENC Shortcut Dimension 3 Code") + i - 3).Value();
+        DimValue[9] := RecRef.Field(Rec.FieldNo("ENC Product ID Code")).Value();
     end;
 
     local procedure UpdateDimValue(var RecRef: RecordRef; var GLRecRef: RecordRef; GLFldNo: Integer; DimFldNo: Integer; NewDimValue: Code[20]; DimOffset: Integer): Boolean
@@ -287,5 +301,5 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 
     var
         GLSetup: Record "General Ledger Setup";
-        DimValue: array[8] of Code[20];
+        DimValue: array[9] of Code[20];
 }
