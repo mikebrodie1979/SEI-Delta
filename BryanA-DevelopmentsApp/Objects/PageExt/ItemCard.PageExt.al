@@ -55,6 +55,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Visible = false;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (3), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,3';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -68,6 +69,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Visible = false;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (4), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,4';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -81,6 +83,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Visible = false;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (5), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,5';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -94,6 +97,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Visible = false;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (6), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,6';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -107,6 +111,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Visible = false;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (7), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,7';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -119,6 +124,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     ApplicationArea = all;
                     TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (8), Blocked = const (false), "ENC Inactive" = const (false));
                     CaptionClass = '1,2,8';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -131,6 +137,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     ApplicationArea = all;
                     TableRelation = "Dimension Value".Code where ("Dimension Code" = CONST ('PRODUCT ID'), Blocked = const (false), "ENC Inactive" = const (false));
                     Caption = 'Product ID Code';
+                    Editable = IsEditable;
 
                     trigger OnValidate()
                     begin
@@ -228,6 +235,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     trigger OnAfterGetRecord()
     begin
         CheckToUpdateDimValues(Rec);
+        IsEditable := CurrPage.Editable;
     end;
 
 
@@ -364,4 +372,6 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     var
         GLSetup: Record "General Ledger Setup";
         DimValue: array[9] of Code[20];
+        [InDataSet]
+        IsEditable: Boolean;
 }
