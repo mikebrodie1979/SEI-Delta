@@ -1402,20 +1402,27 @@ codeunit 75010 "BA SEI Subscibers"
         NotificationEntry: Record "Notification Entry";
         ItemJnlBatch: Record "Item Journal Batch";
         ItemJnlLine: Record "Item Journal Line";
+        PageMgt: Codeunit "Page Management";
+        RecRef: RecordRef;
     begin
         if not ItemJnlBatch.Get(ApprovalEntry."Record ID to Approve") then
             exit;
         ItemJnlLine.SetRange("Journal Template Name", ItemJnlBatch."Journal Template Name");
         ItemJnlLine.SetRange("Journal Batch Name", ItemJnlBatch.Name);
-        if ItemJnlLine.FindFirst() then begin
-            NotificationEntry.CreateNew(NotificationEntry.Type::"New Record", ApprovalEntry."Approver ID",
-                ApprovalEntry, Page::"Item Journal", '');
-            if NotificationEntry.FindLast() then begin
-                NotificationEntry.Type := NotificationEntry.Type::Approval;
-                NotificationEntry."Sender User ID" := ApprovalEntry."Sender ID";
-                NotificationEntry.Modify(false);
-            end;
-        end;
+        if not ItemJnlLine.FindFirst() then
+            exit;
+        RecRef.GetTable(ItemJnlLine);
+        NotificationEntry.CreateNewEntry(NotificationEntry.Type::Approval, ApprovalEntry."Approver ID",
+            ApprovalEntry, Page::"Item Journal", PageMgt.GetRTCUrl(RecRef, Page::"Item Journal"), ApprovalEntry."Sender ID");
+    end;
+
+
+    [EventSubscriber(ObjectType::Report, Report::"Notification Email", 'OnAfterSetReportFieldPlaceholders', '', false, false)]
+    local procedure NotificationEmailOnAfterSetReportFieldPlaceholders(var NotificationEntry: Record "Notification Entry"; var DocumentURL: Text)
+    begin
+        if (NotificationEntry.Type = NotificationEntry.Type::Approval) and (NotificationEntry."Link Target Page" = Page::"Item Journal")
+                and (NotificationEntry."Custom Link" <> '') then
+            DocumentURL := NotificationEntry."Custom Link";
     end;
 
 
