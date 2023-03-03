@@ -44,8 +44,6 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Reordering Policy"), ProductProfile."Reordering Policy");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Reserve"), ProductProfile.Reserve);
                     RecRef.SetTable(Rec);
-                    // Rec.Validate("ENC Assembly Policy");
-                    // Rec.Validate("ENC Replenishment System");
                     CurrPage.Update(true);
                     Rec.Get(Rec.RecordId());
                     RecRef.GetTable(Rec);
@@ -68,6 +66,11 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
             }
         }
 
+        modify("VAT Prod. Posting Group")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
         modify("Warehouse Class Code")
         {
             ApplicationArea = all;
@@ -131,10 +134,6 @@ pageextension 80139 "BA Item Template" extends "Item Template Card"
                 ApplicationArea = all;
             }
             field("BA Core Product Code"; Rec."BA Core Product Code")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Core Prod. Model Code"; Rec."BA Core Prod. Model Code")
             {
                 ApplicationArea = all;
             }
