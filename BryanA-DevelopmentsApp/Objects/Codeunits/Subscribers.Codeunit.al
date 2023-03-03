@@ -479,12 +479,12 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         GLSetup: Record "General Ledger Setup";
-        // DefaultDim: Record "Default Dimension";
     begin
         if (Rec."Dimension Value Code" = xRec."Dimension Value Code") or (Rec."Table ID" <> Database::Item)
                 or (Rec."No." = '') or not Item.Get(Rec."No.") then
             exit;
         GLSetup.Get();
+
         case true of
             Rec."Dimension Code" = GLSetup."Shortcut Dimension 1 Code":
                 Item."Global Dimension 1 Code" := Rec."Dimension Value Code";
@@ -507,8 +507,7 @@ codeunit 75010 "BA SEI Subscibers"
             else
                 exit;
         end;
-        // if DefaultDim.Get(Rec.RecordId()) then
-        Rec.Modify(true)
+        Item.Modify(true);
     end;
 
 
@@ -739,18 +738,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-
-
-    // procedure AddMissingLineToShpt(ShptNo: Code[20])
-    // var
-    //     SalesShptHeader: Record "Sales Shipment Header";
-    //     SalesShptLine: Record "Sales Shipment Line";
-    //     SalesHeader: Record "Sales Header";
-    //     SalesLine: Record "Sales Line";
-    // begin
-    //     SalesShptHeader.Get(ShptNo);
-    //     SalesHeader.Get(SalesHeader."Document Type"::Order, SalesShptHeader."Order No.");
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterPostItemJnlLine', '', false, false)]
     local procedure ItemJnlLinePostOnAfterPostItemJnlLine(ItemLedgerEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ValueEntryNo: Integer)
     begin
@@ -847,6 +834,18 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure ItemJounalLineOnAfterInsert(var Rec: Record "Item Journal Line")
     begin
         Rec."BA Created At" := CurrentDateTime();
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Config. Package Management", 'OnApplyItemDimension', '', false, false)]
+    local procedure ConfigPackageMgtOnApplyItemDim(ItemNo: Code[20]; DimCode: Code[20]; DimValue: Code[20])
+    var
+        Item: Record Item;
+        ItemCard: Page "Item Card";
+    begin
+        if Item.Get(ItemNo) and ItemCard.CheckToUpdateDimValues(Item, DimValue) then begin
+            Item.Modify(true);
+            Commit();
+        end;
     end;
 
 
