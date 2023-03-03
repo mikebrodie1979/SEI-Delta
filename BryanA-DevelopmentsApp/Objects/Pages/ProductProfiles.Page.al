@@ -54,6 +54,10 @@ page 50072 "BA Product Profiles"
                 {
                     ApplicationArea = all;
                 }
+                field("Core Prod. Sub. Cat. Code"; "Core Prod. Sub. Cat. Code")
+                {
+                    ApplicationArea = all;
+                }
                 field("Item Tracking Code"; Rec."Item Tracking Code")
                 {
                     ApplicationArea = all;
