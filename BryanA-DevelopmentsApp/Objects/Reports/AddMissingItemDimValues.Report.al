@@ -42,6 +42,7 @@ report 50083 "BA Add Missing Item Dims."
                     CurrReport.Skip();
                 RecRef.GetTable(GLSetup);
                 FldNo := GLSetup.FieldNo("Shortcut Dimension 1 Code");
+                Item."ENC Skip Dimension Validation" := true;
                 RecRef2.GetTable(Item);
 
                 for i := 0 to 7 do begin
@@ -63,7 +64,10 @@ report 50083 "BA Add Missing Item Dims."
                     else
                         ErrorCount += 1;
                 if SaveRec then begin
-                    RecRef2.Modify(true);
+                    // RecRef2.Modify(true);
+                    RecRef2.SetTable(Item);
+                    Item."ENC Skip Dimension Validation" := false;
+                    Item.Modify(true);
                     UpdateCount += 1;
                 end;
             end;
@@ -79,6 +83,11 @@ report 50083 "BA Add Missing Item Dims."
                 Window.Close();
             end;
         }
+    }
+
+    requestpage
+    {
+        SaveValues = true;
     }
 
     var
@@ -99,6 +108,7 @@ report 50083 "BA Add Missing Item Dims."
         if not DimValueRec.Get(DimCode, DimValue) then
             exit(false);
         RecRef.Field(FldNo).Validate(DimValue);
-        exit(true);
+        RecRef.Field(FldNo).Value(DimValue);
+        exit(Format(RecRef.Field(FldNo).Value()) = DimValue);
     end;
 }
