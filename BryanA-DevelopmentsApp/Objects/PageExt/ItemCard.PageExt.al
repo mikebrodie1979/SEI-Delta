@@ -268,7 +268,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             UpdateRec := true;
         if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("Shortcut Dimension 8 Code"), Item.FieldNo("ENC Shortcut Dimension 8 Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
-        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code"), '', DimOffset) then
+        if UpdateDimValue(RecRef, RecRef2, GLSetup.FieldNo("ENC Product ID Dim. Code"), Item.FieldNo("ENC Product ID Code"), NewDimValue, DimOffset) then
             UpdateRec := true;
 
         if UpdateRec then begin
