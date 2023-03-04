@@ -40,5 +40,25 @@ tableextension 80072 "BA Prod. BOM Version" extends "Production BOM Version"
             Caption = 'Active';
             Editable = false;
         }
+        field(80020; "BA Created By"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Created By';
+            Editable = false;
+            TableRelation = "User Setup"."User ID";
+            ValidateTableRelation = false;
+        }
+        field(80021; "BA Creation Date"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Creation Date';
+            Editable = false;
+        }
     }
+
+    trigger OnBeforeInsert()
+    begin
+        Rec."BA Creation Date" := CurrentDateTime();
+        Rec."BA Created By" := UserId();
+    end;
 }

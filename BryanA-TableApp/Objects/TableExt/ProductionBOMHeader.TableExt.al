@@ -41,5 +41,18 @@ tableextension 80070 "BA Prod. BOM Header" extends "Production BOM Header"
             Editable = false;
             Caption = 'Active Version';
         }
+        field(80020; "BA Created By"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Created By';
+            Editable = false;
+            TableRelation = "User Setup"."User ID";
+            ValidateTableRelation = false;
+        }
     }
+
+    trigger OnBeforeInsert()
+    begin
+        Rec."BA Created By" := UserId();
+    end;
 }
