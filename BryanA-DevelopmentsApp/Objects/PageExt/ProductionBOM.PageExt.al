@@ -18,11 +18,22 @@ pageextension 80006 "BA Production BOM" extends "Production BOM"
                     ProdBOMVersion: Record "Production BOM Version";
                 begin
                     Rec.CalcFields("BA Active Version");
-                    ProdBOMVersion.SETRANGE("Production BOM No.", Rec."No.");
-                    ProdBOMVersion.SETRANGE("Version Code", Rec."BA Active Version");
-                    PAGE.RUNMODAL(PAGE::"Production BOM Version", ProdBOMVersion);
+                    ProdBOMVersion.SetRange("Production BOM No.", Rec."No.");
+                    ProdBOMVersion.SetRange("Version Code", Rec."BA Active Version");
+                    Page.RunModal(Page::"Production BOM Version", ProdBOMVersion);
                     CalcFields("BA Active Version");
                 end;
+            }
+        }
+        addafter("Last Date Modified")
+        {
+            field("Creation Date"; Rec."Creation Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Created By"; Rec."BA Created By")
+            {
+                ApplicationArea = all;
             }
         }
     }

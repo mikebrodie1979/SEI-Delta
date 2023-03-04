@@ -20,7 +20,26 @@ tableextension 80018 "BA Production Order" extends "Production Order"
             Caption = 'Source Version';
             Editable = false;
             TableRelation = "Production BOM Header"."ENC Active Version No." where ("No." = field ("Source No."));
-            // ValidateTableRelation = false;
+        }
+        field(80020; "BA Created By"; Code[50])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Created By';
+            Editable = false;
+            TableRelation = "User Setup"."User ID";
+            ValidateTableRelation = false;
+        }
+        field(80021; "BA Creation Date"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Creation Date';
+            Editable = false;
         }
     }
+
+    trigger OnBeforeInsert()
+    begin
+        Rec."BA Creation Date" := CurrentDateTime();
+        Rec."BA Created By" := UserId();
+    end;
 }

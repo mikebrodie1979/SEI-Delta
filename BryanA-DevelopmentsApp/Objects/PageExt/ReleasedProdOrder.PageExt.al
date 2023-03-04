@@ -30,5 +30,16 @@ pageextension 80023 "BA Released Prod. Order" extends "Released Production Order
                 ApplicationArea = all;
             }
         }
+        addafter("Last Date Modified")
+        {
+            field("BA Creation Date"; Rec."BA Creation Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Created By"; Rec."BA Created By")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }
