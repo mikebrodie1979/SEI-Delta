@@ -1142,9 +1142,14 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', false, false)]
     local procedure ApprovalsMgtOnRejectApprovalRequest(var ApprovalEntry: Record "Approval Entry")
-
     begin
         ApprovalUpdateActions(ApprovalEntry, true);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnAfterSetApprovalCommentLine', '', false, false)]
+    local procedure ApprovalsMgtOnAfterSetApprovalCommentLine(var ApprovalCommentLine: Record "Approval Comment Line"; WorkflowStepInstanceID: Guid)
+    begin
+        ApprovalCommentLine.SetRange("Workflow Step Instance ID", WorkflowStepInstanceID)
     end;
 
     local procedure IsInventoryApprovalEnabled(): Boolean;
