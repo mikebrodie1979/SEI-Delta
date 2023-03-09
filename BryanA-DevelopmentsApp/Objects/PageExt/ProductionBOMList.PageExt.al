@@ -16,6 +16,14 @@ pageextension 80007 "BA Production BOM List" extends "Production BOM List"
             {
                 ApplicationArea = all;
             }
+            field("Creation Date"; Rec."Creation Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Created By"; Rec."BA Created By")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 
