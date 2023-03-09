@@ -32,7 +32,7 @@ pageextension 80023 "BA Released Prod. Order" extends "Released Production Order
         }
         addafter("Last Date Modified")
         {
-            field("BA Creation Date"; Rec."BA Creation Date")
+            field("Creation Date"; Rec."Creation Date")
             {
                 ApplicationArea = all;
             }

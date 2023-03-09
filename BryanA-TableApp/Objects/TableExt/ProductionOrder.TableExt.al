@@ -29,17 +29,10 @@ tableextension 80018 "BA Production Order" extends "Production Order"
             TableRelation = "User Setup"."User ID";
             ValidateTableRelation = false;
         }
-        field(80021; "BA Creation Date"; DateTime)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Creation Date';
-            Editable = false;
-        }
     }
 
     trigger OnBeforeInsert()
     begin
-        Rec."BA Creation Date" := CurrentDateTime();
         Rec."BA Created By" := UserId();
     end;
 }
