@@ -126,7 +126,7 @@ page 50053 "BA Posted Requisition Receipts"
                     ToolTip = 'Specifies the date the purchase header was posted.';
                     Visible = false;
                 }
-                field("BA Received Date"; Rec."BA Received Date")
+                field("BA Received Date"; Rec."ENC Received Date")
                 {
                     ApplicationArea = all;
                     ToolTip = 'Specifies the date when the purchase document was received.';

@@ -22,11 +22,5 @@ tableextension 80008 "BA Purch. Rcpt. Header" extends "Purch. Rcpt. Header"
             Caption = 'Omit from Outstanding Orders';
             Editable = false;
         }
-        field(80006; "BA Received Date"; Date)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Received Date';
-            Editable = false;
-        }
     }
 }

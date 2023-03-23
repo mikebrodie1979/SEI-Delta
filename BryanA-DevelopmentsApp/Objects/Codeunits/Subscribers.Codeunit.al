@@ -310,7 +310,7 @@ codeunit 75010 "BA SEI Subscibers"
         DiscountedAmt: Decimal;
     begin
         PurchLine2.Get(PurchLine.RecordId());
-        PurchRcptLine."BA Line Amount" := PurchLine2.Quantity * PurchLine2."Unit Cost";
+        PurchRcptLine."BA Line Amount" := PurchLine2."Qty. to Receive" * PurchLine2."Direct Unit Cost";
         if PurchLine2."Line Discount %" <> 0 then begin
             DiscountedAmt := PurchRcptLine."BA Line Amount" * (100 - PurchLine2."Line Discount %") / 100;
             PurchRcptLine."BA Line Discount Amount" := PurchRcptLine."BA Line Amount" - DiscountedAmt;
@@ -325,8 +325,7 @@ codeunit 75010 "BA SEI Subscibers"
         DiscountedAmt: Decimal;
     begin
         PurchLine2.Get(PurchLine.RecordId());
-        ReturnShptLine."BA Line Discount Amount" := PurchLine2."Line Discount Amount";
-        ReturnShptLine."BA Line Amount" := PurchLine2."Line Amount";
+        ReturnShptLine."BA Line Amount" := PurchLine2."Return Qty. to Ship" * PurchLine2."Direct Unit Cost";
         if PurchLine2."Line Discount %" <> 0 then begin
             DiscountedAmt := ReturnShptLine."BA Line Amount" * (100 - PurchLine2."Line Discount %") / 100;
             ReturnShptLine."BA Line Discount Amount" := ReturnShptLine."BA Line Amount" - DiscountedAmt;
@@ -335,11 +334,7 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforeInsertReceiptHeader', '', false, false)]
-    local procedure PurchPostOnBeforeInsertReceiptHeader(var PurchHeader: Record "Purchase Header"; var PurchRcptHeader: Record "Purch. Rcpt. Header")
-    begin
-        PurchRcptHeader."BA Received Date" := PurchHeader."Received Date";
-    end;
+
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnAfterFinalizePosting', '', false, false)]
     local procedure PurchPostOnAfterFinalizePosting(var PurchHeader: Record "Purchase Header")
