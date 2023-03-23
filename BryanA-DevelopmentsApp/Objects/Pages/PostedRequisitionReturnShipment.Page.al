@@ -14,28 +14,28 @@ page 50054 "BA Posted Req. Return Shipment"
             group(General)
             {
                 Caption = 'General';
-                field("No."; "No.")
+                field("No."; Rec."No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the number of the involved entry or record, according to the specified number series.';
                 }
-                field("Return Order No."; "Return Order No.")
+                field("Return Order No."; Rec."Return Order No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the number of the return order that will post a return shipment.';
                 }
-                field("Buy-from Vendor No."; "Buy-from Vendor No.")
+                field("Buy-from Vendor No."; Rec."Buy-from Vendor No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the name of the vendor who delivered the items.';
                 }
-                field("Buy-from Contact No."; "Buy-from Contact No.")
+                field("Buy-from Contact No."; Rec."Buy-from Contact No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
@@ -44,28 +44,28 @@ page 50054 "BA Posted Req. Return Shipment"
                 group("Buy-from")
                 {
                     Caption = 'Buy-from';
-                    field("Buy-from Vendor Name"; "Buy-from Vendor Name")
+                    field("Buy-from Vendor Name"; Rec."Buy-from Vendor Name")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Name';
                         Editable = false;
                         ToolTip = 'Specifies the name of the vendor who delivered the items.';
                     }
-                    field("Buy-from Address"; "Buy-from Address")
+                    field("Buy-from Address"; Rec."Buy-from Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
                         Editable = false;
                         ToolTip = 'Specifies the address of the vendor who delivered the items.';
                     }
-                    field("Buy-from Address 2"; "Buy-from Address 2")
+                    field("Buy-from Address 2"; Rec."Buy-from Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
                         Editable = false;
                         ToolTip = 'Specifies an additional part of the address of the vendor who delivered the items.';
                     }
-                    field("Buy-from City"; "Buy-from City")
+                    field("Buy-from City"; Rec."Buy-from City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
@@ -76,27 +76,27 @@ page 50054 "BA Posted Req. Return Shipment"
                     {
                         Visible = IsBuyFromCountyVisible;
                         ShowCaption = false;
-                        field("Buy-from County"; "Buy-from County")
+                        field("Buy-from County"; Rec."Buy-from County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
                             Editable = false;
                         }
                     }
-                    field("Buy-from Post Code"; "Buy-from Post Code")
+                    field("Buy-from Post Code"; Rec."Buy-from Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
                         Editable = false;
                         ToolTip = 'Specifies the ZIP Code of the vendor who delivered the items.';
                     }
-                    field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
+                    field("Buy-from Country/Region Code"; Rec."Buy-from Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region';
                         Editable = false;
                     }
-                    field("Buy-from Contact"; "Buy-from Contact")
+                    field("Buy-from Contact"; Rec."Buy-from Contact")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact';
@@ -104,58 +104,58 @@ page 50054 "BA Posted Req. Return Shipment"
                         ToolTip = 'Specifies the name of the contact person at the vendor who delivered the items.';
                     }
                 }
-                field("Posting Date"; "Posting Date")
+                field("Posting Date"; Rec."Posting Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the entry''s posting date.';
                 }
-                field("Document Date"; "Document Date")
+                field("Document Date"; Rec."Document Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     ToolTip = 'Specifies the date when the related document was created.';
                 }
-                field("Expected Receipt Date"; "Expected Receipt Date")
+                field("Expected Receipt Date"; Rec."Expected Receipt Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
                     Editable = false;
                     ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
                 }
-                field("Vendor Authorization No."; "Vendor Authorization No.")
+                field("Vendor Authorization No."; Rec."Vendor Authorization No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the identification number of a compensation agreement.';
                 }
-                field("Order Address Code"; "Order Address Code")
+                field("Order Address Code"; Rec."Order Address Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     ToolTip = 'Specifies the order address of the related customer.';
                 }
-                field("Purchaser Code"; "Purchaser Code")
+                field("Purchaser Code"; Rec."Purchaser Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     ToolTip = 'Specifies which purchaser is assigned to the vendor.';
                 }
-                field("Responsibility Center"; "Responsibility Center")
+                field("Responsibility Center"; Rec."Responsibility Center")
                 {
                     ApplicationArea = Suite;
                     Editable = false;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
                 }
-                field("No. Printed"; "No. Printed")
+                field("No. Printed"; Rec."No. Printed")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     ToolTip = 'Specifies how many times the document has been printed.';
                 }
-                field("BA Omit Orders"; "BA Omit Orders")
+                field("BA Omit Orders"; Rec."BA Omit Orders")
                 {
                     ApplicationArea = all;
                 }
@@ -168,14 +168,14 @@ page 50054 "BA Posted Req. Return Shipment"
             group(Invoicing)
             {
                 Caption = 'Invoicing';
-                field("Pay-to Vendor No."; "Pay-to Vendor No.")
+                field("Pay-to Vendor No."; Rec."Pay-to Vendor No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the number of the vendor that you received the invoice from.';
                 }
-                field("Pay-to Contact No."; "Pay-to Contact No.")
+                field("Pay-to Contact No."; Rec."Pay-to Contact No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
@@ -184,28 +184,28 @@ page 50054 "BA Posted Req. Return Shipment"
                 group(G2)
                 {
                     ShowCaption = false;
-                    field("Pay-to Name"; "Pay-to Name")
+                    field("Pay-to Name"; Rec."Pay-to Name")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Name';
                         Editable = false;
                         ToolTip = 'Specifies the name of the customer who you received the invoice from.';
                     }
-                    field("Pay-to Address"; "Pay-to Address")
+                    field("Pay-to Address"; Rec."Pay-to Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
                         Editable = false;
                         ToolTip = 'Specifies the address of the vendor that you received the invoice from.';
                     }
-                    field("Pay-to Address 2"; "Pay-to Address 2")
+                    field("Pay-to Address 2"; Rec."Pay-to Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
                         Editable = false;
                         ToolTip = 'Specifies an additional part of the address of the customer that the invoice was shipped to.';
                     }
-                    field("Pay-to City"; "Pay-to City")
+                    field("Pay-to City"; Rec."Pay-to City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
@@ -216,27 +216,27 @@ page 50054 "BA Posted Req. Return Shipment"
                     {
                         Visible = IsPayFromCountyVisible;
                         ShowCaption = false;
-                        field("Pay-to County"; "Pay-to County")
+                        field("Pay-to County"; Rec."Pay-to County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
                             Editable = false;
                         }
                     }
-                    field("Pay-to Post Code"; "Pay-to Post Code")
+                    field("Pay-to Post Code"; Rec."Pay-to Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
                         Editable = false;
                         ToolTip = 'Specifies the ZIP Code of the customer that you received the invoice from.';
                     }
-                    field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
+                    field("Pay-to Country/Region Code"; Rec."Pay-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region';
                         Editable = false;
                     }
-                    field("Pay-to Contact"; "Pay-to Contact")
+                    field("Pay-to Contact"; Rec."Pay-to Contact")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact';
@@ -244,26 +244,26 @@ page 50054 "BA Posted Req. Return Shipment"
                         ToolTip = 'Specifies the name of the person to contact about an invoice from this customer.';
                     }
                 }
-                field("Shortcut Dimension 1 Code"; "Shortcut Dimension 1 Code")
+                field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
                     ApplicationArea = Dimensions;
                     Editable = false;
                     ToolTip = 'Specifies the code for Shortcut Dimension 1, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
                 }
-                field("Shortcut Dimension 2 Code"; "Shortcut Dimension 2 Code")
+                field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
                 {
                     ApplicationArea = Dimensions;
                     Editable = false;
                     ToolTip = 'Specifies the code for Shortcut Dimension 2, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
                 }
-                field("Applies-to Doc. Type"; "Applies-to Doc. Type")
+                field("Applies-to Doc. Type"; Rec."Applies-to Doc. Type")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
                     Importance = Promoted;
                     ToolTip = 'Specifies the type of the posted document that this document or journal line will be applied to when you post, for example to register payment.';
                 }
-                field("Applies-to Doc. No."; "Applies-to Doc. No.")
+                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
@@ -277,28 +277,28 @@ page 50054 "BA Posted Req. Return Shipment"
                 group("Ship-to")
                 {
                     Caption = 'Ship-to';
-                    field("Ship-to Name"; "Ship-to Name")
+                    field("Ship-to Name"; Rec."Ship-to Name")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Name';
                         Editable = false;
                         ToolTip = 'Specifies the name of the customer at the address that the items are shipped to.';
                     }
-                    field("Ship-to Address"; "Ship-to Address")
+                    field("Ship-to Address"; Rec."Ship-to Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
                         Editable = false;
                         ToolTip = 'Specifies the address that the items are shipped to.';
                     }
-                    field("Ship-to Address 2"; "Ship-to Address 2")
+                    field("Ship-to Address 2"; Rec."Ship-to Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
                         Editable = false;
                         ToolTip = 'Specifies an additional part of the ship-to address, in case it is a long address.';
                     }
-                    field("Ship-to City"; "Ship-to City")
+                    field("Ship-to City"; Rec."Ship-to City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
@@ -309,27 +309,27 @@ page 50054 "BA Posted Req. Return Shipment"
                     {
                         Visible = IsShipToCountyVisible;
                         ShowCaption = false;
-                        field("Ship-to County"; "Ship-to County")
+                        field("Ship-to County"; Rec."Ship-to County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
                             Editable = false;
                         }
                     }
-                    field("Ship-to Post Code"; "Ship-to Post Code")
+                    field("Ship-to Post Code"; Rec."Ship-to Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
                         Editable = false;
                         ToolTip = 'Specifies the ZIP Code of the address that the items are shipped to.';
                     }
-                    field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
+                    field("Ship-to Country/Region Code"; Rec."Ship-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region';
                         Editable = false;
                     }
-                    field("Ship-to Contact"; "Ship-to Contact")
+                    field("Ship-to Contact"; Rec."Ship-to Contact")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact';
@@ -337,7 +337,7 @@ page 50054 "BA Posted Req. Return Shipment"
                         ToolTip = 'Specifies the name of the contact person at the address that the items are shipped to.';
                     }
                 }
-                field("Location Code"; "Location Code")
+                field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Editable = false;
@@ -348,7 +348,7 @@ page 50054 "BA Posted Req. Return Shipment"
             group("Foreign Trade")
             {
                 Caption = 'Foreign Trade';
-                field("Currency Code"; "Currency Code")
+                field("Currency Code"; Rec."Currency Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
