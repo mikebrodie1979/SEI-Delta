@@ -8,5 +8,38 @@ tableextension 80101 "BA Approval Entry" extends "Approval Entry"
             Caption = 'Journal Batch Name';
             TableRelation = "Item Journal Batch".Name where ("Journal Template Name" = const ('ITEM'));
         }
+        field(80010; "BA Customer No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Customer No.';
+            Editable = false;
+            TableRelation = Customer."No.";
+            ValidateTableRelation = false;
+        }
+        field(80011; "BA Customer Name"; Text[100])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Customer Name';
+            Editable = false;
+        }
+        field(80012; "BA Payment Terms Code"; Code[10])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Payment Terms Cod';
+            Editable = false;
+        }
+        field(80013; "BA Credit Limit"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Credit Limit';
+            Editable = false;
+        }
+        field(80014; "BA Last Sales Activity"; DateTime)
+        {
+            Caption = 'Last Sales Activity';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = lookup (Customer."BA Last Sales Activity" where ("No." = Field ("BA Customer No.")));
+        }
     }
 }
