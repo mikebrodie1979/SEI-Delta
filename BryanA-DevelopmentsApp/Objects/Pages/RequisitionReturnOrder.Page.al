@@ -14,7 +14,7 @@ page 50050 "BA Requsition Return Order"
             group(General)
             {
                 Caption = 'General';
-                field("No."; "No.")
+                field("No."; Rec."No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
@@ -27,7 +27,7 @@ page 50050 "BA Requsition Return Order"
                             CurrPage.UPDATE;
                     end;
                 }
-                field("Buy-from Vendor No."; "Buy-from Vendor No.")
+                field("Buy-from Vendor No."; Rec."Buy-from Vendor No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Caption = 'Vendor No.';
@@ -41,7 +41,7 @@ page 50050 "BA Requsition Return Order"
                         CurrPage.UPDATE;
                     end;
                 }
-                field("Buy-from Vendor Name"; "Buy-from Vendor Name")
+                field("Buy-from Vendor Name"; Rec."Buy-from Vendor Name")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Caption = 'Vendor Name';
@@ -59,14 +59,14 @@ page 50050 "BA Requsition Return Order"
                 group("Buy-from")
                 {
                     Caption = 'Buy-from';
-                    field("Buy-from Address"; "Buy-from Address")
+                    field("Buy-from Address"; Rec."Buy-from Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
                         Importance = Additional;
                         ToolTip = 'Specifies the vendor''s buy-from address.';
                     }
-                    field("Buy-from Address 2"; "Buy-from Address 2")
+                    field("Buy-from Address 2"; Rec."Buy-from Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
@@ -77,7 +77,7 @@ page 50050 "BA Requsition Return Order"
                     {
                         Visible = IsBuyFromCountyVisible;
                         ShowCaption = false;
-                        field("Buy-from County"; "Buy-from County")
+                        field("Buy-from County"; Rec."Buy-from County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
@@ -85,21 +85,21 @@ page 50050 "BA Requsition Return Order"
                             ToolTip = 'Specifies the State of the address.';
                         }
                     }
-                    field("Buy-from Post Code"; "Buy-from Post Code")
+                    field("Buy-from Post Code"; Rec."Buy-from Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
                         Importance = Additional;
                         ToolTip = 'Specifies the ZIP Code.';
                     }
-                    field("Buy-from City"; "Buy-from City")
+                    field("Buy-from City"; Rec."Buy-from City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
                         Importance = Additional;
                         ToolTip = 'Specifies the city of the vendor on the purchase document.';
                     }
-                    field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
+                    field("Buy-from Country/Region Code"; Rec."Buy-from Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region';
@@ -111,7 +111,7 @@ page 50050 "BA Requsition Return Order"
                             IsBuyFromCountyVisible := FormatAddress.UseCounty("Buy-from Country/Region Code");
                         end;
                     }
-                    field("Buy-from Contact No."; "Buy-from Contact No.")
+                    field("Buy-from Contact No."; Rec."Buy-from Contact No.")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact No.';
@@ -119,19 +119,19 @@ page 50050 "BA Requsition Return Order"
                         ToolTip = 'Specifies the number of your contact at the vendor.';
                     }
                 }
-                field("Buy-from Contact"; "Buy-from Contact")
+                field("Buy-from Contact"; Rec."Buy-from Contact")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Caption = 'Contact';
                     Editable = "Buy-from Vendor No." <> '';
                     ToolTip = 'Specifies the name of the person to contact about an order from this vendor.';
                 }
-                field("Document Date"; "Document Date")
+                field("Document Date"; Rec."Document Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies the date when the related document was created.';
                 }
-                field("Posting Date"; "Posting Date")
+                field("Posting Date"; Rec."Posting Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
@@ -143,38 +143,38 @@ page 50050 "BA Requsition Return Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("No. of Archived Versions"; "No. of Archived Versions")
+                field("No. of Archived Versions"; Rec."No. of Archived Versions")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
                     ToolTip = 'Specifies the number of archived versions for this document.';
                 }
-                field("Order Date"; "Order Date")
+                field("Order Date"; Rec."Order Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
                     ToolTip = 'Specifies the date when the order was created.';
                 }
-                field("Expected Receipt Date"; "Expected Receipt Date")
+                field("Expected Receipt Date"; Rec."Expected Receipt Date")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
                     ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
                 }
-                field("Vendor Authorization No."; "Vendor Authorization No.")
+                field("Vendor Authorization No."; Rec."Vendor Authorization No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
                     ToolTip = 'Specifies the identification number of a compensation agreement. This number is sometimes referred to as the RMA No.(Returns Materials Authorization).';
                 }
-                field("Vendor Cr. Memo No."; "Vendor Cr. Memo No.")
+                field("Vendor Cr. Memo No."; Rec."Vendor Cr. Memo No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
                     // ShowMandatory = true;
                     ToolTip = 'Specifies the number that the vendor uses for the credit memo you are creating in this purchase return order.';
                 }
-                field("Purchaser Code"; "Purchaser Code")
+                field("Purchaser Code"; Rec."Purchaser Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies which purchaser is assigned to the vendor.';
@@ -184,28 +184,28 @@ page 50050 "BA Requsition Return Order"
                         PurchaserCodeOnAfterValidate;
                     end;
                 }
-                field("Campaign No."; "Campaign No.")
+                field("Campaign No."; Rec."Campaign No.")
                 {
                     ApplicationArea = RelationshipMgmt;
                     ToolTip = 'Specifies the campaign number the document is linked to.';
                 }
-                field("Responsibility Center"; "Responsibility Center")
+                field("Responsibility Center"; Rec."Responsibility Center")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
                 }
-                field("BA Omit Orders"; "BA Omit Orders")
+                field("BA Omit Orders"; Rec."BA Omit Orders")
                 {
                     ApplicationArea = all;
                 }
-                field("Assigned User ID"; "Assigned User ID")
+                field("Assigned User ID"; Rec."Assigned User ID")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Additional;
                     ToolTip = 'Specifies the ID of the user who is responsible for the document.';
                 }
-                field("Job Queue Status"; "Job Queue Status")
+                field("Job Queue Status"; Rec."Job Queue Status")
                 {
                     ApplicationArea = All;
                     Importance = Additional;
@@ -230,7 +230,7 @@ page 50050 "BA Requsition Return Order"
             group("Invoice Details")
             {
                 Caption = 'Invoice Details';
-                field("Currency Code"; "Currency Code")
+                field("Currency Code"; Rec."Currency Code")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
@@ -255,7 +255,7 @@ page 50050 "BA Requsition Return Order"
                         PurchCalcDiscByType.ApplyDefaultInvoiceDiscount(0, Rec);
                     end;
                 }
-                field("Prices Including VAT"; "Prices Including VAT")
+                field("Prices Including VAT"; Rec."Prices Including VAT")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies if the Unit Price and Line Amount fields on document lines should be shown with or without tax.';
@@ -265,24 +265,24 @@ page 50050 "BA Requsition Return Order"
                         PricesIncludingVATOnAfterValid;
                     end;
                 }
-                field("VAT Bus. Posting Group"; "VAT Bus. Posting Group")
+                field("VAT Bus. Posting Group"; Rec."VAT Bus. Posting Group")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies the Tax specification of the involved customer or vendor to link transactions made for this record with the appropriate general ledger account according to the Tax posting setup.';
                 }
-                field("Payment Terms Code"; "Payment Terms Code")
+                field("Payment Terms Code"; Rec."Payment Terms Code")
                 {
                     ApplicationArea = Basic, Suite;
                     Importance = Promoted;
                     ToolTip = 'Specifies a formula that calculates the payment due date, payment discount date, and payment discount amount.';
                 }
-                field("Payment Method Code"; "Payment Method Code")
+                field("Payment Method Code"; Rec."Payment Method Code")
                 {
                     ApplicationArea = Basic, Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies how to make payment, such as with bank transfer, cash, or check.';
                 }
-                field("Shortcut Dimension 1 Code"; "Shortcut Dimension 1 Code")
+                field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
                     ApplicationArea = Dimensions;
                     ToolTip = 'Specifies the code for Shortcut Dimension 1, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
@@ -292,7 +292,7 @@ page 50050 "BA Requsition Return Order"
                         ShortcutDimension1CodeOnAfterV;
                     end;
                 }
-                field("Shortcut Dimension 2 Code"; "Shortcut Dimension 2 Code")
+                field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
                 {
                     ApplicationArea = Dimensions;
                     ToolTip = 'Specifies the code for Shortcut Dimension 2, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
@@ -302,7 +302,7 @@ page 50050 "BA Requsition Return Order"
                         ShortcutDimension2CodeOnAfterV;
                     end;
                 }
-                field("Location Code"; "Location Code")
+                field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = Location;
                     Importance = Promoted;
@@ -316,24 +316,24 @@ page 50050 "BA Requsition Return Order"
                         exit(Text <> '');
                     end;
                 }
-                field("Applies-to Doc. Type"; "Applies-to Doc. Type")
+                field("Applies-to Doc. Type"; Rec."Applies-to Doc. Type")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
                     ToolTip = 'Specifies the type of the posted document that this document or journal line will be applied to when you post, for example to register payment.';
                 }
-                field("Applies-to Doc. No."; "Applies-to Doc. No.")
+                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
                 {
                     ApplicationArea = PurchReturnOrder;
                     Importance = Promoted;
                     ToolTip = 'Specifies the number of the posted document that this document or journal line will be applied to when you post, for example to register payment.';
                 }
-                field("Applies-to ID"; "Applies-to ID")
+                field("Applies-to ID"; Rec."Applies-to ID")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies the ID of entries that will be applied to when you choose the Apply Entries action.';
                 }
-                field("Tax Liable"; "Tax Liable")
+                field("Tax Liable"; Rec."Tax Liable")
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies that purchases from the vendor on the purchase header are liable for sales tax.';
@@ -343,7 +343,7 @@ page 50050 "BA Requsition Return Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("Tax Area Code"; "Tax Area Code")
+                field("Tax Area Code"; Rec."Tax Area Code")
                 {
                     ToolTip = 'Specifies the tax area code used for this purchase to calculate and post sales tax.';
 
@@ -352,7 +352,7 @@ page 50050 "BA Requsition Return Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("Provincial Tax Area Code"; "Provincial Tax Area Code")
+                field("Provincial Tax Area Code"; Rec."Provincial Tax Area Code")
                 {
                     ToolTip = 'Specifies the tax area code for self assessed Provincial Sales Tax for this purchase.';
                 }
@@ -380,7 +380,7 @@ page 50050 "BA Requsition Return Order"
                 {
                     ShowCaption = false;
                     Visible = ShipToOptions = ShipToOptions::"Alternate Vendor Address";
-                    field("Order Address Code"; "Order Address Code")
+                    field("Order Address Code"; Rec."Order Address Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Alternate Vendor Address Code';
@@ -390,7 +390,7 @@ page 50050 "BA Requsition Return Order"
                 group(G8)
                 {
                     ShowCaption = false;
-                    field("Ship-to Name"; "Ship-to Name")
+                    field("Ship-to Name"; Rec."Ship-to Name")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Name';
@@ -398,7 +398,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the name of the vendor sending the order.';
                     }
-                    field("Ship-to Address"; "Ship-to Address")
+                    field("Ship-to Address"; Rec."Ship-to Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
@@ -406,7 +406,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the vendor''s buy-from address.';
                     }
-                    field("Ship-to Address 2"; "Ship-to Address 2")
+                    field("Ship-to Address 2"; Rec."Ship-to Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
@@ -418,7 +418,7 @@ page 50050 "BA Requsition Return Order"
                     {
                         Visible = IsShipToCountyVisible;
                         ShowCaption = false;
-                        field("Ship-to County"; "Ship-to County")
+                        field("Ship-to County"; Rec."Ship-to County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
@@ -427,7 +427,7 @@ page 50050 "BA Requsition Return Order"
                             ToolTip = 'Specifies the State of the address.';
                         }
                     }
-                    field("Ship-to Post Code"; "Ship-to Post Code")
+                    field("Ship-to Post Code"; Rec."Ship-to Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
@@ -435,7 +435,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the ZIP Code.';
                     }
-                    field("Ship-to City"; "Ship-to City")
+                    field("Ship-to City"; Rec."Ship-to City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
@@ -443,7 +443,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the city of the vendor on the purchase document.';
                     }
-                    field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
+                    field("Ship-to Country/Region Code"; Rec."Ship-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region Code';
@@ -456,7 +456,7 @@ page 50050 "BA Requsition Return Order"
                             IsShipToCountyVisible := FormatAddress.UseCounty("Ship-to Country/Region Code");
                         end;
                     }
-                    field("Ship-to Contact"; "Ship-to Contact")
+                    field("Ship-to Contact"; Rec."Ship-to Contact")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact';
@@ -468,14 +468,14 @@ page 50050 "BA Requsition Return Order"
                 group("Pay-to")
                 {
                     Caption = 'Pay-to';
-                    field("Pay-to Name"; "Pay-to Name")
+                    field("Pay-to Name"; Rec."Pay-to Name")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Name';
                         Importance = Promoted;
                         ToolTip = 'Specifies the name of the vendor sending the order.';
                     }
-                    field("Pay-to Address"; "Pay-to Address")
+                    field("Pay-to Address"; Rec."Pay-to Address")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address';
@@ -484,7 +484,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the vendor''s buy-from address.';
                     }
-                    field("Pay-to Address 2"; "Pay-to Address 2")
+                    field("Pay-to Address 2"; Rec."Pay-to Address 2")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Address 2';
@@ -497,7 +497,7 @@ page 50050 "BA Requsition Return Order"
                     {
                         Visible = IsPayToCountyVisible;
                         ShowCaption = false;
-                        field("Pay-to County"; "Pay-to County")
+                        field("Pay-to County"; Rec."Pay-to County")
                         {
                             ApplicationArea = PurchReturnOrder;
                             Caption = 'State';
@@ -507,7 +507,7 @@ page 50050 "BA Requsition Return Order"
                             ToolTip = 'Specifies the State of the address.';
                         }
                     }
-                    field("Pay-to Post Code"; "Pay-to Post Code")
+                    field("Pay-to Post Code"; Rec."Pay-to Post Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'ZIP Code';
@@ -516,7 +516,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the ZIP Code.';
                     }
-                    field("Pay-to City"; "Pay-to City")
+                    field("Pay-to City"; Rec."Pay-to City")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'City';
@@ -525,7 +525,7 @@ page 50050 "BA Requsition Return Order"
                         Importance = Additional;
                         ToolTip = 'Specifies the city of the vendor on the purchase document.';
                     }
-                    field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
+                    field("Pay-to Country/Region Code"; Rec."Pay-to Country/Region Code")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Country/Region';
@@ -539,7 +539,7 @@ page 50050 "BA Requsition Return Order"
                             IsPayToCountyVisible := FormatAddress.UseCounty("Pay-to Country/Region Code");
                         end;
                     }
-                    field("Pay-to Contact No."; "Pay-to Contact No.")
+                    field("Pay-to Contact No."; Rec."Pay-to Contact No.")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact No.';
@@ -548,7 +548,7 @@ page 50050 "BA Requsition Return Order"
                         ToolTip = 'Specifies the number of the contact who sends the invoice.';
                         Visible = "Buy-from Vendor No." <> "Pay-to Vendor No.";
                     }
-                    field("Pay-to Contact"; "Pay-to Contact")
+                    field("Pay-to Contact"; Rec."Pay-to Contact")
                     {
                         ApplicationArea = PurchReturnOrder;
                         Caption = 'Contact';
@@ -562,22 +562,22 @@ page 50050 "BA Requsition Return Order"
             group("Foreign Trade")
             {
                 Caption = 'Foreign Trade';
-                field("Transaction Specification"; "Transaction Specification")
+                field("Transaction Specification"; Rec."Transaction Specification")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies a specification of the document''s transaction, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Transaction Type"; "Transaction Type")
+                field("Transaction Type"; Rec."Transaction Type")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the type of transaction that the document represents, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Transport Method"; "Transport Method")
+                field("Transport Method"; Rec."Transport Method")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the transport method, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Entry Point"; "Entry Point")
+                field("Entry Point"; Rec."Entry Point")
                 {
                     ApplicationArea = PurchReturnOrder;
                     ToolTip = 'Specifies the code of the port of entry where the items pass into your country/region, for reporting to Intrastat.';
@@ -1330,6 +1330,7 @@ page 50050 "BA Requsition Return Order"
         ChangeExchangeRate: Page "Change Exchange Rate";
         ShipToOptions: Option "Default (Vendor Address)","Alternate Vendor Address","Custom Address";
         [InDataSet]
+
 
         JobQueueVisible: Boolean;
         [InDataSet]

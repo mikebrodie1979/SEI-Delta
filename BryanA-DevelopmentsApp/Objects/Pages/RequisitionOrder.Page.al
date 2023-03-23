@@ -14,7 +14,7 @@ page 50097 "BA Requisition Order"
             group(General)
             {
                 Caption = 'General';
-                field("No."; "No.")
+                field("No."; Rec."No.")
                 {
                     ApplicationArea = Suite;
                     Importance = Promoted;
@@ -27,7 +27,7 @@ page 50097 "BA Requisition Order"
                             CurrPage.UPDATE;
                     end;
                 }
-                field("Buy-from Vendor No."; "Buy-from Vendor No.")
+                field("Buy-from Vendor No."; Rec."Buy-from Vendor No.")
                 {
                     ApplicationArea = Suite;
                     Caption = 'Vendor No.';
@@ -41,7 +41,7 @@ page 50097 "BA Requisition Order"
                         CurrPage.UPDATE;
                     end;
                 }
-                field("Buy-from Vendor Name"; "Buy-from Vendor Name")
+                field("Buy-from Vendor Name"; Rec."Buy-from Vendor Name")
                 {
                     ApplicationArea = Suite;
                     Caption = 'Vendor Name';
@@ -55,7 +55,7 @@ page 50097 "BA Requisition Order"
                         CurrPage.UPDATE;
                     end;
                 }
-                field("Posting Description"; "Posting Description")
+                field("Posting Description"; Rec."Posting Description")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies additional posting information for the document. After you post the document, the description can add detail to vendor and customer ledger entries.';
@@ -64,7 +64,7 @@ page 50097 "BA Requisition Order"
                 group("Buy-from")
                 {
                     Caption = 'Buy-from';
-                    field("Buy-from Address"; "Buy-from Address")
+                    field("Buy-from Address"; Rec."Buy-from Address")
                     {
                         ApplicationArea = Suite;
                         Caption = 'Address';
@@ -72,7 +72,7 @@ page 50097 "BA Requisition Order"
                         QuickEntry = false;
                         ToolTip = 'Specifies the vendor''s buy-from address.';
                     }
-                    field("Buy-from Address 2"; "Buy-from Address 2")
+                    field("Buy-from Address 2"; Rec."Buy-from Address 2")
                     {
                         ApplicationArea = Suite;
                         Caption = 'Address 2';
@@ -80,7 +80,7 @@ page 50097 "BA Requisition Order"
                         QuickEntry = false;
                         ToolTip = 'Specifies an additional part of the vendor''s buy-from address.';
                     }
-                    field("Buy-from City"; "Buy-from City")
+                    field("Buy-from City"; Rec."Buy-from City")
                     {
                         ApplicationArea = Suite;
                         Caption = 'City';
@@ -92,7 +92,7 @@ page 50097 "BA Requisition Order"
                     {
                         ShowCaption = false;
                         Visible = IsBuyFromCountyVisible;
-                        field("Buy-from County"; "Buy-from County")
+                        field("Buy-from County"; Rec."Buy-from County")
                         {
                             ApplicationArea = Suite;
                             Caption = 'State';
@@ -101,7 +101,7 @@ page 50097 "BA Requisition Order"
                             ToolTip = 'Specifies the state, province or county of the address.';
                         }
                     }
-                    field("Buy-from Post Code"; "Buy-from Post Code")
+                    field("Buy-from Post Code"; Rec."Buy-from Post Code")
                     {
                         ApplicationArea = Suite;
                         Caption = 'ZIP Code';
@@ -109,7 +109,7 @@ page 50097 "BA Requisition Order"
                         QuickEntry = false;
                         ToolTip = 'Specifies the ZIP Code.';
                     }
-                    field("Buy-from Country/Region Code"; "Buy-from Country/Region Code")
+                    field("Buy-from Country/Region Code"; Rec."Buy-from Country/Region Code")
                     {
                         ApplicationArea = Suite;
                         Caption = 'Country/Region';
@@ -122,7 +122,7 @@ page 50097 "BA Requisition Order"
                             IsBuyFromCountyVisible := FormatAddress.UseCounty("Buy-from Country/Region Code");
                         end;
                     }
-                    field("Buy-from Contact No."; "Buy-from Contact No.")
+                    field("Buy-from Contact No."; Rec."Buy-from Contact No.")
                     {
                         ApplicationArea = Suite;
                         Caption = 'Contact No.';
@@ -130,19 +130,19 @@ page 50097 "BA Requisition Order"
                         ToolTip = 'Specifies the number of contact person of the vendor''s buy-from.';
                     }
                 }
-                field("Buy-from Contact"; "Buy-from Contact")
+                field("Buy-from Contact"; Rec."Buy-from Contact")
                 {
                     ApplicationArea = Suite;
                     Caption = 'Contact';
                     Editable = "Buy-from Vendor No." <> '';
                     ToolTip = 'Specifies the name of the person to contact about an order from this vendor.';
                 }
-                field("Document Date"; "Document Date")
+                field("Document Date"; Rec."Document Date")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the date when the related document was created.';
                 }
-                field("Posting Date"; "Posting Date")
+                field("Posting Date"; Rec."Posting Date")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -154,41 +154,41 @@ page 50097 "BA Requisition Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("Due Date"; "Due Date")
+                field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies when the related purchase invoice must be paid.';
                 }
-                field("Order Date"; "Order Date")
+                field("Order Date"; Rec."Order Date")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the date when the order was created.';
                 }
-                field("Expected Receipt Date"; "Expected Receipt Date")
+                field("Expected Receipt Date"; Rec."Expected Receipt Date")
                 {
                     ApplicationArea = Suite;
                     Importance = Promoted;
                     ToolTip = 'Specifies the date you expect the items to be available in your warehouse. If you leave the field blank, it will be calculated as follows: Planned Receipt Date + Safety Lead Time + Inbound Warehouse Handling Time = Expected Receipt Date.';
                 }
-                field("ENC Received Date"; "ENC Received Date")
+                field("ENC Received Date"; Rec."ENC Received Date")
                 {
                     ApplicationArea = all;
                     Importance = Additional;
                     ShowMandatory = true;
                 }
-                field("Your Reference"; "Your Reference")
+                field("Your Reference"; Rec."Your Reference")
                 {
                     ApplicationArea = all;
                 }
-                field("Vendor Invoice No."; "Vendor Invoice No.")
+                field("Vendor Invoice No."; Rec."Vendor Invoice No.")
                 {
                     ApplicationArea = Suite;
                     // ShowMandatory = VendorInvoiceNoMandatory;
                     ToolTip = 'Specifies the document number of the original document you received from the vendor. You can require the document number for posting, or let it be optional. By default, it''s required, so that this document references the original. Making document numbers optional removes a step from the posting process. For example, if you attach the original invoice as a PDF, you might not need to enter the document number. To specify whether document numbers are required, in the Purchases & Payables Setup window, select or clear the Ext. Doc. No. Mandatory field.';
                 }
-                field("Purchaser Code"; "Purchaser Code")
+                field("Purchaser Code"; Rec."Purchaser Code")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -199,48 +199,48 @@ page 50097 "BA Requisition Order"
                         PurchaserCodeOnAfterValidate;
                     end;
                 }
-                field("No. of Archived Versions"; "No. of Archived Versions")
+                field("No. of Archived Versions"; Rec."No. of Archived Versions")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the number of archived versions for this document.';
                 }
 
-                field("Quote No."; "Quote No.")
+                field("Quote No."; Rec."Quote No.")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the quote number for the purchase order.';
                 }
-                field("Vendor Order No."; "Vendor Order No.")
+                field("Vendor Order No."; Rec."Vendor Order No.")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the vendor''s order number.';
                 }
-                field("Vendor Shipment No."; "Vendor Shipment No.")
+                field("Vendor Shipment No."; Rec."Vendor Shipment No.")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the vendor''s shipment number.';
                 }
-                field("Order Address Code"; "Order Address Code")
+                field("Order Address Code"; Rec."Order Address Code")
                 {
                     ApplicationArea = Suite;
                     Caption = 'Alternate Vendor Address Code';
                     Importance = Additional;
                     ToolTip = 'Specifies the order address of the related vendor.';
                 }
-                field("Responsibility Center"; "Responsibility Center")
+                field("Responsibility Center"; Rec."Responsibility Center")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
                 }
-                field("BA Omit Orders"; "BA Omit Orders")
+                field("BA Omit Orders"; Rec."BA Omit Orders")
                 {
                     ApplicationArea = all;
                 }
-                field("Assigned User ID"; "Assigned User ID")
+                field("Assigned User ID"; Rec."Assigned User ID")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -252,7 +252,7 @@ page 50097 "BA Requisition Order"
                     Importance = Additional;
                     ToolTip = 'Specifies whether the record is open, waiting to be approved, invoiced for prepayment, or released to the next stage of processing.';
                 }
-                field("Job Queue Status"; "Job Queue Status")
+                field("Job Queue Status"; Rec."Job Queue Status")
                 {
                     ApplicationArea = All;
                     Importance = Additional;
@@ -271,7 +271,7 @@ page 50097 "BA Requisition Order"
             group("Invoice Details")
             {
                 Caption = 'Invoice Details';
-                field("Currency Code"; "Currency Code")
+                field("Currency Code"; Rec."Currency Code")
                 {
                     ApplicationArea = Suite;
                     Importance = Promoted;
@@ -297,13 +297,13 @@ page 50097 "BA Requisition Order"
                         PurchCalcDiscByType.ApplyDefaultInvoiceDiscount(0, Rec);
                     end;
                 }
-                field("Payment Terms Code"; "Payment Terms Code")
+                field("Payment Terms Code"; Rec."Payment Terms Code")
                 {
                     ApplicationArea = Suite;
                     Importance = Promoted;
                     ToolTip = 'Specifies a formula that calculates the payment due date, payment discount date, and payment discount amount.';
                 }
-                field("Shortcut Dimension 1 Code"; "Shortcut Dimension 1 Code")
+                field("Shortcut Dimension 1 Code"; Rec."Shortcut Dimension 1 Code")
                 {
                     ApplicationArea = Dimensions;
                     ToolTip = 'Specifies the code for Shortcut Dimension 1, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
@@ -313,7 +313,7 @@ page 50097 "BA Requisition Order"
                         ShortcutDimension1CodeOnAfterV;
                     end;
                 }
-                field("Shortcut Dimension 2 Code"; "Shortcut Dimension 2 Code")
+                field("Shortcut Dimension 2 Code"; Rec."Shortcut Dimension 2 Code")
                 {
                     ApplicationArea = Dimensions;
                     ToolTip = 'Specifies the code for Shortcut Dimension 2, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
@@ -323,18 +323,18 @@ page 50097 "BA Requisition Order"
                         ShortcutDimension2CodeOnAfterV;
                     end;
                 }
-                field("Payment Discount %"; "Payment Discount %")
+                field("Payment Discount %"; Rec."Payment Discount %")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the payment discount percent granted if payment is made on or before the date in the Pmt. Discount Date field.';
                 }
-                field("Pmt. Discount Date"; "Pmt. Discount Date")
+                field("Pmt. Discount Date"; Rec."Pmt. Discount Date")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the date on which the amount in the entry must be paid for a payment discount to be granted.';
                 }
-                field("Tax Liable"; "Tax Liable")
+                field("Tax Liable"; Rec."Tax Liable")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -345,7 +345,7 @@ page 50097 "BA Requisition Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("Tax Area Code"; "Tax Area Code")
+                field("Tax Area Code"; Rec."Tax Area Code")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -356,52 +356,52 @@ page 50097 "BA Requisition Order"
                         SaveInvoiceDiscountAmount;
                     end;
                 }
-                field("Tax Exemption No."; "Tax Exemption No.")
+                field("Tax Exemption No."; Rec."Tax Exemption No.")
                 {
                     ToolTip = 'Specifies the Tax Exemption number from the Vendor table when you fill in the Buy-from Vendor No. field. The field is blank if no Tax Exemption No. has been entered on the vendor card.';
                 }
-                field("Provincial Tax Area Code"; "Provincial Tax Area Code")
+                field("Provincial Tax Area Code"; Rec."Provincial Tax Area Code")
                 {
                     ToolTip = 'Specifies the tax area code for self assessed Provincial Sales Tax for the company.';
                 }
-                field("Payment Reference"; "Payment Reference")
+                field("Payment Reference"; Rec."Payment Reference")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the payment of the purchase invoice.';
                 }
-                field("Creditor No."; "Creditor No.")
+                field("Creditor No."; Rec."Creditor No.")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the number of the vendor.';
                 }
-                field("On Hold"; "On Hold")
+                field("On Hold"; Rec."On Hold")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies that the related entry represents an unpaid invoice for which either a payment suggestion, a reminder, or a finance charge memo exists.';
                 }
-                field("Inbound Whse. Handling Time"; "Inbound Whse. Handling Time")
+                field("Inbound Whse. Handling Time"; Rec."Inbound Whse. Handling Time")
                 {
                     ApplicationArea = Warehouse;
                     Importance = Additional;
                     ToolTip = 'Specifies the time it takes to make items part of available inventory, after the items have been posted as received.';
                 }
-                field("Lead Time Calculation"; "Lead Time Calculation")
+                field("Lead Time Calculation"; Rec."Lead Time Calculation")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies a date formula for the amount of time it takes to replenish the item.';
                 }
-                field("Requested Receipt Date"; "Requested Receipt Date")
+                field("Requested Receipt Date"; Rec."Requested Receipt Date")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the date that you want the vendor to deliver to the ship-to address.';
                 }
-                field("Promised Receipt Date"; "Promised Receipt Date")
+                field("Promised Receipt Date"; Rec."Promised Receipt Date")
                 {
                     ApplicationArea = OrderPromising;
                     ToolTip = 'Specifies the date that the vendor has promised to deliver the order.';
                 }
-                field("IRS 1099 Code"; "IRS 1099 Code")
+                field("IRS 1099 Code"; Rec."IRS 1099 Code")
                 {
                     ApplicationArea = Suite;
                     Importance = Additional;
@@ -451,7 +451,7 @@ page 50097 "BA Requisition Order"
                             {
                                 Visible = ShipToOptions = ShipToOptions::Location;
                                 ShowCaption = false;
-                                field("Location Code"; "Location Code")
+                                field("Location Code"; Rec."Location Code")
                                 {
                                     ApplicationArea = Location;
                                     Importance = Promoted;
@@ -470,20 +470,20 @@ page 50097 "BA Requisition Order"
                             {
                                 Visible = ShipToOptions = ShipToOptions::"Customer Address";
                                 ShowCaption = false;
-                                field("Sell-to Customer No."; "Sell-to Customer No.")
+                                field("Sell-to Customer No."; Rec."Sell-to Customer No.")
                                 {
                                     ApplicationArea = Suite;
                                     Caption = 'Customer';
                                     ToolTip = 'Specifies the number of the customer that the items are shipped to directly from your vendor, as a drop shipment.';
                                 }
-                                field("Ship-to Code"; "Ship-to Code")
+                                field("Ship-to Code"; Rec."Ship-to Code")
                                 {
                                     ApplicationArea = Suite;
                                     Editable = "Sell-to Customer No." <> '';
                                     ToolTip = 'Specifies the code for another delivery address than the vendor''s own address, which is entered by default.';
                                 }
                             }
-                            field("Ship-to Name"; "Ship-to Name")
+                            field("Ship-to Name"; Rec."Ship-to Name")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'Name';
@@ -491,7 +491,7 @@ page 50097 "BA Requisition Order"
                                 Importance = Additional;
                                 ToolTip = 'Specifies the name of the company at the address that you want the items on the purchase document to be shipped to.';
                             }
-                            field("Ship-to Address"; "Ship-to Address")
+                            field("Ship-to Address"; Rec."Ship-to Address")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'Address';
@@ -500,7 +500,7 @@ page 50097 "BA Requisition Order"
                                 QuickEntry = false;
                                 ToolTip = 'Specifies the address that you want the items on the purchase document to be shipped to.';
                             }
-                            field("Ship-to Address 2"; "Ship-to Address 2")
+                            field("Ship-to Address 2"; Rec."Ship-to Address 2")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'Address 2';
@@ -509,7 +509,7 @@ page 50097 "BA Requisition Order"
                                 QuickEntry = false;
                                 ToolTip = 'Specifies additional address information.';
                             }
-                            field("Ship-to City"; "Ship-to City")
+                            field("Ship-to City"; Rec."Ship-to City")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'City';
@@ -522,7 +522,7 @@ page 50097 "BA Requisition Order"
                             {
                                 Visible = IsShipToCountyVisible;
                                 ShowCaption = false;
-                                field("Ship-to County"; "Ship-to County")
+                                field("Ship-to County"; Rec."Ship-to County")
                                 {
                                     ApplicationArea = Basic, Suite;
                                     Caption = 'State';
@@ -532,7 +532,7 @@ page 50097 "BA Requisition Order"
                                     ToolTip = 'Specifies the state, province or county of the address.';
                                 }
                             }
-                            field("Ship-to Post Code"; "Ship-to Post Code")
+                            field("Ship-to Post Code"; Rec."Ship-to Post Code")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'ZIP Code';
@@ -541,7 +541,7 @@ page 50097 "BA Requisition Order"
                                 QuickEntry = false;
                                 ToolTip = 'Specifies the ZIP Code of the address that you want the items on the purchase document to be shipped to.';
                             }
-                            field("Ship-to Country/Region Code"; "Ship-to Country/Region Code")
+                            field("Ship-to Country/Region Code"; Rec."Ship-to Country/Region Code")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'Country/Region';
@@ -555,7 +555,7 @@ page 50097 "BA Requisition Order"
                                     IsShipToCountyVisible := FormatAddress.UseCounty("Ship-to Country/Region Code");
                                 end;
                             }
-                            field("Ship-to Contact"; "Ship-to Contact")
+                            field("Ship-to Contact"; Rec."Ship-to Contact")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'Contact';
@@ -563,7 +563,7 @@ page 50097 "BA Requisition Order"
                                 Importance = Additional;
                                 ToolTip = 'Specifies the name of a contact person for the address of the address that you want the items on the purchase document to be shipped to.';
                             }
-                            field("Ship-to UPS Zone"; "Ship-to UPS Zone")
+                            field("Ship-to UPS Zone"; Rec."Ship-to UPS Zone")
                             {
                                 Caption = 'UPS Zone';
                                 Editable = ShipToOptions = ShipToOptions::"Custom Address";
@@ -588,7 +588,7 @@ page 50097 "BA Requisition Order"
                                 VALIDATE("Pay-to Vendor No.", "Buy-from Vendor No.");
                         end;
                     }
-                    field("Shipment Method Code"; "Shipment Method Code")
+                    field("Shipment Method Code"; Rec."Shipment Method Code")
                     {
                         ApplicationArea = Basic, Suite;
                         ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
@@ -597,7 +597,7 @@ page 50097 "BA Requisition Order"
                     {
                         Visible = NOT (PayToOptions = PayToOptions::"Default (Vendor)");
                         ShowCaption = false;
-                        field("Pay-to Name"; "Pay-to Name")
+                        field("Pay-to Name"; Rec."Pay-to Name")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'Name';
@@ -606,7 +606,7 @@ page 50097 "BA Requisition Order"
                             Importance = Promoted;
                             ToolTip = 'Specifies the name of the vendor sending the invoice.';
                         }
-                        field("Pay-to Address"; "Pay-to Address")
+                        field("Pay-to Address"; Rec."Pay-to Address")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'Address';
@@ -616,7 +616,7 @@ page 50097 "BA Requisition Order"
                             QuickEntry = false;
                             ToolTip = 'Specifies the address of the vendor sending the invoice.';
                         }
-                        field("Pay-to Address 2"; "Pay-to Address 2")
+                        field("Pay-to Address 2"; Rec."Pay-to Address 2")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'Address 2';
@@ -626,7 +626,7 @@ page 50097 "BA Requisition Order"
                             QuickEntry = false;
                             ToolTip = 'Specifies additional address information.';
                         }
-                        field("Pay-to City"; "Pay-to City")
+                        field("Pay-to City"; Rec."Pay-to City")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'City';
@@ -640,7 +640,7 @@ page 50097 "BA Requisition Order"
                         {
                             Visible = IsPayToCountyVisible;
                             ShowCaption = false;
-                            field("Pay-to County"; "Pay-to County")
+                            field("Pay-to County"; Rec."Pay-to County")
                             {
                                 ApplicationArea = Basic, Suite;
                                 Caption = 'State';
@@ -651,7 +651,7 @@ page 50097 "BA Requisition Order"
                                 ToolTip = 'Specifies the state, province or county of the address.';
                             }
                         }
-                        field("Pay-to Post Code"; "Pay-to Post Code")
+                        field("Pay-to Post Code"; Rec."Pay-to Post Code")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'ZIP Code';
@@ -661,7 +661,7 @@ page 50097 "BA Requisition Order"
                             QuickEntry = false;
                             ToolTip = 'Specifies the ZIP Code.';
                         }
-                        field("Pay-to Country/Region Code"; "Pay-to Country/Region Code")
+                        field("Pay-to Country/Region Code"; Rec."Pay-to Country/Region Code")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'Country/Region';
@@ -676,7 +676,7 @@ page 50097 "BA Requisition Order"
                                 IsPayToCountyVisible := FormatAddress.UseCounty("Pay-to Country/Region Code");
                             end;
                         }
-                        field("Pay-to Contact No."; "Pay-to Contact No.")
+                        field("Pay-to Contact No."; Rec."Pay-to Contact No.")
                         {
                             ApplicationArea = Suite;
                             Caption = 'Contact No.';
@@ -685,7 +685,7 @@ page 50097 "BA Requisition Order"
                             Importance = Additional;
                             ToolTip = 'Specifies the number of contact person of the vendor''s buy-from.';
                         }
-                        field("Pay-to Contact"; "Pay-to Contact")
+                        field("Pay-to Contact"; Rec."Pay-to Contact")
                         {
                             ApplicationArea = Basic, Suite;
                             Caption = 'Contact';
@@ -699,22 +699,22 @@ page 50097 "BA Requisition Order"
             group("Foreign Trade")
             {
                 Caption = 'Foreign Trade';
-                field("Transaction Specification"; "Transaction Specification")
+                field("Transaction Specification"; Rec."Transaction Specification")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies a specification of the document''s transaction, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Transaction Type"; "Transaction Type")
+                field("Transaction Type"; Rec."Transaction Type")
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies the type of transaction that the document represents, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Transport Method"; "Transport Method")
+                field("Transport Method"; Rec."Transport Method")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the transport method, for the purpose of reporting to INTRASTAT.';
                 }
-                field("Entry Point"; "Entry Point")
+                field("Entry Point"; Rec."Entry Point")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the code of the port of entry where the items pass into your country/region, for reporting to Intrastat.';
@@ -728,7 +728,7 @@ page 50097 "BA Requisition Order"
             group(Prepayment)
             {
                 Caption = 'Prepayment';
-                field("Prepayment %"; "Prepayment %")
+                field("Prepayment %"; Rec."Prepayment %")
                 {
                     ApplicationArea = Prepayments;
                     Importance = Promoted;
@@ -739,38 +739,38 @@ page 50097 "BA Requisition Order"
                         Prepayment37OnAfterValidate;
                     end;
                 }
-                field("Compress Prepayment"; "Compress Prepayment")
+                field("Compress Prepayment"; Rec."Compress Prepayment")
                 {
                     ApplicationArea = Prepayments;
                     ToolTip = 'Specifies that prepayments on the purchase order are combined if they have the same general ledger account for prepayments or the same dimensions.';
                 }
-                field("Prepmt. Payment Terms Code"; "Prepmt. Payment Terms Code")
+                field("Prepmt. Payment Terms Code"; Rec."Prepmt. Payment Terms Code")
                 {
                     ApplicationArea = Prepayments;
                     ToolTip = 'Specifies the code that represents the payment terms for prepayment invoices related to the purchase document.';
                 }
-                field("Prepayment Due Date"; "Prepayment Due Date")
+                field("Prepayment Due Date"; Rec."Prepayment Due Date")
                 {
                     ApplicationArea = Prepayments;
                     Importance = Promoted;
                     ToolTip = 'Specifies when the prepayment invoice for this purchase order is due.';
                 }
-                field("Prepmt. Payment Discount %"; "Prepmt. Payment Discount %")
+                field("Prepmt. Payment Discount %"; Rec."Prepmt. Payment Discount %")
                 {
                     ApplicationArea = Prepayments;
                     ToolTip = 'Specifies the payment discount percent granted on the prepayment if the vendor pays on or before the date entered in the Prepmt. Pmt. Discount Date field.';
                 }
-                field("Prepmt. Pmt. Discount Date"; "Prepmt. Pmt. Discount Date")
+                field("Prepmt. Pmt. Discount Date"; Rec."Prepmt. Pmt. Discount Date")
                 {
                     ApplicationArea = Prepayments;
                     ToolTip = 'Specifies the last date the vendor can pay the prepayment invoice and still receive a payment discount on the prepayment amount.';
                 }
-                field("Vendor Cr. Memo No."; "Vendor Cr. Memo No.")
+                field("Vendor Cr. Memo No."; Rec."Vendor Cr. Memo No.")
                 {
                     ApplicationArea = Suite;
                     ToolTip = 'Specifies the number that the vendor uses for the purchase order.';
                 }
-                field("Prepmt. Include Tax"; "Prepmt. Include Tax")
+                field("Prepmt. Include Tax"; Rec."Prepmt. Include Tax")
                 {
                     ApplicationArea = Prepayments;
                     ToolTip = 'Specifies if sales tax must be included in prepayments.';
@@ -779,7 +779,7 @@ page 50097 "BA Requisition Order"
             group("Electronic Invoice")
             {
                 Caption = 'Electronic Invoice';
-                field("Fiscal Invoice Number PAC"; "Fiscal Invoice Number PAC")
+                field("Fiscal Invoice Number PAC"; Rec."Fiscal Invoice Number PAC")
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies the official invoice number for the electronic document.';
