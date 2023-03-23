@@ -26,6 +26,7 @@ tableextension 80076 "BA Dimension Value" extends "Dimension Value"
 
     trigger OnAfterInsert()
     begin
-        "BA Date Created" := Today();
+        Rec."BA Date Created" := Today();
+        Rec.Modify(false);
     end;
 }
