@@ -117,6 +117,11 @@ page 50052 "BA Posted Requisition Receipt"
                     Editable = false;
                     ToolTip = 'Specifies the date when the purchase document was created.';
                 }
+                field("BA Received Date"; Rec."BA Received Date")
+                {
+                    ApplicationArea = all;
+                    ToolTip = 'Specifies the date when the purchase document was received.';
+                }
                 field("Requested Receipt Date"; "Requested Receipt Date")
                 {
                     ApplicationArea = Suite;
