@@ -19,6 +19,7 @@ pageextension 80155 "BA Requests to Approve" extends "Requests to Approve"
             field("BA Payment Terms Code"; Rec."BA Payment Terms Code")
             {
                 ApplicationArea = all;
+                Caption = 'Payment Terms Code';
             }
             field("BA Credit Limit"; Rec."BA Credit Limit")
             {
