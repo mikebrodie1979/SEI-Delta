@@ -25,7 +25,7 @@ tableextension 80101 "BA Approval Entry" extends "Approval Entry"
         field(80012; "BA Payment Terms Code"; Code[10])
         {
             DataClassification = CustomerContent;
-            Caption = 'Payment Terms Cod';
+            Caption = 'Payment Terms Code';
             Editable = false;
         }
         field(80013; "BA Credit Limit"; Decimal)
