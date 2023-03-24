@@ -1,7 +1,9 @@
 codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
+                  tabledata "Return Shipment Line" = rimd,
                   tabledata "Purch. Rcpt. Header" = rimd,
+                  tabledata "Purch. Rcpt. Line" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
                   tabledata "Sales Shipment Header" = rimd,
                   tabledata "Item Ledger Entry" = rimd,
@@ -1132,7 +1134,7 @@ codeunit 75010 "BA SEI Subscibers"
         Customer: Record Customer;
     begin
         if Customer.Get(SalesHeader."Bill-to Customer No.") then begin
-            Customer."BA Last Sales Activity" := CurrentDateTime();
+            Customer."BA Last Sales Activity" := Today();
             Customer.Modify(false);
         end;
     end;
@@ -1143,7 +1145,7 @@ codeunit 75010 "BA SEI Subscibers"
         Customer: Record Customer;
     begin
         if Customer.Get(ServiceHeader."Bill-to Customer No.") then begin
-            Customer."BA Last Sales Activity" := CurrentDateTime();
+            Customer."BA Last Sales Activity" := Today();
             Customer.Modify(false);
         end;
     end;

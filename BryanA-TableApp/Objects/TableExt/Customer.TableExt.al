@@ -87,7 +87,7 @@ tableextension 80030 "BA Customer" extends Customer
             TableRelation = "User Setup"."User ID";
             ValidateTableRelation = false;
         }
-        field(80030; "BA Last Sales Activity"; DateTime)
+        field(80030; "BA Last Sales Activity"; Date)
         {
             DataClassification = CustomerContent;
             Caption = 'Last Sales Activity';

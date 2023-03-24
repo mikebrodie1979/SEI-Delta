@@ -26,7 +26,7 @@
         // {
         //     "type": "al",
         //     "request": "launch",
-        //     "name": "Live",
+        //     "name": "Live"
         //     "server": "http://localhost",
         //     "port": 7109,
         //     "serverInstance": "SEI140",
