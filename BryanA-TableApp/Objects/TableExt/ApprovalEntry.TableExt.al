@@ -34,7 +34,7 @@ tableextension 80101 "BA Approval Entry" extends "Approval Entry"
             Caption = 'Credit Limit';
             Editable = false;
         }
-        field(80014; "BA Last Sales Activity"; DateTime)
+        field(80005; "BA Last Sales Activity"; Date)
         {
             Caption = 'Last Sales Activity';
             Editable = false;

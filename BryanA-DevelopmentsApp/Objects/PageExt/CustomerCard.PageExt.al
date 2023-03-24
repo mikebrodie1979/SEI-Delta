@@ -2,6 +2,13 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 {
     layout
     {
+        addlast(General)
+        {
+            field("BA Last Sales Activity"; "BA Last Sales Activity")
+            {
+                ApplicationArea = all;
+            }
+        }
         addlast(Content)
         {
             group("Account & System Control")
