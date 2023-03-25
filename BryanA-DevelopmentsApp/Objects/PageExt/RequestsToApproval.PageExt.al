@@ -21,6 +21,10 @@ pageextension 80155 "BA Requests to Approve" extends "Requests to Approve"
                 ApplicationArea = all;
                 Caption = 'Payment Terms Code';
             }
+            field("BA Salesperson Code"; "BA Salesperson Code")
+            {
+                ApplicationArea = all;
+            }
             field("BA Credit Limit"; Rec."BA Credit Limit")
             {
                 ApplicationArea = all;
@@ -46,9 +50,15 @@ pageextension 80155 "BA Requests to Approve" extends "Requests to Approve"
                 trigger OnAction()
                 var
                     Customer: Record Customer;
+                    CustLedgEntry: Record "Cust. Ledger Entry";
                 begin
-                    if Customer.Get(Rec."BA Customer No.") then
-                        Customer.OpenCustomerLedgerEntries(false);
+                    if not Customer.Get(Rec."BA Customer No.") then
+                        exit;
+                    CustLedgEntry.SetRange("Customer No.", Customer."No.");
+                    CustLedgEntry.SetRange("Currency Code", Customer."Currency Code");
+                    CustLedgEntry.SetRange("Global Dimension 1 Code", Customer."Global Dimension 1 Code");
+                    CustLedgEntry.SetRange("Global Dimension 2 Code", Customer."Global Dimension 2 Code");
+                    Page.Run(0, CustLedgEntry);
                 end;
             }
         }

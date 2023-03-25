@@ -35,5 +35,12 @@ tableextension 80089 "BA Approval Entry" extends "Approval Entry"
             FieldClass = FlowField;
             CalcFormula = lookup (Customer."BA Last Sales Activity" where ("No." = Field ("BA Customer No.")));
         }
+        field(80006; "BA Salesperson Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Salesperson Code';
+            Editable = false;
+            TableRelation = "Salesperson/Purchaser".Code;
+        }
     }
 }
