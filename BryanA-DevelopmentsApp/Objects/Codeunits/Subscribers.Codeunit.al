@@ -1489,6 +1489,7 @@ codeunit 75010 "BA SEI Subscibers"
         Rec."BA Customer Name" := SalesHeader."Bill-to Name";
         Rec."BA Customer No." := SalesHeader."Bill-to Customer No.";
         Rec."BA Payment Terms Code" := SalesHeader."Payment Terms Code";
+        Rec."BA Salesperson Code" := SalesHeader."Salesperson Code";
         Customer.Get(Rec."BA Customer No.");
         if UseLCYCreditLimit(Customer) then
             Rec."BA Credit Limit" := Customer."Credit Limit (LCY)"
