@@ -115,7 +115,7 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
     trigger OnDeleteRecord(): Boolean
     begin
         if (Rec.Quantity <> 0) and (Rec."Quantity Received" = Rec.Quantity) and (Rec."Quantity Invoiced" = Rec.Quantity) then
-            Error('Cannot delete line %1 once it has been received and invoiced.', Rec."Line No.");
+            Error(FullyPostedLineErr, Rec."Line No.");
     end;
 
     trigger OnOpenPage()
@@ -128,4 +128,5 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
         GLSetup: Record "General Ledger Setup";
         DimMgt: Codeunit DimensionManagement;
         SalesPersonCode: Code[20];
+        FullyPostedLineErr: Label 'Cannot delete line %1 as it has been fully received and invoiced.';
 }
