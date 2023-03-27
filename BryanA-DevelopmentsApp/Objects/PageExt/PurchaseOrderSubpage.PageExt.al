@@ -114,7 +114,7 @@ pageextension 80000 "BA Purch. Order Subpage" extends "Purchase Order Subform"
 
     trigger OnDeleteRecord(): Boolean
     begin
-        if (Rec.Quantity <> 0) and (Rec."Quantity Received" <> Rec.Quantity) and (Rec."Quantity Invoiced" <> Rec.Quantity) then
+        if (Rec.Quantity <> 0) and (Rec."Quantity Received" = Rec.Quantity) and (Rec."Quantity Invoiced" = Rec.Quantity) then
             Error('Cannot delete line %1 once it has been received and invoiced.', Rec."Line No.");
     end;
 
