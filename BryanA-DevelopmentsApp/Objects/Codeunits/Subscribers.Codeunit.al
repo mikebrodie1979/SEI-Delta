@@ -1,10 +1,13 @@
 codeunit 75010 "BA SEI Subscibers"
 {
     Permissions = tabledata "Return Shipment Header" = rimd,
+                  tabledata "Return Shipment Line" = rimd,
                   tabledata "Purch. Rcpt. Header" = rimd,
+                  tabledata "Purch. Rcpt. Line" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
                   tabledata "Sales Shipment Header" = rimd,
-                  tabledata "Item Ledger Entry" = rimd;
+                  tabledata "Item Ledger Entry" = rimd,
+                  tabledata "Approval Entry" = m;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -1104,6 +1107,61 @@ codeunit 75010 "BA SEI Subscibers"
         ProdBomVersion.Get(ProdBomVersion.RecordId());
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Approval Entry", 'OnAfterInsertEvent', '', false, false)]
+    local procedure ApprovalEntryOnAfterInsert(var Rec: Record "Approval Entry")
+    var
+        Customer: Record Customer;
+        SalesHeader: Record "Sales Header";
+        RecRef: RecordRef;
+    begin
+        if not RecRef.Get(Rec."Record ID to Approve") or (RecRef.Number <> Database::"Sales Header") then
+            exit;
+        RecRef.SetTable(SalesHeader);
+        Rec."BA Customer Name" := SalesHeader."Bill-to Name";
+        Rec."BA Customer No." := SalesHeader."Bill-to Customer No.";
+        Rec."BA Payment Terms Code" := SalesHeader."Payment Terms Code";
+        Rec."BA Salesperson Code" := SalesHeader."Salesperson Code";
+        Customer.Get(Rec."BA Customer No.");
+        if UseLCYCreditLimit(Customer) then
+            Rec."BA Credit Limit" := Customer."Credit Limit (LCY)"
+        else
+            Rec."BA Credit Limit" := Customer."BA Credit Limit";
+        Rec.CalcFields("BA Last Sales Activity");
+        Rec.Modify(false);
+    end;
+
+    local procedure UseLCYCreditLimit(var Customer: Record Customer): Boolean
+    var
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+        exit((Customer."Customer Posting Group" = '') or
+            (CustPostingGroup.Get(Customer."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency"));
+    end;
+
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
+    local procedure SalesPostOnAfterPostSalesDoc(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if Customer.Get(SalesHeader."Bill-to Customer No.") then begin
+            Customer."BA Last Sales Activity" := Today();
+            Customer.Modify(false);
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnAfterPostServiceDoc', '', false, false)]
+    local procedure ServicePostOnAfterPostServiceDoc(var ServiceHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        if Customer.Get(ServiceHeader."Bill-to Customer No.") then begin
+            Customer."BA Last Sales Activity" := Today();
+            Customer.Modify(false);
+        end;
+    end;
 
 
     var
