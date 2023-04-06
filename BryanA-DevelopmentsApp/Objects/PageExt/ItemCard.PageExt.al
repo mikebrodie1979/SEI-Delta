@@ -126,8 +126,11 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 
                     trigger OnValidate()
                     begin
+                        Rec.Modify(false);
+                        Rec.Get("No.");
                         Rec.Validate("ENC Product ID Code", DimValue[9]);
                         Rec."ENC Product ID Code" := DimValue[9];
+                        Rec.Get("No.");
                     end;
                 }
             }
