@@ -32,19 +32,23 @@ tableextension 80090 "BA General Journal" extends "Gen. Journal Line"
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
     begin
         DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-        DimValueRec.Get(DimCode, DimValue);
         TempDimSetEntry.SetRange("Dimension Code", DimCode);
-        if TempDimSetEntry.FindFirst() then begin
-            TempDimSetEntry."Dimension Value Code" := DimValue;
-            TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
-            TempDimSetEntry.Modify(false);
+        if DimValue = '' then begin
+            if TempDimSetEntry.FindFirst() then
+                TempDimSetEntry.Delete(false);
         end else begin
-
-            TempDimSetEntry.Init();
-            TempDimSetEntry."Dimension Code" := DimCode;
-            TempDimSetEntry."Dimension Value Code" := DimValue;
-            TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
-            TempDimSetEntry.Insert(false);
+            DimValueRec.Get(DimCode, DimValue);
+            if TempDimSetEntry.FindFirst() then begin
+                TempDimSetEntry."Dimension Value Code" := DimValue;
+                TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
+                TempDimSetEntry.Modify(false);
+            end else begin
+                TempDimSetEntry.Init();
+                TempDimSetEntry."Dimension Code" := DimCode;
+                TempDimSetEntry."Dimension Value Code" := DimValue;
+                TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
+                TempDimSetEntry.Insert(false);
+            end;
         end;
         Rec."Dimension Set ID" := DimMgt.GetDimensionSetID(TempDimSetEntry);
     end;

@@ -1163,6 +1163,21 @@ codeunit 75010 "BA SEI Subscibers"
         end;
     end;
 
+    // [EventSubscriber(ObjectType::Table, Database::"Dimension Set Entry", 'OnAfterValidateEvent', 'Dimension Value Code', false, false)]
+    // local procedure DimSetEntryOnAfterValidateDimValueCode(var Rec: Record "Dimension Set Entry"; var xRec: Record "Dimension Set Entry")
+    // begin
+    //     if Rec."Dimension Value Code" = xRec."Dimension Value Code" then
+    //         exit;
+    //     if Rec."Dimension Code" in ['PRODUCT ID', 'PROJECT'] then begin
+
+    //     end;
+    // end;
+
+    // local procedure derp()
+    // begin
+
+    // end;
+
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';

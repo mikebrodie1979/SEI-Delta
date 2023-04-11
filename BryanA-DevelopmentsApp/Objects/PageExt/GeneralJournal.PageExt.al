@@ -4,78 +4,76 @@ pageextension 80150 "BA General Journal" extends "General Journal"
     {
         addlast(Control1)
         {
-            field("Product ID Code"; DimValues[1])
+            field("BA Product ID Code"; Rec."BA Product ID Code")
             {
                 ApplicationArea = all;
-                TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('PRODUCT ID'), Blocked = const (false));
-
-                trigger OnValidate()
-                begin
-                    SetNewDimValue('PRODUCT ID', DimValues[1]);
-                end;
             }
-            field("Project Code"; DimValues[2])
+            field("BA Project Code"; Rec."BA Project Code")
             {
                 ApplicationArea = all;
-                TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('PROJECT'), Blocked = const (false));
-
-                trigger OnValidate()
-                begin
-                    SetNewDimValue('PROJECT', DimValues[2]);
-                end;
             }
+        }
+        modify("Account No.")
+        {
+            trigger OnAfterValidate()
+            begin
+                if Rec."Account No." = '' then begin
+                    Rec."BA Product ID Code" := '';
+                    Rec."BA Project Code" := '';
+                end;
+            end;
         }
     }
 
-    // trigger OnAfterGetRecord()
-    // var
-    //     TempDimSetEntry: Record "Dimension Set Entry" temporary;
-    // begin
-    //     DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-    //     DimValues[1] := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
-    //     DimValues[2] := GetDimensionCode(TempDimSetEntry, 'PROJECT');
-    // end;
+    actions
+    {
+        modify(Dimensions)
+        {
+            trigger OnAfterAction()
+            begin
+                GetDimensionCodes();
+                EditableDims := Rec."Account No." <> '';
+            end;
+        }
+    }
 
-    // trigger OnNewRecord(BelowxRec: Boolean)
-    // begin
-    //     Clear(DimValues);
-    // end;
+    trigger OnAfterGetRecord()
+    begin
+        GetDimensionCodes();
+    end;
 
-    // local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
-    // begin
-    //     TempDimSetEntry.SetRange("Dimension Code", DimCode);
-    //     if TempDimSetEntry.FindFirst() then
-    //         exit(TempDimSetEntry."Dimension Value Code");
-    //     exit('');
-    // end;
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec."BA Product ID Code" := '';
+        Rec."BA Project Code" := '';
+    end;
 
-    local procedure SetNewDimValue(DimCode: Code[20]; DimValue: Code[20])
+    local procedure GetDimensionCodes()
     var
-        DimValueRec: Record "Dimension Value";
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
     begin
-        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-        DimValueRec.Get(DimCode, DimValue);
-        TempDimSetEntry.SetRange("Dimension Code", DimCode);
-        if TempDimSetEntry.FindFirst() then begin
-            TempDimSetEntry."Dimension Value Code" := DimValue;
-            TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
-            TempDimSetEntry.Modify(false);
-        end else begin
-
-            TempDimSetEntry.Init();
-            TempDimSetEntry."Dimension Code" := DimCode;
-            TempDimSetEntry."Dimension Value Code" := DimValue;
-            TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
-            TempDimSetEntry.Insert(false);
+        if Rec."Account No." = '' then begin
+            Rec."BA Product ID Code" := '';
+            Rec."BA Project Code" := '';
+            exit;
         end;
-        Rec."Dimension Set ID" := DimMgt.GetDimensionSetID(TempDimSetEntry);
-        if not Rec.Insert(true) then
-            Rec.Modify(true);
+        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
+        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
+        Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
     end;
 
 
+    local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
+    begin
+        TempDimSetEntry.SetRange("Dimension Code", DimCode);
+        if TempDimSetEntry.FindFirst() then
+            exit(TempDimSetEntry."Dimension Value Code");
+        exit('');
+    end;
+
     var
         DimMgt: Codeunit DimensionManagement;
-        DimValues: array[2] of Code[20];
+
+        [InDataSet]
+        EditableDims: Boolean;
 }
