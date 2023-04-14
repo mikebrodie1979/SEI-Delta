@@ -8,6 +8,91 @@ codeunit 75011 "BA Install Codeunit"
     trigger OnInstallAppPerCompany()
     begin
         AddCustomerSalesActivity();
+        // AddNewDimValues();
+    end;
+
+
+
+    local procedure AddNewDimValues()
+    var
+        RecRef: RecordRef;
+    begin
+        RecRef.Open(Database::"Purchase Header");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Cr. Memo Hdr.");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Inv. Header");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Rcpt. Header");
+        AddNewDimValues(RecRef);
+    end;
+
+
+    local procedure AddNewDimValues(var RecRef: RecordRef)
+    var
+        TempDimSetEntry: Record "Dimension Set Entry" temporary;
+        DimMgt: Codeunit DimensionManagement;
+        RecIDs: List of [RecordID];
+        RecID: RecordId;
+        FldRef: FieldRef;
+        FldRef2: FieldRef;
+        DimSetID: Integer;
+    begin
+        if not RecRef.FieldExist(50100) or not RecRef.FieldExist(50101) then begin
+            RecRef.Close();
+            exit;
+        end;
+
+        FldRef := RecRef.Field(50100);
+        FldRef.SetRange('');
+        if RecRef.FindSet() then
+            repeat
+                TempDimSetEntry.Reset();
+                TempDimSetEntry.DeleteAll(false);
+                FldRef2 := RecRef.Field(480);
+                Evaluate(DimSetID, FldRef2.Value());
+                DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+                TempDimSetEntry.SetRange("Dimension Code", 'PRODUCT ID');
+                if TempDimSetEntry.FindFirst() then
+                    RecIDs.Add(RecRef.RecordId);
+            until RecRef.Next() = 0;
+        FldRef.SetRange();
+
+        FldRef := RecRef.Field(50101);
+        FldRef.SetRange('');
+        if RecRef.FindSet() then
+            repeat
+                TempDimSetEntry.Reset();
+                TempDimSetEntry.DeleteAll(false);
+                FldRef2 := RecRef.Field(480);
+                Evaluate(DimSetID, FldRef2.Value());
+                DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+                TempDimSetEntry.SetRange("Dimension Code", 'PROJECT');
+                if TempDimSetEntry.FindFirst() then
+                    RecIDs.Add(RecRef.RecordId);
+            until RecRef.Next() = 0;
+
+
+        foreach RecID in RecIDs do begin
+            RecRef.Get(RecID);
+            TempDimSetEntry.Reset();
+            TempDimSetEntry.DeleteAll(false);
+            FldRef2 := RecRef.Field(480);
+            Evaluate(DimSetID, FldRef2.Value());
+            DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+            TempDimSetEntry.SetRange("Dimension Code", 'PRODUCT ID');
+            if TempDimSetEntry.FindFirst() then begin
+                FldRef := RecRef.Field(50100);
+                FldRef.Value(TempDimSetEntry."Dimension Value Code");
+            end;
+            TempDimSetEntry.SetRange("Dimension Code", 'PROJECT');
+            if TempDimSetEntry.FindFirst() then begin
+                FldRef := RecRef.Field(50101);
+                FldRef.Value(TempDimSetEntry."Dimension Value Code");
+            end;
+            RecRef.Modify(false);
+        end;
+        RecRef.Close();
     end;
 
 

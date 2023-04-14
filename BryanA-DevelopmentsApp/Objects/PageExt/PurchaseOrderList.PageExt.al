@@ -8,6 +8,14 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
             {
                 ApplicationArea = all;
             }
+            field("BA Product ID Code"; "BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; "BA Project Code")
+            {
+                ApplicationArea = all;
+            }
         }
         modify("Buy-from Country/Region Code")
         {
@@ -26,6 +34,17 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
         }
     }
 
+    actions
+    {
+        modify(Dimensions)
+        {
+            trigger OnAfterAction()
+            begin
+                GetDimensionCodes();
+            end;
+        }
+    }
+
     trigger OnOpenPage()
     var
         FilterNo: Integer;
@@ -35,4 +54,24 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
         Rec.SetRange("BA Requisition Order", false);
         Rec.FilterGroup(FilterNo);
     end;
+
+    local procedure GetDimensionCodes()
+    var
+        TempDimSetEntry: Record "Dimension Set Entry" temporary;
+        DimMgt: Codeunit DimensionManagement;
+    begin
+        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
+        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
+        Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
+    end;
+
+    local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
+    begin
+        TempDimSetEntry.SetRange("Dimension Code", DimCode);
+        if TempDimSetEntry.FindFirst() then
+            exit(TempDimSetEntry."Dimension Value Code");
+        exit('');
+    end;
+
+
 }
