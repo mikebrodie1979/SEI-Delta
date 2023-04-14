@@ -1164,7 +1164,31 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'ENC Product ID Code', false, false)]
+    local procedure ItemOnAfterValidateProductIDCode(var Rec: Record Item; var xRec: Record Item)
     var
+        InventorySetup: Record "Inventory Setup";
+    begin
+        if not InventorySetup.Get() or (InventorySetup."ENC Def. Product ID Code" = '') or (Rec."ENC Product ID Code" = xRec."ENC Product ID Code") then
+            exit;
+        if (Rec."ENC Product ID Code" <> InventorySetup."ENC Def. Product ID Code") and (Rec.Blocked) then begin
+            if confirm(UnblockItemMsg, false) then begin
+                Rec.Validate("Blocked", false);
+                Rec.Modify(true);
+            end;
+        end else
+            if Rec."ENC Product ID Code" = InventorySetup."ENC Def. Product ID Code" then begin
+                Rec.Validate(Blocked, true);
+                Rec.Validate("Block Reason", DefaultBlockReason);
+                Rec.Modify(true);
+            end;
+
+    end;
+
+
+    var
+        UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
+        DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';
         UpdateCreditLimitDialog: Label 'Updating Customer Credit Limits\#1###';
         ExtDocNoFormatError: Label '%1 field is improperly formatted for International Orders:\%2';
