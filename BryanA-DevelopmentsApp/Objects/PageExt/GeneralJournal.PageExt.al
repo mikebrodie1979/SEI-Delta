@@ -1,36 +1,27 @@
-pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
+pageextension 80150 "BA General Journal" extends "General Journal"
 {
     layout
     {
         addlast(Control1)
         {
-            field("BA Omit Orders"; "BA Omit Orders")
+            field("BA Product ID Code"; Rec."BA Product ID Code")
             {
                 ApplicationArea = all;
             }
-            field("BA Product ID Code"; "BA Product ID Code")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Project Code"; "BA Project Code")
+            field("BA Project Code"; Rec."BA Project Code")
             {
                 ApplicationArea = all;
             }
         }
-        modify("Buy-from Country/Region Code")
+        modify("Account No.")
         {
-            ApplicationArea = all;
-            Caption = 'Country';
-        }
-        modify("Pay-to Country/Region Code")
-        {
-            ApplicationArea = all;
-            Caption = 'Country';
-        }
-        modify("Ship-to Country/Region Code")
-        {
-            ApplicationArea = all;
-            Caption = 'Country';
+            trigger OnAfterValidate()
+            begin
+                if Rec."Account No." = '' then begin
+                    Rec."BA Product ID Code" := '';
+                    Rec."BA Project Code" := '';
+                end;
+            end;
         }
     }
 
@@ -41,29 +32,36 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
             trigger OnAfterAction()
             begin
                 GetDimensionCodes();
+                EditableDims := Rec."Account No." <> '';
             end;
         }
     }
 
-    trigger OnOpenPage()
-    var
-        FilterNo: Integer;
+    trigger OnAfterGetRecord()
     begin
-        FilterNo := Rec.FilterGroup();
-        Rec.FilterGroup(2);
-        Rec.SetRange("BA Requisition Order", false);
-        Rec.FilterGroup(FilterNo);
+        GetDimensionCodes();
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec."BA Product ID Code" := '';
+        Rec."BA Project Code" := '';
     end;
 
     local procedure GetDimensionCodes()
     var
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
-        DimMgt: Codeunit DimensionManagement;
     begin
+        if Rec."Account No." = '' then begin
+            Rec."BA Product ID Code" := '';
+            Rec."BA Project Code" := '';
+            exit;
+        end;
         DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
         Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
         Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
     end;
+
 
     local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
     begin
@@ -73,5 +71,9 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
         exit('');
     end;
 
+    var
+        DimMgt: Codeunit DimensionManagement;
 
+        [InDataSet]
+        EditableDims: Boolean;
 }
