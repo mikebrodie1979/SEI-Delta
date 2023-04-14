@@ -1105,6 +1105,7 @@ codeunit 75010 "BA SEI Subscibers"
             FieldRec.SetRange("No.", MinValue, MaxValue);
     end;
 
+    //test
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnBeforeRunWithCheck', '', false, false)]
