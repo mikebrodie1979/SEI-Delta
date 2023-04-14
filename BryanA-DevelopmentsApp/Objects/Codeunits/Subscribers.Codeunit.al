@@ -1164,6 +1164,27 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchInvHeaderInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchInvHeaderInsert(var PurchHeader: Record "Purchase Header"; var PurchInvHeader: Record "Purch. Inv. Header")
+    begin
+        PurchInvHeader."BA Product ID Code" := PurchHeader."BA Product ID Code";
+        PurchInvHeader."BA Project Code" := PurchHeader."BA Project Code";
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchRcptHeaderInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchRcptHeaderInsert(var PurchaseHeader: Record "Purchase Header"; var PurchRcptHeader: Record "Purch. Rcpt. Header")
+    begin
+        PurchRcptHeader."BA Product ID Code" := PurchaseHeader."BA Product ID Code";
+        PurchRcptHeader."BA Project Code" := PurchaseHeader."BA Project Code";
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchCrMemoHeaderInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchCrMemoHeaderInsert(var PurchHeader: Record "Purchase Header"; var PurchCrMemoHdr: Record "Purch. Cr. Memo Hdr.")
+    begin
+        PurchCrMemoHdr."BA Product ID Code" := PurchHeader."BA Product ID Code";
+        PurchCrMemoHdr."BA Project Code" := PurchHeader."BA Project Code";
+    end;
+
 
     var
         UpdateCreditLimitMsg: Label 'Do you want to update all USD customer''s credit limit?\This may take a while depending on the number of customers.';

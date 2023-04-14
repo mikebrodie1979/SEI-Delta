@@ -4,7 +4,18 @@ pageextension 80012 "BA Posted Purch. Invoices" extends "Posted Purchase Invoice
     {
         addafter("Buy-from Vendor Name")
         {
-            field("Order No.2"; "Order No.")
+            field("Order No.2"; Rec."Order No.")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addlast(Control1)
+        {
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
             {
                 ApplicationArea = all;
             }
