@@ -1525,6 +1525,7 @@ codeunit 75010 "BA SEI Subscibers"
                 Rec.Validate("Block Reason", DefaultBlockReason);
                 Rec.Modify(true);
             end;
+    end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchInvHeaderInsert', '', false, false)]
     local procedure PurchPostOnBeforePurchInvHeaderInsert(var PurchHeader: Record "Purchase Header"; var PurchInvHeader: Record "Purch. Inv. Header")
