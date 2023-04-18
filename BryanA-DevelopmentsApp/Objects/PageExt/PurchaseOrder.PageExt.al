@@ -97,17 +97,6 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
         }
     }
 
-    trigger OnAfterGetRecord()
-    begin
-        GetDimensionCodes();
-    end;
-
-    trigger OnNewRecord(BelowxRec: Boolean)
-    begin
-        Rec."BA Product ID Code" := '';
-        Rec."BA Project Code" := '';
-    end;
-
     local procedure GetDimensionCodes()
     var
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
