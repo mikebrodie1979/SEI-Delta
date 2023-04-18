@@ -8,6 +8,17 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
             Visible = false;
             Enabled = false;
         }
+        addlast(General)
+        {
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
+            {
+                ApplicationArea = all;
+            }
+        }
         addfirst("Buy-from")
         {
             field("BA Buy-from Country/Region Code"; "Buy-from Country/Region Code")
