@@ -10,6 +10,17 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
                 Editable = false;
             }
         }
+        addlast(General)
+        {
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Expected Receipt Date")
         {
             ApplicationArea = all;

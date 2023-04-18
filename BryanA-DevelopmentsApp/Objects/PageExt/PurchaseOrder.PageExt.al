@@ -2,6 +2,17 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
 {
     layout
     {
+        addlast(General)
+        {
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Location Code")
         {
             trigger OnLookup(var Text: Text): Boolean
@@ -85,6 +96,17 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
             end;
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        GetDimensionCodes();
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec."BA Product ID Code" := '';
+        Rec."BA Project Code" := '';
+    end;
 
     local procedure GetDimensionCodes()
     var
