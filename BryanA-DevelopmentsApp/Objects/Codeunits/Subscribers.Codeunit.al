@@ -319,6 +319,8 @@ codeunit 75010 "BA SEI Subscibers"
             PurchRcptLine."BA Line Discount Amount" := PurchRcptLine."BA Line Amount" - DiscountedAmt;
             PurchRcptLine."BA Line Amount" := DiscountedAmt;
         end;
+        PurchRcptLine."BA Product ID Code" := PurchLine."BA Product ID Code";
+        PurchRcptLine."BA Project Code" := PurchLine."BA Project Code";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforeReturnShptLineInsert', '', false, false)]
@@ -1527,25 +1529,18 @@ codeunit 75010 "BA SEI Subscibers"
             end;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchInvHeaderInsert', '', false, false)]
-    local procedure PurchPostOnBeforePurchInvHeaderInsert(var PurchHeader: Record "Purchase Header"; var PurchInvHeader: Record "Purch. Inv. Header")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchInvLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchInvLineInsert(var PurchaseLine: Record "Purchase Line"; var PurchInvLine: Record "Purch. Inv. Line")
     begin
-        PurchInvHeader."BA Product ID Code" := PurchHeader."BA Product ID Code";
-        PurchInvHeader."BA Project Code" := PurchHeader."BA Project Code";
+        PurchInvLine."BA Product ID Code" := PurchaseLine."BA Product ID Code";
+        PurchInvLine."BA Project Code" := PurchaseLine."BA Project Code";
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchRcptHeaderInsert', '', false, false)]
-    local procedure PurchPostOnBeforePurchRcptHeaderInsert(var PurchaseHeader: Record "Purchase Header"; var PurchRcptHeader: Record "Purch. Rcpt. Header")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchCrMemoLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchCrMemoLineInsert(var PurchLine: Record "Purchase Line"; var PurchCrMemoLine: Record "Purch. Cr. Memo Line")
     begin
-        PurchRcptHeader."BA Product ID Code" := PurchaseHeader."BA Product ID Code";
-        PurchRcptHeader."BA Project Code" := PurchaseHeader."BA Project Code";
-    end;
-
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchCrMemoHeaderInsert', '', false, false)]
-    local procedure PurchPostOnBeforePurchCrMemoHeaderInsert(var PurchHeader: Record "Purchase Header"; var PurchCrMemoHdr: Record "Purch. Cr. Memo Hdr.")
-    begin
-        PurchCrMemoHdr."BA Product ID Code" := PurchHeader."BA Product ID Code";
-        PurchCrMemoHdr."BA Project Code" := PurchHeader."BA Project Code";
+        PurchCrMemoLine."BA Product ID Code" := PurchLine."BA Product ID Code";
+        PurchCrMemoLine."BA Project Code" := PurchLine."BA Project Code";
     end;
 
 

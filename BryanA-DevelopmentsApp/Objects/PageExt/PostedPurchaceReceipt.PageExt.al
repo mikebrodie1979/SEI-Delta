@@ -2,17 +2,6 @@ pageextension 80041 "BA Post. Purch. Rcpt." extends "Posted Purchase Receipt"
 {
     layout
     {
-        addlast(General)
-        {
-            field("BA Product ID Code"; Rec."BA Product ID Code")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Project Code"; Rec."BA Project Code")
-            {
-                ApplicationArea = all;
-            }
-        }
         addafter("Document Date")
         {
             field("Expected Receipt Date2"; Rec."Expected Receipt Date")

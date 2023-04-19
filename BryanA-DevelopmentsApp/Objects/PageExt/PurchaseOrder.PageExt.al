@@ -2,17 +2,6 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
 {
     layout
     {
-        addlast(General)
-        {
-            field("BA Product ID Code"; Rec."BA Product ID Code")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Project Code"; Rec."BA Project Code")
-            {
-                ApplicationArea = all;
-            }
-        }
         modify("Location Code")
         {
             trigger OnLookup(var Text: Text): Boolean
@@ -85,37 +74,4 @@ pageextension 80030 "BA Purchase Order" extends "Purchase Order"
             }
         }
     }
-
-    actions
-    {
-        modify(Dimensions)
-        {
-            trigger OnAfterAction()
-            begin
-                GetDimensionCodes();
-            end;
-        }
-    }
-
-    local procedure GetDimensionCodes()
-    var
-        TempDimSetEntry: Record "Dimension Set Entry" temporary;
-    begin
-        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
-        Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
-        Rec.Modify(true);
-    end;
-
-
-    local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
-    begin
-        TempDimSetEntry.SetRange("Dimension Code", DimCode);
-        if TempDimSetEntry.FindFirst() then
-            exit(TempDimSetEntry."Dimension Value Code");
-        exit('');
-    end;
-
-    var
-        DimMgt: Codeunit DimensionManagement;
 }
