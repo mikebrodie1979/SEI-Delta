@@ -21,6 +21,17 @@ pageextension 80020 "BA Posted Purch. Rcpt. Subpage" extends "Posted Purchase Rc
                 ApplicationArea = all;
             }
         }
+        addlast(Control1)
+        {
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
 }

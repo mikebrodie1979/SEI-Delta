@@ -9,17 +9,6 @@ pageextension 80011 "BA Posted Purch. Rcpts." extends "Posted Purchase Receipts"
                 ApplicationArea = all;
             }
         }
-        addlast(Control1)
-        {
-            field("BA Product ID Code"; Rec."BA Product ID Code")
-            {
-                ApplicationArea = all;
-            }
-            field("BA Project Code"; Rec."BA Project Code")
-            {
-                ApplicationArea = all;
-            }
-        }
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;

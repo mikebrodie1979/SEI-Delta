@@ -8,6 +8,14 @@ pageextension 80021 "BA Posted Purch. Shpt. Subpage" extends "Posted Return Ship
             {
                 ApplicationArea = all;
             }
+            field("BA Product ID Code"; Rec."BA Product ID Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Project Code"; Rec."BA Project Code")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter(Quantity)
         {
