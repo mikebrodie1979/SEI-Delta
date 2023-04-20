@@ -12,7 +12,7 @@ codeunit 75011 "BA Install Codeunit"
     trigger OnInstallAppPerCompany()
     begin
         AddCustomerSalesActivity();
-        AddNewDimValues();
+        // AddNewDimValues();
     end;
 
 
