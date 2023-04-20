@@ -319,6 +319,8 @@ codeunit 75010 "BA SEI Subscibers"
             PurchRcptLine."BA Line Discount Amount" := PurchRcptLine."BA Line Amount" - DiscountedAmt;
             PurchRcptLine."BA Line Amount" := DiscountedAmt;
         end;
+        PurchRcptLine."BA Product ID Code" := PurchLine."BA Product ID Code";
+        PurchRcptLine."BA Project Code" := PurchLine."BA Project Code";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforeReturnShptLineInsert', '', false, false)]
@@ -1182,7 +1184,21 @@ codeunit 75010 "BA SEI Subscibers"
                 Rec.Validate("Block Reason", DefaultBlockReason);
                 Rec.Modify(true);
             end;
+    end;
 
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchInvLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchInvLineInsert(var PurchaseLine: Record "Purchase Line"; var PurchInvLine: Record "Purch. Inv. Line")
+    begin
+        PurchInvLine."BA Product ID Code" := PurchaseLine."BA Product ID Code";
+        PurchInvLine."BA Project Code" := PurchaseLine."BA Project Code";
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePurchCrMemoLineInsert', '', false, false)]
+    local procedure PurchPostOnBeforePurchCrMemoLineInsert(var PurchLine: Record "Purchase Line"; var PurchCrMemoLine: Record "Purch. Cr. Memo Line")
+    begin
+        PurchCrMemoLine."BA Product ID Code" := PurchLine."BA Product ID Code";
+        PurchCrMemoLine."BA Project Code" := PurchLine."BA Project Code";
     end;
 
 

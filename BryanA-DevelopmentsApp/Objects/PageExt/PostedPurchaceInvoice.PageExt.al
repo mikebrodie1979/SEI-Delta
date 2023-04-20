@@ -10,6 +10,7 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
                 Editable = false;
             }
         }
+
         modify("Expected Receipt Date")
         {
             ApplicationArea = all;

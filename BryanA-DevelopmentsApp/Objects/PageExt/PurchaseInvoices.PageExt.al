@@ -1,14 +1,7 @@
-pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
+pageextension 80095 "BA Purchase Invoices" extends "Purchase Invoices"
 {
     layout
     {
-        addlast(Control1)
-        {
-            field("BA Omit Orders"; "BA Omit Orders")
-            {
-                ApplicationArea = all;
-            }
-        }
         modify("Buy-from Country/Region Code")
         {
             ApplicationArea = all;
@@ -25,7 +18,6 @@ pageextension 80022 "BA Purchase Order List" extends "Purchase Order List"
             Caption = 'Country';
         }
     }
-
 
     trigger OnOpenPage()
     var

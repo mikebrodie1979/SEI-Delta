@@ -4,7 +4,7 @@ pageextension 80012 "BA Posted Purch. Invoices" extends "Posted Purchase Invoice
     {
         addafter("Buy-from Vendor Name")
         {
-            field("Order No.2"; "Order No.")
+            field("Order No.2"; Rec."Order No.")
             {
                 ApplicationArea = all;
             }

@@ -3,11 +3,112 @@ codeunit 75011 "BA Install Codeunit"
     Subtype = Install;
     Permissions = tabledata "Sales Invoice Header" = r,
                   tabledata "Service Invoice Header" = r,
-                  tabledata Customer = m;
+                  tabledata Customer = m,
+                  tabledata "Purch. Inv. Header" = m,
+                  tabledata "Purch. Cr. Memo Hdr." = m,
+                  tabledata "Purch. Rcpt. Header" = m,
+                  tabledata "Purchase Header" = m;
 
     trigger OnInstallAppPerCompany()
     begin
         AddCustomerSalesActivity();
+        AddNewDimValues();
+    end;
+
+
+
+    local procedure AddNewDimValues()
+    var
+        CompInfo: Record "Company Information";
+        RecRef: RecordRef;
+    begin
+        if not CompInfo.Get() or CompInfo."BA Populated Dimensions" then
+            exit;
+        RecRef.Open(Database::"Purchase Header");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Cr. Memo Hdr.");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Inv. Header");
+        AddNewDimValues(RecRef);
+        RecRef.Open(Database::"Purch. Rcpt. Header");
+        AddNewDimValues(RecRef);
+        CompInfo."BA Populated Dimensions" := true;
+        CompInfo.Modify(false);
+    end;
+
+
+    procedure AddNewDimValues(var RecRef: RecordRef)
+    var
+        TempDimSetEntry: Record "Dimension Set Entry" temporary;
+        DimMgt: Codeunit DimensionManagement;
+        RecIDs: List of [RecordID];
+        RecID: RecordId;
+        FldRef: FieldRef;
+        FldRef2: FieldRef;
+        DimSetID: Integer;
+        ProductIDFldNo: Integer;
+        ProjectFldNo: Integer;
+    begin
+        ProductIDFldNo := 80100;
+        ProjectFldNo := 80101;
+        if not RecRef.FindFirst() or not RecRef.FieldExist(ProductIDFldNo) or not RecRef.FieldExist(ProjectFldNo) then begin
+            RecRef.Close();
+            exit;
+        end;
+
+        FldRef := RecRef.Field(ProductIDFldNo);
+        FldRef.SetRange('');
+        if RecRef.FindSet() then
+            repeat
+                TempDimSetEntry.Reset();
+                TempDimSetEntry.DeleteAll(false);
+                FldRef2 := RecRef.Field(480);
+                DimSetID := FldRef2.Value();
+                if DimSetID <> 0 then begin
+                    DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+                    TempDimSetEntry.SetRange("Dimension Code", 'PRODUCT ID');
+                    if TempDimSetEntry.FindFirst() then
+                        RecIDs.Add(RecRef.RecordId);
+                end;
+            until RecRef.Next() = 0;
+        FldRef.SetRange();
+
+        FldRef := RecRef.Field(ProjectFldNo);
+        FldRef.SetRange('');
+        if RecRef.FindSet() then
+            repeat
+                TempDimSetEntry.Reset();
+                TempDimSetEntry.DeleteAll(false);
+                FldRef2 := RecRef.Field(480);
+                DimSetID := FldRef2.Value();
+                if DimSetID <> 0 then begin
+                    DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+                    TempDimSetEntry.SetRange("Dimension Code", 'PROJECT');
+                    if TempDimSetEntry.FindFirst() then
+                        RecIDs.Add(RecRef.RecordId);
+                end;
+            until RecRef.Next() = 0;
+
+        foreach RecID in RecIDs do begin
+            RecRef.Get(RecID);
+            TempDimSetEntry.Reset();
+            TempDimSetEntry.DeleteAll(false);
+            FldRef2 := RecRef.Field(480);
+            DimSetID := FldRef2.Value();
+            DimMgt.GetDimensionSet(TempDimSetEntry, DimSetID);
+            TempDimSetEntry.SetRange("Dimension Code", 'PRODUCT ID');
+            if TempDimSetEntry.FindFirst() then begin
+                FldRef := RecRef.Field(ProductIDFldNo);
+                FldRef.Value(TempDimSetEntry."Dimension Value Code");
+            end;
+            TempDimSetEntry.SetRange("Dimension Code", 'PROJECT');
+            if TempDimSetEntry.FindFirst() then begin
+                FldRef := RecRef.Field(ProjectFldNo);
+                FldRef.Value(TempDimSetEntry."Dimension Value Code");
+            end;
+            RecRef.Modify(false);
+        end;
+        RecRef.Close();
     end;
 
 
