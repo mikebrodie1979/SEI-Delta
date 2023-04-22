@@ -160,6 +160,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 var
                     ProductProfile: Record "BA Product Profile";
                     RecRef: RecordRef;
+                    RecRef2: RecordRef;
                     i: Integer;
                 begin
                     if (Rec."BA Product Profile Code" = xRec."BA Product Profile Code") or (Rec."BA Product Profile Code" = '') then
@@ -206,8 +207,6 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Product ID Code"), ProductProfile."Product ID Code");
                     RecRef.SetTable(Rec);
                     Rec.Modify(true);
-                    // for i := 1 to 9 do
-                    //     ValidateDimCode(i);
                     CurrPage.Update(false);
                     Rec.Get(Rec.RecordId());
                 end;
@@ -294,7 +293,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     trigger OnAfterGetRecord()
     begin
         CheckToUpdateDimValues(Rec);
-        IsEditable := CurrPage.Editable;
+        IsEditable := CurrPage.Editable();
     end;
 
 
@@ -424,11 +423,8 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         Subscribers: Codeunit "BA SEI Subscibers";
         Deleted: Boolean;
         Cancelled: Boolean;
-
         CancelItemMsg: Label 'Do you want to cancel creating Item No. %1?';
         CancelMsg: Label 'Cancel item?';
-
-    var
         GLSetup: Record "General Ledger Setup";
         DimValue: array[9] of Code[20];
         [InDataSet]
@@ -442,7 +438,11 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     local procedure SetValueFromProductProfile(var RecRef: RecordRef; FldNo: Integer; FldValue: Variant; Validate: Boolean)
     begin
         if Format(FldValue) = '' then
-            exit;
+            if ((FldNo >= Rec.FieldNo("ENC Shortcut Dimension 3 Code")) and (Rec.FieldNo("ENC Shortcut Dimension 8 Code") >= FldNo))
+                or (FldNo = Rec.FieldNo("ENC Product ID Code")) then
+                RecRef.Field(FldNo).Validate('')
+            else
+                exit;
         if Validate then
             RecRef.Field(FldNo).Validate(FldValue)
         else
