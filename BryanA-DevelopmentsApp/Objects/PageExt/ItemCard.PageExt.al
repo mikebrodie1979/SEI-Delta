@@ -183,7 +183,6 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Net Cost"), ProductProfile."Net Cost");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo(Type), ProductProfile.Type);
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("Base Unit of Measure"), ProductProfile."Base Unit of Measure");
-                    // SetValueFromProductProfile(RecRef, Rec.FieldNo("ENC Base Unit of Measure"), ProductProfile."Base Unit of Measure");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("Inventory Posting Group"), ProductProfile."Inventory Posting Group");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("Costing Method"), ProductProfile."Costing Method");
                     SetValueFromProductProfile(RecRef, Rec.FieldNo("Price/Profit Calculation"), ProductProfile."Price/Profit Calculation");
@@ -209,6 +208,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                     Rec.Modify(true);
                     CurrPage.Update(false);
                     Rec.Get(Rec.RecordId());
+                    UpdateDimArray(RecRef);
                 end;
             }
         }
@@ -420,11 +420,14 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     end;
 
     var
+        DimMgt: Codeunit DimensionManagement;
+        DimMgt2: Codeunit "ENC Dimension Mangement";
         Subscribers: Codeunit "BA SEI Subscibers";
         Deleted: Boolean;
         Cancelled: Boolean;
         CancelItemMsg: Label 'Do you want to cancel creating Item No. %1?';
         CancelMsg: Label 'Cancel item?';
+        InvalidDimFieldErr: Label 'Invalid Dimension field: %1.';
         GLSetup: Record "General Ledger Setup";
         DimValue: array[9] of Code[20];
         [InDataSet]
@@ -436,16 +439,43 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     end;
 
     local procedure SetValueFromProductProfile(var RecRef: RecordRef; FldNo: Integer; FldValue: Variant; Validate: Boolean)
+    var
+        Item: Record Item;
+        DimMgt: Codeunit "ENC Dimension Mangement";
     begin
-        if Format(FldValue) = '' then
-            if ((FldNo >= Rec.FieldNo("ENC Shortcut Dimension 3 Code")) and (Rec.FieldNo("ENC Shortcut Dimension 8 Code") >= FldNo))
-                or (FldNo = Rec.FieldNo("ENC Product ID Code")) then
-                RecRef.Field(FldNo).Validate('')
+        if Format(FldValue) <> '' then begin
+            if Validate then
+                RecRef.Field(FldNo).Validate(FldValue)
             else
-                exit;
-        if Validate then
-            RecRef.Field(FldNo).Validate(FldValue)
-        else
-            RecRef.Field(FldNo).Value(FldValue);
+                RecRef.Field(FldNo).Value(FldValue);
+            exit;
+        end;
+        if ((FldNo >= Rec.FieldNo("ENC Shortcut Dimension 3 Code")) and (Rec.FieldNo("ENC Shortcut Dimension 8 Code") >= FldNo))
+                or (FldNo in [Rec.FieldNo("Global Dimension 1 Code"), Rec.FieldNo("Global Dimension 2 Code")])
+                or (FldNo = Rec.FieldNo("ENC Product ID Code")) then begin
+            ValidateDimValue(FldNo, '');
+            RecRef.Field(FldNo).Value('');
+        end;
+    end;
+
+    local procedure ValidateDimValue(FldNo: Integer; ShortcutDimCode: Code[20])
+    var
+        FieldNumber: Integer;
+    begin
+        case true of
+            FldNo in [Rec.FieldNo("Global Dimension 1 Code"), Rec.FieldNo("Global Dimension 2 Code")]:
+                FieldNumber := FldNo - FieldNo("Global Dimension 1 Code") + 1;
+            (FldNo >= Rec.FieldNo("ENC Shortcut Dimension 3 Code")) and (Rec.FieldNo("ENC Shortcut Dimension 8 Code") >= FldNo):
+                FieldNumber := FldNo - Rec.FieldNo("ENC Shortcut Dimension 3 Code") + 3;
+            FldNo = Rec.FieldNo("ENC Product ID Code"):
+                begin
+                    DimMgt2.ValidateAdditionalDimCode(Database::Item, "No.", ShortcutDimCode, GLSetup."ENC Product ID Dim. Code", false, ShortcutDimCode);
+                    exit;
+                end;
+            else
+                Error(InvalidDimFieldErr, FldNo);
+        end;
+        DimMgt.ValidateDimValueCode(FieldNumber, ShortcutDimCode);
+        DimMgt.SaveDefaultDim(DATABASE::Item, "No.", FieldNumber, ShortcutDimCode);
     end;
 }
