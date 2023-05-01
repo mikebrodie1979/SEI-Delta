@@ -155,6 +155,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             field("BA Product Profile Code"; Rec."BA Product Profile Code")
             {
                 ApplicationArea = all;
+                Editable = NewRec;
 
                 trigger OnValidate()
                 var
@@ -258,6 +259,13 @@ pageextension 80009 "BA Item Card" extends "Item Card"
                 end;
             }
         }
+        modify(Description)
+        {
+            trigger OnAfterValidate()
+            begin
+                NewRec := Description = '';
+            end;
+        }
     }
 
     actions
@@ -294,8 +302,19 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     begin
         CheckToUpdateDimValues(Rec);
         IsEditable := CurrPage.Editable();
+        NewRec := Description = '';
     end;
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        NewRec := true;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        NewRec := false;
+    end;
 
 
     procedure CheckToUpdateDimValues(var Item: Record Item): Boolean
@@ -417,6 +436,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
     trigger OnDeleteRecord(): Boolean
     begin
         Deleted := true;
+        NewRec := false;
     end;
 
     var
@@ -432,6 +452,9 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         DimValue: array[9] of Code[20];
         [InDataSet]
         IsEditable: Boolean;
+        [InDataSet]
+        NewRec: Boolean;
+
 
     local procedure SetValueFromProductProfile(var RecRef: RecordRef; FldNo: Integer; FldValue: Variant)
     begin
