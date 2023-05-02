@@ -1213,14 +1213,12 @@ codeunit 75010 "BA SEI Subscibers"
         RecRef: RecordRef;
         DimMgt: Codeunit DimensionManagement;
         NewDimSetID: Integer;
-        FldType: Integer;
     begin
         if not RecVariant.IsRecord() or not GetRecord(RecVariant, RecRef) then
             exit;
         if RecRef.Number() <> Database::"Sales Line" then
             exit;
-        Evaluate(FldType, RecRef.Field(SalesLine.FieldNo(Type)).Value());
-        if (FldType <> SalesLine.Type::Item) or (CurrFieldNo <> SalesLine.FieldNo("No.")) or not Item.Get(No[1]) then
+        if (Format(RecRef.Field(SalesLine.FieldNo(Type)).Value()) <> Format(SalesLine.Type::Item)) or (CurrFieldNo <> SalesLine.FieldNo("No.")) or not Item.Get(No[1]) then
             exit;
         DefaultDim.SetRange("Table ID", Database::Item);
         DefaultDim.SetRange("No.", Item."No.");
