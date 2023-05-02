@@ -13,7 +13,7 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddItemJnlApprovalCode();
         AddCustomerSalesActivity();
-        AddNewDimValues();
+        // AddNewDimValues();
     end;
 
 
