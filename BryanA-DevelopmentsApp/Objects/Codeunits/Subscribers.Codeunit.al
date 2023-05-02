@@ -1208,11 +1208,13 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         SalesLine: Record "Sales Line";
-        DimSetEntry: Record "Dimension Set Entry" temporary;
+        DimSetEntry: Record "Dimension Set Entry";
+        TempDimSetEntry: Record "Dimension Set Entry" temporary;
         DefaultDim: Record "Default Dimension";
         RecRef: RecordRef;
         DimMgt: Codeunit DimensionManagement;
         NewDimSetID: Integer;
+        DimValueID: Integer;
     begin
         if not RecVariant.IsRecord() or not GetRecord(RecVariant, RecRef) then
             exit;
@@ -1224,18 +1226,27 @@ codeunit 75010 "BA SEI Subscibers"
         DefaultDim.SetRange("No.", Item."No.");
         if not DefaultDim.FindSet() then
             exit;
+        DimMgt.GetDimensionSet(TempDimSetEntry, InheritFromDimSetID);
+        DimSetEntry.SetCurrentKey("Dimension Value ID");
+        DimSetEntry.SetAscending("Dimension Value ID", true);
+        if DimSetEntry.FindLast() then
+            DimValueID := DimSetEntry."Dimension Value ID";
+        DimValueID += 1;
         repeat
-            DimSetEntry.Init();
-            DimSetEntry."Dimension Set ID" := -1;
-            DimSetEntry."Dimension Code" := DefaultDim."Dimension Code";
-            DimSetEntry."Dimension Value Code" := DefaultDim."Dimension Value Code";
-            DimSetEntry.Insert(false);
+            TempDimSetEntry.SetRange("Dimension Code", DefaultDim."Dimension Code");
+            if TempDimSetEntry.FindFirst() then
+                TempDimSetEntry.Delete(false);
+            TempDimSetEntry.Init();
+            TempDimSetEntry."Dimension Code" := DefaultDim."Dimension Code";
+            TempDimSetEntry."Dimension Value Code" := DefaultDim."Dimension Value Code";
+            TempDimSetEntry."Dimension Value ID" := DimValueID;
+            TempDimSetEntry.Insert(false);
         until DefaultDim.Next() = 0;
-        NewDimSetID := DimMgt.GetDimensionSetID(DimSetEntry);
+        NewDimSetID := DimMgt.GetDimensionSetID(TempDimSetEntry);
         if NewDimSetID = 0 then
             exit;
-        InheritFromDimSetID := NewDimSetID;
         InheritFromTableNo := Database::Item;
+        InheritFromDimSetID := NewDimSetID;
     end;
 
     [TryFunction]
