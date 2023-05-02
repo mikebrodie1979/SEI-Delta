@@ -1202,6 +1202,50 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::DimensionManagement, 'OnGetRecDefaultDimID', '', false, false)]
+    local procedure DimMgtOnGetRecDefaultDimID(RecVariant: Variant; var InheritFromTableNo: Integer; var InheritFromDimSetID: Integer; var No: array[10] of Code[20]; CurrFieldNo: Integer)
+    var
+        Item: Record Item;
+        SalesLine: Record "Sales Line";
+        DimSetEntry: Record "Dimension Set Entry" temporary;
+        DefaultDim: Record "Default Dimension";
+        RecRef: RecordRef;
+        DimMgt: Codeunit DimensionManagement;
+        NewDimSetID: Integer;
+        FldType: Integer;
+    begin
+        if not RecVariant.IsRecord() or not GetRecord(RecVariant, RecRef) then
+            exit;
+        if RecRef.Number() <> Database::"Sales Line" then
+            exit;
+        Evaluate(FldType, RecRef.Field(SalesLine.FieldNo(Type)).Value());
+        if (FldType <> SalesLine.Type::Item) or (CurrFieldNo <> SalesLine.FieldNo("No.")) or not Item.Get(No[1]) then
+            exit;
+        DefaultDim.SetRange("Table ID", Database::Item);
+        DefaultDim.SetRange("No.", Item."No.");
+        if not DefaultDim.FindSet() then
+            exit;
+        repeat
+            DimSetEntry.Init();
+            DimSetEntry."Dimension Code" := DefaultDim."Dimension Code";
+            DimSetEntry."Dimension Value Code" := DefaultDim."Dimension Value Code";
+            DimSetEntry.Insert(false);
+        until DefaultDim.Next() = 0;
+        NewDimSetID := DimMgt.GetDimensionSetID(DimSetEntry);
+        if NewDimSetID = 0 then
+            exit;
+        InheritFromDimSetID := NewDimSetID;
+        InheritFromTableNo := Database::Item;
+    end;
+
+    [TryFunction]
+    local procedure GetRecord(var RecVar: Variant; var RecRef: RecordRef)
+    begin
+        RecRef.GetTable(RecVar);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
