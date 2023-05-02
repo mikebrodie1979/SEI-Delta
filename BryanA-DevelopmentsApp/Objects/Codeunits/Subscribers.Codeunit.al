@@ -1569,6 +1569,7 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         repeat
             DimSetEntry.Init();
+            DimSetEntry."Dimension Set ID" := -1;
             DimSetEntry."Dimension Code" := DefaultDim."Dimension Code";
             DimSetEntry."Dimension Value Code" := DefaultDim."Dimension Value Code";
             DimSetEntry.Insert(false);
