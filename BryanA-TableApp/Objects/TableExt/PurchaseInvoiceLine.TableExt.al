@@ -9,6 +9,21 @@ tableextension 80011 "BA Purch. Inv. Line" extends "Purch. Inv. Line"
             Editable = false;
             Description = 'System field to specify Requisition Orders';
         }
+        field(80050; "BA SEI Order Type."; Enum "BA SEI Order Type")
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Order Type';
+        }
+        field(80051; "BA SEI Order No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Order No.';
+        }
+        field(80052; "BA Freight Type"; Enum "BA Freight Type")
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Freight Type';
+        }
         field(80100; "BA Product ID Code"; Code[20])
         {
             DataClassification = CustomerContent;
