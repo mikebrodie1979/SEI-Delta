@@ -1202,6 +1202,107 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order No.', false, false)]
+    local procedure PurchaseLineOnBeforeValidateSEIOrderNo(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
+    var
+        SalesInvHeader: Record "Sales Invoice Header";
+        ServiceInvHeader: Record "Service Invoice Header";
+        Customer: Record Customer;
+        FilterText: Text;
+    begin
+        if Rec."BA SEI Order No." = xRec."BA SEI Order No." then
+            exit;
+        if Rec."BA SEI Order No." = '' then begin
+            Rec."BA SEI Invoice No." := '';
+            exit;
+        end;
+        case Rec."BA SEI Order Type" of
+            Rec."BA SEI Order Type"::"Delta SO":
+                GetRelatedSalesFields(Rec, true);
+            Rec."BA SEI Order Type"::"Delta SVO":
+                GetRelatedServiceFields(Rec, true);
+            Rec."BA SEI Order Type"::"Int. SO":
+                GetRelatedSalesFields(Rec, false);
+            Rec."BA SEI Order Type"::"Int. SVO":
+                GetRelatedServiceFields(Rec, false);
+            Rec."BA SEI Order Type"::" ":
+                Error(MissingOrderTypeErr, Rec.FieldCaption("BA SEI Order Type"), Rec.FieldCaption("BA SEI Order No."));
+        end;
+    end;
+
+
+
+    local procedure GetRelatedSalesFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    var
+        SalesInvHeader: Record "Sales Invoice Header";
+        FilterText: Text;
+    begin
+        SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        FilterText := GetIntCustFilter(LocalCustomer);
+        if FilterText <> '' then
+            SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
+        if not SalesInvHeader.FindFirst() then
+            SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+        SalesInvHeader.FindFirst();
+        PurchLine."BA SEI Order No." := SalesInvHeader."Order No.";
+        PurchLine."BA SEI Invoice No." := SalesInvHeader."No.";
+    end;
+
+    local procedure GetRelatedServiceFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    var
+        ServiceInvHeader: Record "Service Invoice Header";
+        FilterText: Text;
+    begin
+        ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        FilterText := GetIntCustFilter(LocalCustomer);
+        if FilterText <> '' then
+            ServiceInvHeader.SetFilter("Bill-to Customer No.", FilterText);
+        if not ServiceInvHeader.FindFirst() then
+            ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+        ServiceInvHeader.FindFirst();
+        PurchLine."BA SEI Order No." := ServiceInvHeader."Order No.";
+        PurchLine."BA SEI Invoice No." := ServiceInvHeader."No.";
+    end;
+
+    local procedure GetIntCustFilter(Exclude: Boolean): Text
+    var
+        CustomerList: List of [Code[20]];
+        CustNo: Code[20];
+        FilterTxt: TextBuilder;
+    begin
+        GetInternationalCustomers(CustomerList, true);
+        if CustomerList.Count() = 0 then
+            exit('');
+        CustomerList.Get(1, CustNo);
+        if Exclude then
+            FilterTxt.Append('<>');
+        FilterTxt.Append(CustNo);
+        CustomerList.RemoveAt(1);
+        if Exclude then
+            foreach CustNo in CustomerList do
+                FilterTxt.Append('&<>' + CustNo)
+        else
+            foreach CustNo in CustomerList do
+                FilterTxt.Append('|' + CustNo);
+        exit(FilterTxt.ToText());
+    end;
+
+    local procedure GetInternationalCustomers(var CustomerList: List of [Code[20]]; Sales: Boolean)
+    var
+        Customer: Record Customer;
+    begin
+        Clear(CustomerList);
+        if Sales then
+            Customer.SetRange("BA Int. Customer", true)
+        else
+            Customer.SetRange("BA Serv. Int. Customer", true);
+        if Customer.FindSet() then
+            repeat
+                CustomerList.Add(Customer."No.");
+            until Customer.Next() = 0;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -1216,4 +1317,5 @@ codeunit 75010 "BA SEI Subscibers"
         ExchageRateUpdateMsg: Label 'Updated exchange rate to %1.';
         MultiItemMsg: Label 'Item %1 occurs on multiple lines.';
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
+        MissingOrderTypeErr: Label '%1 must be specified before a value can be entered in the %2 field.';
 }
