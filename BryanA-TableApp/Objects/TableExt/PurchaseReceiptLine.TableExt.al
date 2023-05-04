@@ -21,7 +21,7 @@ tableextension 80010 "BA Purch. Rcpt. Line" extends "Purch. Rcpt. Line"
             Caption = 'Line Discount Amount';
             Editable = false;
         }
-        field(80050; "BA SEI Order Type."; Enum "BA SEI Order Type")
+        field(80050; "BA SEI Order Type"; Enum "BA SEI Order Type")
         {
             DataClassification = CustomerContent;
             Caption = 'SEI Order Type';
@@ -35,6 +35,12 @@ tableextension 80010 "BA Purch. Rcpt. Line" extends "Purch. Rcpt. Line"
         {
             DataClassification = CustomerContent;
             Caption = 'Freight Charge Type';
+        }
+        field(80053; "BA SEI Invoice No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Invoice No.';
+            Editable = false;
         }
         field(80100; "BA Product ID Code"; Code[20])
         {

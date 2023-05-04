@@ -15,7 +15,7 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             Editable = false;
             Description = 'System field to specify Requisition Orders';
         }
-        field(80050; "BA SEI Order Type."; Enum "BA SEI Order Type")
+        field(80050; "BA SEI Order Type"; Enum "BA SEI Order Type")
         {
             DataClassification = CustomerContent;
             Caption = 'SEI Order Type';
@@ -29,6 +29,12 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
         {
             DataClassification = CustomerContent;
             Caption = 'Freight Charge Type';
+        }
+        field(80053; "BA SEI Invoice No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Invoice No.';
+            Editable = false;
         }
         field(80100; "BA Product ID Code"; Code[20])
         {
