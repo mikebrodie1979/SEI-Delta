@@ -1551,6 +1551,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Item: Record Item;
         SalesLine: Record "Sales Line";
+        ServiceItemLine: Record "Service Item Line";
         DimSetEntry: Record "Dimension Set Entry";
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
         DefaultDim: Record "Default Dimension";
@@ -1561,10 +1562,17 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not RecVariant.IsRecord() or not GetRecord(RecVariant, RecRef) then
             exit;
-        if RecRef.Number() <> Database::"Sales Line" then
-            exit;
-        if (Format(RecRef.Field(SalesLine.FieldNo(Type)).Value()) <> Format(SalesLine.Type::Item)) or (CurrFieldNo <> SalesLine.FieldNo("No.")) or not Item.Get(No[1]) then
-            exit;
+        case RecRef.Number() of
+            Database::"Sales Line":
+                if (Format(RecRef.Field(SalesLine.FieldNo(Type)).Value()) <> Format(SalesLine.Type::Item)) or (CurrFieldNo <> SalesLine.FieldNo("No.")) or not Item.Get(No[1]) then
+                    exit;
+            Database::"Service Item Line":
+                if (CurrFieldNo <> ServiceItemLine.FieldNo("Item No.")) or not Item.Get(RecRef.Field(ServiceItemLine.FieldNo("Item No.")).Value()) then
+                    exit;
+            else
+                exit;
+        end;
+
         DefaultDim.SetRange("Table ID", Database::Item);
         DefaultDim.SetRange("No.", Item."No.");
         if not DefaultDim.FindSet() then
