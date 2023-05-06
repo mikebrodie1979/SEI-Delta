@@ -424,6 +424,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Customer: Record Customer;
     begin
+        CheckIfLinesHaveValidLocationCode(SalesHeader);
         SalesHeader.TestField("Sell-to Customer No.");
         Customer.Get(SalesHeader."Sell-to Customer No.");
         if not Customer."BA Int. Customer" then
@@ -1751,6 +1752,53 @@ codeunit 75010 "BA SEI Subscibers"
     // end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeMessageIfSalesLinesExist', '', false, false)]
+    local procedure SalesHeaderOnBeforeMessageIfSalesLinesExist(SalesHeader: Record "Sales Header"; ChangedFieldName: Text; var IsHandled: Boolean)
+    var
+        SalesLine: Record "Sales Line";
+        RecIDs: List of [RecordId];
+        RecID: RecordId;
+    begin
+        if ChangedFieldName <> SalesHeader.FieldCaption("Location Code") then
+            exit;
+        IsHandled := true;
+        if not SalesHeader.SalesLinesExist() or SalesHeader.GetHideValidationDialog() then
+            exit;
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetFilter("Location Code", '<>%1', SalesHeader."Location Code");
+        if not SalesLine.FindSet(true) then
+            exit;
+        if not Confirm(UpdateSalesLinesLocationMsg) then
+            exit;
+        repeat
+            RecIDs.Add(SalesLine.RecordId());
+        until SalesLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesLine.Get(RecID);
+            SalesLine.Validate("Location Code", SalesHeader."Location Code");
+            SalesLine.Modify(true);
+        end;
+    end;
+
+    local procedure CheckIfLinesHaveValidLocationCode(var SalesHeader: Record "Sales Header")
+    var
+        SalesLine: Record "Sales Line";
+    begin
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetFilter("Location Code", '<>%1', SalesHeader."Location Code");
+        if not SalesLine.IsEmpty() then
+            Error(SalesLinesLocationCodeErr, SalesHeader."Location Code");
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforePostSalesDoc', '', false, false)]
+    local procedure SalesPostOnBeforePostSalesDoc(var SalesHeader: Record "Sales Header")
+    begin
+        CheckIfLinesHaveValidLocationCode(SalesHeader);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -1782,4 +1830,6 @@ codeunit 75010 "BA SEI Subscibers"
         WarehouseEmployeeSetupError: Label '%1 must be setup as an %2';
         InventoryAppDisabledError: Label 'Inventory Approval is not enabled.';
         MissingOrderTypeErr: Label '%1 must be specified before a value can be entered in the %2 field.';
+        UpdateSalesLinesLocationMsg: Label 'The Location Code on the Sales Header has been changed, do you want to update the lines?';
+        SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
 }

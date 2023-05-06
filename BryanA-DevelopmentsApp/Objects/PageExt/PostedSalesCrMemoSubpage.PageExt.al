@@ -9,6 +9,13 @@ pageextension 80146 "BA P. Sales Cr.Memo Subpage" extends "Posted Sales Cr. Memo
                 ApplicationArea = all;
             }
         }
+        addbefore(Quantity)
+        {
+            field("Location Code"; Rec."Location Code")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions
