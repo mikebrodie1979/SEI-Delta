@@ -12,5 +12,11 @@ tableextension 80052 "BA Transfer Line" extends "Transfer Line"
             DataClassification = CustomerContent;
             Caption = 'To Freight';
         }
+        field(80053; "BA Transfer No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Transfer No.';
+            Editable = false;
+        }
     }
 }

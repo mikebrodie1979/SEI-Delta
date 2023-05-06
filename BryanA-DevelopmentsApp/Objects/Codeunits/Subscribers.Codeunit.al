@@ -1230,8 +1230,6 @@ codeunit 75010 "BA SEI Subscibers"
         end;
     end;
 
-
-
     local procedure GetRelatedSalesFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
     var
         SalesInvHeader: Record "Sales Invoice Header";
@@ -1301,6 +1299,52 @@ codeunit 75010 "BA SEI Subscibers"
                 CustomerList.Add(Customer."No.");
             until Customer.Next() = 0;
     end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePostGLAccICLine', '', false, false)]
+    local procedure PurchPostOnBeforePostGLAccICLine(var PurchHeader: Record "Purchase Header"; var PurchLine: Record "Purchase Line")
+    var
+        GLAccount: Record "G/L Account";
+    begin
+        if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
+            exit;
+        if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+            PurchLine.FieldError("BA SEI Order Type");
+        PurchLine.TestField("BA SEI Order No.");
+        PurchLine.TestField("BA Freight Charge Type");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Line", 'OnBeforeValidateEvent', 'BA To Freight', false, false)]
+    local procedure TransferLineOnBeforeValidateToFreight(var Rec: Record "Transfer Line"; var xRec: Record "Transfer Line")
+    var
+        TransferShipmentHeader: Record "Transfer Shipment Header";
+    begin
+        if Rec."BA To Freight" = xRec."BA To Freight" then
+            exit;
+        if Rec."BA To Freight" = '' then begin
+            Rec."BA Transfer No." := '';
+            exit;
+        end;
+        TransferShipmentHeader.SetCurrentKey("Transfer Order No.");
+        TransferShipmentHeader.SetRange("Transfer Order No.", Rec."BA To Freight");
+        if not TransferShipmentHeader.FindFirst() then
+            TransferShipmentHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', Rec."BA To Freight"));
+        TransferShipmentHeader.FindFirst();
+        Rec."BA To Freight" := TransferShipmentHeader."Transfer Order No.";
+        Rec."BA Transfer No." := TransferShipmentHeader."No.";
+    end;
+
+    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforePostGLAccICLine', '', false, false)]
+    // local procedure PurchPostOnBeforePostGLAccICLine(var PurchHeader: Record "Purchase Header"; var PurchLine: Record "Purchase Line")
+    // var
+    //     GLAccount: Record "G/L Account";
+    // begin
+    //     if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
+    //         exit;
+    //     if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+    //         PurchLine.FieldError("BA SEI Order Type");
+    //     PurchLine.TestField("BA SEI Order No.");
+    //     PurchLine.TestField("BA Freight Charge Type");
+    // end;
 
 
     var

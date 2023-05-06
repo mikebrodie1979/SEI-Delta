@@ -12,8 +12,6 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
                 begin
                     IsFreightInvoice := Rec."BA SEI Order Type" <> Rec."BA SEI Order Type"::" ";
                 end;
-
-
             }
             field("BA SEI Order No."; Rec."BA SEI Order No.")
             {
@@ -43,7 +41,6 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
                                     ServiceLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
                             end;
                     end;
-
                 end;
             }
             field("BA SEI Invoice No."; Rec."BA SEI Invoice No.")
