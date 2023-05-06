@@ -2,6 +2,59 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
 {
     layout
     {
+        addafter("Qty. Assigned")
+        {
+            field("BA SEI Order Type."; Rec."BA SEI Order Type")
+            {
+                ApplicationArea = all;
+
+                trigger OnValidate()
+                begin
+                    IsFreightInvoice := Rec."BA SEI Order Type" <> Rec."BA SEI Order Type"::" ";
+                end;
+            }
+            field("BA SEI Order No."; Rec."BA SEI Order No.")
+            {
+                ApplicationArea = all;
+                ShowMandatory = IsFreightInvoice;
+                Editable = IsFreightInvoice;
+                Enabled = IsFreightInvoice;
+
+                trigger OnLookup(var Text: Text): Boolean
+                var
+                    SalesLookup: Page "BA Sales Freight Lookup";
+                    ServiceLookup: Page "BA Service Freight Lookup";
+                begin
+                    if not IsFreightInvoice then
+                        exit;
+                    case Rec."BA SEI Order Type" of
+                        Rec."BA SEI Order Type"::"Delta SO", Rec."BA SEI Order Type"::"Int. SO":
+                            begin
+                                SalesLookup.LookupMode(true);
+                                if SalesLookup.RunModal() = Action::LookupOK then
+                                    SalesLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                            end;
+                        Rec."BA SEI Order Type"::"Delta SVO", Rec."BA SEI Order Type"::"Int. SVO":
+                            begin
+                                ServiceLookup.LookupMode(true);
+                                if ServiceLookup.RunModal() = Action::LookupOK then
+                                    ServiceLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                            end;
+                    end;
+                end;
+            }
+            field("BA SEI Invoice No."; Rec."BA SEI Invoice No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Freight Charge Type"; Rec."BA Freight Charge Type")
+            {
+                ApplicationArea = all;
+                ShowMandatory = IsFreightInvoice;
+                Editable = IsFreightInvoice;
+                Enabled = IsFreightInvoice;
+            }
+        }
         addafter(ShortcutDimCode4)
         {
             field("BA Sales Person Code"; SalesPersonCode)
@@ -53,6 +106,7 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
     trigger OnAfterGetRecord()
     begin
         GetDimensionCodes();
+        IsFreightInvoice := Rec."BA SEI Order Type" <> Rec."BA SEI Order Type"::" ";
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
@@ -103,4 +157,6 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
         GLSetup: Record "General Ledger Setup";
         DimMgt: Codeunit DimensionManagement;
         SalesPersonCode: Code[20];
+        [InDataSet]
+        IsFreightInvoice: Boolean;
 }

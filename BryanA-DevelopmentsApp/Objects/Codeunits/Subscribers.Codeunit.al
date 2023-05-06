@@ -1606,6 +1606,150 @@ codeunit 75010 "BA SEI Subscibers"
         RecRef.GetTable(RecVar);
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order No.', false, false)]
+    local procedure PurchaseLineOnBeforeValidateSEIOrderNo(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
+    var
+        SalesInvHeader: Record "Sales Invoice Header";
+        ServiceInvHeader: Record "Service Invoice Header";
+        Customer: Record Customer;
+        FilterText: Text;
+    begin
+        if Rec."BA SEI Order No." = xRec."BA SEI Order No." then
+            exit;
+        if Rec."BA SEI Order No." = '' then begin
+            Rec."BA SEI Invoice No." := '';
+            exit;
+        end;
+        case Rec."BA SEI Order Type" of
+            Rec."BA SEI Order Type"::"Delta SO":
+                GetRelatedSalesFields(Rec, true);
+            Rec."BA SEI Order Type"::"Delta SVO":
+                GetRelatedServiceFields(Rec, true);
+            Rec."BA SEI Order Type"::"Int. SO":
+                GetRelatedSalesFields(Rec, false);
+            Rec."BA SEI Order Type"::"Int. SVO":
+                GetRelatedServiceFields(Rec, false);
+            Rec."BA SEI Order Type"::" ":
+                Error(MissingOrderTypeErr, Rec.FieldCaption("BA SEI Order Type"), Rec.FieldCaption("BA SEI Order No."));
+        end;
+    end;
+
+    local procedure GetRelatedSalesFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    var
+        SalesInvHeader: Record "Sales Invoice Header";
+        FilterText: Text;
+    begin
+        SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        FilterText := GetIntCustFilter(LocalCustomer);
+        if FilterText <> '' then
+            SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
+        if not SalesInvHeader.FindFirst() then
+            SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+        SalesInvHeader.FindFirst();
+        PurchLine."BA SEI Order No." := SalesInvHeader."Order No.";
+        PurchLine."BA SEI Invoice No." := SalesInvHeader."No.";
+    end;
+
+    local procedure GetRelatedServiceFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    var
+        ServiceInvHeader: Record "Service Invoice Header";
+        FilterText: Text;
+    begin
+        ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        FilterText := GetIntCustFilter(LocalCustomer);
+        if FilterText <> '' then
+            ServiceInvHeader.SetFilter("Bill-to Customer No.", FilterText);
+        if not ServiceInvHeader.FindFirst() then
+            ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+        ServiceInvHeader.FindFirst();
+        PurchLine."BA SEI Order No." := ServiceInvHeader."Order No.";
+        PurchLine."BA SEI Invoice No." := ServiceInvHeader."No.";
+    end;
+
+    local procedure GetIntCustFilter(Exclude: Boolean): Text
+    var
+        CustomerList: List of [Code[20]];
+        CustNo: Code[20];
+        FilterTxt: TextBuilder;
+    begin
+        GetInternationalCustomers(CustomerList, true);
+        if CustomerList.Count() = 0 then
+            exit('');
+        CustomerList.Get(1, CustNo);
+        if Exclude then
+            FilterTxt.Append('<>');
+        FilterTxt.Append(CustNo);
+        CustomerList.RemoveAt(1);
+        if Exclude then
+            foreach CustNo in CustomerList do
+                FilterTxt.Append('&<>' + CustNo)
+        else
+            foreach CustNo in CustomerList do
+                FilterTxt.Append('|' + CustNo);
+        exit(FilterTxt.ToText());
+    end;
+
+    local procedure GetInternationalCustomers(var CustomerList: List of [Code[20]]; Sales: Boolean)
+    var
+        Customer: Record Customer;
+    begin
+        Clear(CustomerList);
+        if Sales then
+            Customer.SetRange("BA Int. Customer", true)
+        else
+            Customer.SetRange("BA Serv. Int. Customer", true);
+        if Customer.FindSet() then
+            repeat
+                CustomerList.Add(Customer."No.");
+            until Customer.Next() = 0;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePostGLAccICLine', '', false, false)]
+    local procedure PurchPostOnBeforePostGLAccICLine(var PurchHeader: Record "Purchase Header"; var PurchLine: Record "Purchase Line")
+    var
+        GLAccount: Record "G/L Account";
+    begin
+        if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
+            exit;
+        if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+            PurchLine.FieldError("BA SEI Order Type");
+        PurchLine.TestField("BA SEI Order No.");
+        PurchLine.TestField("BA Freight Charge Type");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Line", 'OnBeforeValidateEvent', 'BA To Freight', false, false)]
+    local procedure TransferLineOnBeforeValidateToFreight(var Rec: Record "Transfer Line"; var xRec: Record "Transfer Line")
+    var
+        TransferShipmentHeader: Record "Transfer Shipment Header";
+    begin
+        if Rec."BA To Freight" = xRec."BA To Freight" then
+            exit;
+        if Rec."BA To Freight" = '' then begin
+            Rec."BA Transfer No." := '';
+            exit;
+        end;
+        TransferShipmentHeader.SetCurrentKey("Transfer Order No.");
+        TransferShipmentHeader.SetRange("Transfer Order No.", Rec."BA To Freight");
+        if not TransferShipmentHeader.FindFirst() then
+            TransferShipmentHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', Rec."BA To Freight"));
+        TransferShipmentHeader.FindFirst();
+        Rec."BA To Freight" := TransferShipmentHeader."Transfer Order No.";
+        Rec."BA Transfer No." := TransferShipmentHeader."No.";
+    end;
+
+    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforePostGLAccICLine', '', false, false)]
+    // local procedure PurchPostOnBeforePostGLAccICLine(var PurchHeader: Record "Purchase Header"; var PurchLine: Record "Purchase Line")
+    // var
+    //     GLAccount: Record "G/L Account";
+    // begin
+    //     if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
+    //         exit;
+    //     if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+    //         PurchLine.FieldError("BA SEI Order Type");
+    //     PurchLine.TestField("BA SEI Order No.");
+    //     PurchLine.TestField("BA Freight Charge Type");
+    // end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
@@ -1637,4 +1781,5 @@ codeunit 75010 "BA SEI Subscibers"
         ExchangeRateText: Label '%1 - USD Exch. Rate %2 (%3)';
         WarehouseEmployeeSetupError: Label '%1 must be setup as an %2';
         InventoryAppDisabledError: Label 'Inventory Approval is not enabled.';
+        MissingOrderTypeErr: Label '%1 must be specified before a value can be entered in the %2 field.';
 }
