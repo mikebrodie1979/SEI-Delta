@@ -1,4 +1,4 @@
-enum 80000 "BA SEI Order Type"
+enum 50001 "BA SEI Order Type"
 {
     Extensible = true;
 
