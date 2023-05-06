@@ -1,4 +1,4 @@
-page 50071 "BA Sales Freight Lookup"
+page 50073 "BA Sales Freight Lookup"
 {
     Caption = 'Sales Freight Lookup';
     PageType = Worksheet;
