@@ -1,4 +1,4 @@
-enum 80001 "BA Freight Type"
+enum 50002 "BA Freight Type"
 {
     Extensible = true;
 
