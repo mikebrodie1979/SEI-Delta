@@ -11,6 +11,13 @@ pageextension 80145 "BA Posted Sales Inv. Subpage" extends "Posted Sales Invoice
                 ApplicationArea = all;
             }
         }
+        addbefore(Quantity)
+        {
+            field("Location Code"; Rec."Location Code")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions
