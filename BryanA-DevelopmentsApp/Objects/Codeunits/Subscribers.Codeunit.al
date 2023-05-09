@@ -1225,6 +1225,8 @@ codeunit 75010 "BA SEI Subscibers"
                 GetRelatedSalesFields(Rec, false);
             Rec."BA SEI Order Type"::"Int. SVO":
                 GetRelatedServiceFields(Rec, false);
+            Rec."BA SEI Order Type"::Transfer:
+                GetRelatedTransferFields(Rec);
             Rec."BA SEI Order Type"::" ":
                 Error(MissingOrderTypeErr, Rec.FieldCaption("BA SEI Order Type"), Rec.FieldCaption("BA SEI Order No."));
         end;
@@ -1235,6 +1237,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesInvHeader: Record "Sales Invoice Header";
         FilterText: Text;
     begin
+        SalesInvHeader.SetCurrentKey("Order No.");
         SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
@@ -1251,6 +1254,7 @@ codeunit 75010 "BA SEI Subscibers"
         ServiceInvHeader: Record "Service Invoice Header";
         FilterText: Text;
     begin
+        ServiceInvHeader.SetCurrentKey("Order No.");
         ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
@@ -1260,6 +1264,19 @@ codeunit 75010 "BA SEI Subscibers"
         ServiceInvHeader.FindFirst();
         PurchLine."BA SEI Order No." := ServiceInvHeader."Order No.";
         PurchLine."BA SEI Invoice No." := ServiceInvHeader."No.";
+    end;
+
+    local procedure GetRelatedTransferFields(var PurchLine: Record "Purchase Line")
+    var
+        TransferShptHeader: Record "Transfer Shipment Header";
+    begin
+        TransferShptHeader.SetCurrentKey("Transfer Order No.");
+        TransferShptHeader.SetRange("Transfer Order No.", PurchLine."BA SEI Order No.");
+        if not TransferShptHeader.FindFirst() then
+            TransferShptHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+        TransferShptHeader.FindFirst();
+        PurchLine."BA SEI Order No." := TransferShptHeader."Transfer Order No.";
+        PurchLine."BA SEI Invoice No." := TransferShptHeader."No.";
     end;
 
     local procedure GetIntCustFilter(Exclude: Boolean): Text
@@ -1313,38 +1330,7 @@ codeunit 75010 "BA SEI Subscibers"
         PurchLine.TestField("BA Freight Charge Type");
     end;
 
-    [EventSubscriber(ObjectType::Table, Database::"Transfer Line", 'OnBeforeValidateEvent', 'BA To Freight', false, false)]
-    local procedure TransferLineOnBeforeValidateToFreight(var Rec: Record "Transfer Line"; var xRec: Record "Transfer Line")
-    var
-        TransferShipmentHeader: Record "Transfer Shipment Header";
-    begin
-        if Rec."BA To Freight" = xRec."BA To Freight" then
-            exit;
-        if Rec."BA To Freight" = '' then begin
-            Rec."BA Transfer No." := '';
-            exit;
-        end;
-        TransferShipmentHeader.SetCurrentKey("Transfer Order No.");
-        TransferShipmentHeader.SetRange("Transfer Order No.", Rec."BA To Freight");
-        if not TransferShipmentHeader.FindFirst() then
-            TransferShipmentHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', Rec."BA To Freight"));
-        TransferShipmentHeader.FindFirst();
-        Rec."BA To Freight" := TransferShipmentHeader."Transfer Order No.";
-        Rec."BA Transfer No." := TransferShipmentHeader."No.";
-    end;
 
-    // [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforePostGLAccICLine', '', false, false)]
-    // local procedure PurchPostOnBeforePostGLAccICLine(var PurchHeader: Record "Purchase Header"; var PurchLine: Record "Purchase Line")
-    // var
-    //     GLAccount: Record "G/L Account";
-    // begin
-    //     if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
-    //         exit;
-    //     if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
-    //         PurchLine.FieldError("BA SEI Order Type");
-    //     PurchLine.TestField("BA SEI Order No.");
-    //     PurchLine.TestField("BA Freight Charge Type");
-    // end;
 
 
     var

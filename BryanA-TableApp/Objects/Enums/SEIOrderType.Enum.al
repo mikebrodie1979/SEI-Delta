@@ -22,4 +22,8 @@ enum 50001 "BA SEI Order Type"
     {
         Caption = 'International Service Order';
     }
+    value(5; "Transfer")
+    {
+        Caption = 'Transfer Order';
+    }
 }
