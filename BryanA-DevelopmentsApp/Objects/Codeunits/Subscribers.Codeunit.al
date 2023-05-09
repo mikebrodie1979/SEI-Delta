@@ -1322,7 +1322,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         GLAccount: Record "G/L Account";
     begin
-        if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" then
+        if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" and not GLAccount."BA Transfer Charge" then
             exit;
         if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
             PurchLine.FieldError("BA SEI Order Type");
