@@ -9,8 +9,11 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
                 if xRec."No." = Rec."No." then
                     exit;
                 UpdateLineType();
-                if IsTransferLine then
+                if IsTransferLine then begin
                     Rec.Validate("BA SEI Order Type", Rec."BA SEI Order Type"::Transfer);
+                    if Rec.Modify(true) then;
+                end;
+
             end;
         }
         addafter("Qty. Assigned")
