@@ -2,30 +2,40 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
 {
     layout
     {
+        modify("No.")
+        {
+            trigger OnAfterValidate()
+            begin
+                if xRec."No." = Rec."No." then
+                    exit;
+                UpdateLineType();
+                if IsTransferLine then
+                    Rec.Validate("BA SEI Order Type", Rec."BA SEI Order Type"::Transfer);
+            end;
+        }
         addafter("Qty. Assigned")
         {
             field("BA SEI Order Type."; Rec."BA SEI Order Type")
             {
                 ApplicationArea = all;
-
-                trigger OnValidate()
-                begin
-                    IsFreightInvoice := Rec."BA SEI Order Type" <> Rec."BA SEI Order Type"::" ";
-                end;
+                ShowMandatory = EnableFields;
+                Editable = EnableFields;
+                Enabled = EnableFields;
             }
             field("BA SEI Order No."; Rec."BA SEI Order No.")
             {
                 ApplicationArea = all;
-                ShowMandatory = IsFreightInvoice;
-                Editable = IsFreightInvoice;
-                Enabled = IsFreightInvoice;
+                ShowMandatory = EnableFields;
+                Editable = EnableFields;
+                Enabled = EnableFields;
 
                 trigger OnLookup(var Text: Text): Boolean
                 var
                     SalesLookup: Page "BA Sales Freight Lookup";
                     ServiceLookup: Page "BA Service Freight Lookup";
+                    TransferLookup: Page "BA Transfer Freight Lookup";
                 begin
-                    if not IsFreightInvoice then
+                    if not EnableFields then
                         exit;
                     case Rec."BA SEI Order Type" of
                         Rec."BA SEI Order Type"::"Delta SO", Rec."BA SEI Order Type"::"Int. SO":
@@ -40,6 +50,12 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
                                 if ServiceLookup.RunModal() = Action::LookupOK then
                                     ServiceLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
                             end;
+                        Rec."BA SEI Order Type"::Transfer:
+                            begin
+                                TransferLookup.LookupMode(true);
+                                if TransferLookup.RunModal() = Action::LookupOK then
+                                    TransferLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                            end;
                     end;
                 end;
             }
@@ -50,9 +66,9 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
             field("BA Freight Charge Type"; Rec."BA Freight Charge Type")
             {
                 ApplicationArea = all;
-                ShowMandatory = IsFreightInvoice;
-                Editable = IsFreightInvoice;
-                Enabled = IsFreightInvoice;
+                ShowMandatory = EnableFields;
+                Editable = EnableFields;
+                Enabled = EnableFields;
             }
         }
         addafter(ShortcutDimCode4)
@@ -106,7 +122,7 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
     trigger OnAfterGetRecord()
     begin
         GetDimensionCodes();
-        IsFreightInvoice := Rec."BA SEI Order Type" <> Rec."BA SEI Order Type"::" ";
+        UpdateLineType();
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
@@ -152,11 +168,27 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
         exit('');
     end;
 
+    local procedure UpdateLineType()
+    var
+        GLAccount: Record "G/L Account";
+    begin
+        if (Rec.Type <> Rec.Type::"G/L Account") or (Rec."No." = '') or not GLAccount.Get(Rec."No.") then begin
+            IsFreightLine := false;
+            IsTransferLine := false;
+        end else begin
+            IsFreightLine := GLAccount."BA Freight Charge";
+            IsTransferLine := GLAccount."BA Transfer Charge";
+        end;
+        EnableFields := IsTransferLine or IsFreightLine;
+    end;
+
 
     var
         GLSetup: Record "General Ledger Setup";
         DimMgt: Codeunit DimensionManagement;
         SalesPersonCode: Code[20];
+        IsFreightLine: Boolean;
+        IsTransferLine: Boolean;
         [InDataSet]
-        IsFreightInvoice: Boolean;
+        EnableFields: Boolean;
 }
