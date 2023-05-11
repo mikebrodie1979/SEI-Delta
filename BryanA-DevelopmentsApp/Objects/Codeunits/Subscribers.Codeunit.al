@@ -1301,6 +1301,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
         SalesLine.SetRange("Document No.", SalesHeader."No.");
         SalesLine.SetFilter("Location Code", '<>%1', SalesHeader."Location Code");
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
         if not SalesLine.IsEmpty() then
             Error(SalesLinesLocationCodeErr, SalesHeader."Location Code");
     end;
