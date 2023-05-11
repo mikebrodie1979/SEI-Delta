@@ -1314,9 +1314,24 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Job Queue Dispatcher", 'OnAfterHandleRequest', '', false, false)]
     local procedure JobQueueDispatcherOnAfterHandleRequest(var JobQueueEntry: Record "Job Queue Entry"; WasSuccess: Boolean)
+    var
+        NotificationEntry: Record "Notification Entry";
+        UserSetup: Record "User Setup";
+        PageMgt: Codeunit "Page Management";
+        RecRef: RecordRef;
+
+        c1: Codeunit "Data Type Management";
     begin
-        if WasSuccess then
+        if WasSuccess or (JobQueueEntry."Object Type to Run" <> JobQueueEntry."Object Type to Run"::Codeunit) or (JobQueueEntry."Object ID to Run" <> 75009) then
             exit;
+        UserSetup.SetRange("BA Receive Job Queue Notes.", true);
+        if not UserSetup.FindSet() then
+            exit;
+        RecRef.GetTable(JobQueueEntry);
+        repeat
+            NotificationEntry.CreateNewEntry(NotificationEntry.Type::"New Record", UserSetup."User ID",
+                   JobQueueEntry, Page::"Job Queue Entries", PageMgt.GetRTCUrl(RecRef, Page::"Job Queue Entries"), JobQueueEntry."User ID");
+        until UserSetup.Next() = 0;
     end;
 
 
