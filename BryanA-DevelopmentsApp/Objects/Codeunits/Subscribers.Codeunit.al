@@ -1319,8 +1319,6 @@ codeunit 75010 "BA SEI Subscibers"
         UserSetup: Record "User Setup";
         PageMgt: Codeunit "Page Management";
         RecRef: RecordRef;
-
-        c1: Codeunit "Data Type Management";
     begin
         if WasSuccess or (JobQueueEntry."Object Type to Run" <> JobQueueEntry."Object Type to Run"::Codeunit) or (JobQueueEntry."Object ID to Run" <> 75009) then
             exit;
@@ -1329,7 +1327,7 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         RecRef.GetTable(JobQueueEntry);
         repeat
-            NotificationEntry.CreateNewEntry(NotificationEntry.Type::"New Record", UserSetup."User ID",
+            NotificationEntry.CreateNewEntry(NotificationEntry.Type::"Job Queue Fail", UserSetup."User ID",
                    JobQueueEntry, Page::"Job Queue Entries", PageMgt.GetRTCUrl(RecRef, Page::"Job Queue Entries"), JobQueueEntry."User ID");
         until UserSetup.Next() = 0;
     end;
