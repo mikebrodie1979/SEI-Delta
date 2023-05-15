@@ -1,8 +1,9 @@
 codeunit 75011 "BA Install Codeunit"
 {
     Subtype = Install;
-    Permissions = tabledata "Sales Invoice Header" = r,
-                  tabledata "Service Invoice Header" = r,
+    Permissions = tabledata "Sales Invoice Header" = rm,
+                  tabledata "Service Invoice Header" = rm,
+                  tabledata "Transfer Shipment Header" = rm,
                   tabledata Customer = m,
                   tabledata "Purch. Inv. Header" = m,
                   tabledata "Purch. Cr. Memo Hdr." = m,
@@ -13,9 +14,52 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddCustomerSalesActivity();
         // AddNewDimValues();
+        AddDropDownOrderNos();
     end;
 
+    local procedure AddDropDownOrderNos()
+    var
+        SalesInvoiceHeader: Record "Sales Invoice Header";
+        ServiceInvoiceHeader: Record "Service Invoice Header";
+        TransferShptHeader: Record "Transfer Shipment Header";
+        DocNos1: List of [RecordID];
+        DocNos2: List of [RecordID];
+        DocNos3: List of [RecordID];
+        RecID: RecordId;
+    begin
+        SalesInvoiceHeader.SetRange("BA Order No. DrillDown", '');
+        if SalesInvoiceHeader.FindSet(true) then
+            repeat
+                DocNos1.Add(SalesInvoiceHeader.RecordId());
+            until SalesInvoiceHeader.Next() = 0;
+        foreach RecID in DocNos1 do begin
+            SalesInvoiceHeader.Get(RecID);
+            SalesInvoiceHeader."BA Order No. DrillDown" := SalesInvoiceHeader."Order No.";
+            SalesInvoiceHeader.Modify(false);
+        end;
 
+        ServiceInvoiceHeader.SetRange("BA Order No. DrillDown", '');
+        if ServiceInvoiceHeader.FindSet(true) then
+            repeat
+                DocNos2.Add(ServiceInvoiceHeader.RecordId());
+            until ServiceInvoiceHeader.Next() = 0;
+        foreach RecID in DocNos2 do begin
+            ServiceInvoiceHeader.Get(RecID);
+            ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceInvoiceHeader."Order No.";
+            ServiceInvoiceHeader.Modify(false);
+        end;
+
+        TransferShptHeader.SetRange("BA Trans. Order No. DrillDown", '');
+        if TransferShptHeader.FindSet(true) then
+            repeat
+                DocNos3.Add(TransferShptHeader.RecordId());
+            until TransferShptHeader.Next() = 0;
+        foreach RecID in DocNos3 do begin
+            TransferShptHeader.Get(RecID);
+            TransferShptHeader."BA Trans. Order No. DrillDown" := TransferShptHeader."Transfer Order No.";
+            TransferShptHeader.Modify(false);
+        end;
+    end;
 
     local procedure AddNewDimValues()
     var

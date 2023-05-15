@@ -33,5 +33,16 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             Caption = 'Web Lead Date';
             Editable = false;
         }
+        field(80030; "BA Order No. DrillDown"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Order No.';
+            Description = 'Used for Lookup DropDown';
+            Editable = false;
+        }
+    }
+    fieldgroups
+    {
+        addlast(DropDown; "BA Order No. DrillDown") { }
     }
 }

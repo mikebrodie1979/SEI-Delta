@@ -22,45 +22,53 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
             {
                 ApplicationArea = all;
                 ShowMandatory = EnableFields;
-                Editable = EnableFields;
-                Enabled = EnableFields;
+                // Editable = EnableFields;
+                // Enabled = EnableFields;
             }
             field("BA SEI Order No."; Rec."BA SEI Order No.")
             {
                 ApplicationArea = all;
                 ShowMandatory = EnableFields;
-                Editable = EnableFields;
-                Enabled = EnableFields;
+                // Editable = EnableFields;
+                // Enabled = EnableFields;
 
-                trigger OnLookup(var Text: Text): Boolean
-                var
-                    SalesLookup: Page "BA Sales Freight Lookup";
-                    ServiceLookup: Page "BA Service Freight Lookup";
-                    TransferLookup: Page "BA Transfer Freight Lookup";
-                begin
-                    if not EnableFields then
-                        exit;
-                    case Rec."BA SEI Order Type" of
-                        Rec."BA SEI Order Type"::"Delta SO", Rec."BA SEI Order Type"::"Int. SO":
-                            begin
-                                SalesLookup.LookupMode(true);
-                                if SalesLookup.RunModal() = Action::LookupOK then
-                                    SalesLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
-                            end;
-                        Rec."BA SEI Order Type"::"Delta SVO", Rec."BA SEI Order Type"::"Int. SVO":
-                            begin
-                                ServiceLookup.LookupMode(true);
-                                if ServiceLookup.RunModal() = Action::LookupOK then
-                                    ServiceLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
-                            end;
-                        Rec."BA SEI Order Type"::Transfer:
-                            begin
-                                TransferLookup.LookupMode(true);
-                                if TransferLookup.RunModal() = Action::LookupOK then
-                                    TransferLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
-                            end;
-                    end;
-                end;
+
+                // trigger OnLookup(var Text: Text): Boolean
+                // begin
+                //     if not Confirm(Text) then
+                //         Error('');
+                //     exit(true);
+                // end;
+
+                // trigger OnLookup(var Text: Text): Boolean
+                // var
+                //     SalesLookup: Page "BA Sales Freight Lookup";
+                //     ServiceLookup: Page "BA Service Freight Lookup";
+                //     TransferLookup: Page "BA Transfer Freight Lookup";
+                // begin
+                //     if not EnableFields then
+                //         exit;
+                //     case Rec."BA SEI Order Type" of
+                //         Rec."BA SEI Order Type"::"Delta SO", Rec."BA SEI Order Type"::"Int. SO":
+                //             begin
+                //                 SalesLookup.LookupMode(true);
+                //                 if SalesLookup.RunModal() = Action::LookupOK then
+                //                     SalesLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                //             end;
+                //         Rec."BA SEI Order Type"::"Delta SVO", Rec."BA SEI Order Type"::"Int. SVO":
+                //             begin
+                //                 ServiceLookup.LookupMode(true);
+                //                 if ServiceLookup.RunModal() = Action::LookupOK then
+                //                     ServiceLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                //             end;
+                //         Rec."BA SEI Order Type"::Transfer:
+                //             begin
+                //                 TransferLookup.LookupMode(true);
+                //                 if TransferLookup.RunModal() = Action::LookupOK then
+                //                     TransferLookup.GetRecord(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+                //             end;
+                //     end;
+                // end;
             }
             field("BA SEI Invoice No."; Rec."BA SEI Invoice No.")
             {
@@ -125,7 +133,7 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
     trigger OnAfterGetRecord()
     begin
         GetDimensionCodes();
-        UpdateLineType();
+        // UpdateLineType();
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)

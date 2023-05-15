@@ -14,5 +14,16 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
             Caption = 'Phone No.';
             Editable = false;
         }
+        field(80005; "BA Trans. Order No. DrillDown"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Transfer Order No.';
+            Description = 'Used for Lookup DropDown';
+            Editable = false;
+        }
+    }
+    fieldgroups
+    {
+        addlast(DropDown; "BA Trans. Order No. DrillDown") { }
     }
 }

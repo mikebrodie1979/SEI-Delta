@@ -743,6 +743,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesInvHeader."BA Bill-to County Fullname" := SalesHeader."BA Bill-to County Fullname";
         SalesInvHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesInvHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
+        SalesInvHeader."BA Order No. DrillDown" := SalesHeader."No.";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesCrMemoHeaderInsert', '', false, false)]
@@ -1165,6 +1166,12 @@ codeunit 75010 "BA SEI Subscibers"
         end;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeServiceInvHeaderInsert', '', false, false)]
+    local procedure ServicePostOnBeforeServiceInvHeaderInsert(var ServiceInvoiceHeader: Record "Service Invoice Header"; ServiceHeader: Record "Service Header")
+    begin
+        ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceHeader."No.";
+    end;
+
 
     [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'ENC Product ID Code', false, false)]
     local procedure ItemOnAfterValidateProductIDCode(var Rec: Record Item; var xRec: Record Item)
@@ -1201,6 +1208,15 @@ codeunit 75010 "BA SEI Subscibers"
         PurchCrMemoLine."BA Project Code" := PurchLine."BA Project Code";
     end;
 
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order Type', false, false)]
+    local procedure PurchaseLineOnBeforeValidateSEIOrderType(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
+    begin
+        if Rec."BA SEI Order Type" = xRec."BA SEI Order Type" then
+            exit;
+        Rec.Validate("BA SEI Order No.", '');
+    end;
 
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order No.', false, false)]
     local procedure PurchaseLineOnBeforeValidateSEIOrderNo(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
@@ -1240,8 +1256,12 @@ codeunit 75010 "BA SEI Subscibers"
         SalesInvHeader.SetCurrentKey("Order No.");
         SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
         FilterText := GetIntCustFilter(LocalCustomer);
-        if FilterText <> '' then
+        if FilterText <> '' then begin
             SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
+            PurchLine.SetFilter("BA SEI Customer Lookup Filter", FilterText);
+        end;
+        if not Confirm(StrSubstNo('%1 -> %2\%3\%4', SalesInvHeader.GetFilters, SalesInvHeader.Count, FilterText, PurchLine.GetFilters)) then
+            Error('');
         if not SalesInvHeader.FindFirst() then
             SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
         SalesInvHeader.FindFirst();
@@ -1328,6 +1348,12 @@ codeunit 75010 "BA SEI Subscibers"
             PurchLine.FieldError("BA SEI Order Type");
         PurchLine.TestField("BA SEI Order No.");
         PurchLine.TestField("BA Freight Charge Type");
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforeInsertTransShptHeader', '', false, false)]
+    local procedure TransferOrderPostShptOnBeforeInsertTransShptHeader(var TransShptHeader: Record "Transfer Shipment Header"; TransHeader: Record "Transfer Header")
+    begin
+        TransShptHeader."BA Trans. Order No. DrillDown" := TransHeader."No.";
     end;
 
 
