@@ -1434,6 +1434,7 @@ codeunit 75010 "BA SEI Subscibers"
 
     procedure UpdateBOMActive(var ProdBomVersion: Record "Production BOM Version")
     var
+        ProdBOMHeader: Record "Production BOM Header";
         ProdBOMVersion2: Record "Production BOM Version";
         VersionMgt: Codeunit VersionManagement;
         ActiveVersion: Code[20];
@@ -1451,6 +1452,8 @@ codeunit 75010 "BA SEI Subscibers"
             ProdBomVersion2.Modify(false);
         end;
         ProdBomVersion.Get(ProdBomVersion.RecordId());
+        ProdBOMHeader."ENC Active Version No." := ActiveVersion;
+        ProdBOMHeader.Modify(false);
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Approval Entry", 'OnAfterInsertEvent', '', false, false)]
@@ -1774,6 +1777,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
         SalesLine.SetRange("Document No.", SalesHeader."No.");
         SalesLine.SetFilter("Location Code", '<>%1', SalesHeader."Location Code");
+        SalesLine.SetRange(Type, SalesLine.Type::Item);
         if not SalesLine.IsEmpty() then
             Error(SalesLinesLocationCodeErr, SalesHeader."Location Code");
     end;
