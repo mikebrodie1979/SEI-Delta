@@ -1454,6 +1454,7 @@ codeunit 75010 "BA SEI Subscibers"
             ProdBomVersion2.Modify(false);
         end;
         ProdBomVersion.Get(ProdBomVersion.RecordId());
+        ProdBOMHeader.Get(ProdBomVersion."Production BOM No.");
         ProdBOMHeader."ENC Active Version No." := ActiveVersion;
         ProdBOMHeader.Modify(false);
     end;
