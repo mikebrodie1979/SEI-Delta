@@ -1071,6 +1071,8 @@ codeunit 75010 "BA SEI Subscibers"
         if ErrorOccured or (ProductionOrder."Source Type" <> ProductionOrder."Source Type"::Item) or not ProdBOMHeader.Get(ProductionOrder."Source No.") then
             exit;
         ProdBOMHeader.CalcFields("BA Active Version");
+        ProdBOMHeader."ENC Active Version No." := ProdBOMHeader."BA Active Version";
+        ProdBOMHeader.Modify(false);
         ProductionOrder."BA Source Version" := ProdBOMHeader."BA Active Version";
         ProductionOrder.Modify(true);
     end;
