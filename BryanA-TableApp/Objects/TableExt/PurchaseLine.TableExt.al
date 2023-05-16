@@ -32,6 +32,11 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             if ("BA SEI Order Type" = const (Transfer)) "Transfer Shipment Header"."Transfer Order No.";
 
             ValidateTableRelation = false;
+
+            trigger OnLookup()
+            begin
+                SetFilter("BA SEI Customer Lookup Filter", 'SEILAB');
+            end;
         }
         field(80052; "BA Freight Charge Type"; Enum "BA Freight Type")
         {

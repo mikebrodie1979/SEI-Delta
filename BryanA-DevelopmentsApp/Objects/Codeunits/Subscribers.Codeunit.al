@@ -1260,8 +1260,6 @@ codeunit 75010 "BA SEI Subscibers"
             SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
             PurchLine.SetFilter("BA SEI Customer Lookup Filter", FilterText);
         end;
-        if not Confirm(StrSubstNo('%1 -> %2\%3\%4', SalesInvHeader.GetFilters, SalesInvHeader.Count, FilterText, PurchLine.GetFilters)) then
-            Error('');
         if not SalesInvHeader.FindFirst() then
             SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
         SalesInvHeader.FindFirst();
