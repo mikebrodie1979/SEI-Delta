@@ -25,18 +25,17 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             DataClassification = CustomerContent;
             Caption = 'SEI Order No.';
 
-            TableRelation = if ("BA SEI Order Type" = filter ("Delta SO" | "Int. SO")) "Sales Invoice Header"."Order No." where ("Bill-to Customer No." = field ("BA SEI Customer Lookup Filter"))
+            TableRelation = if ("BA SEI Order Type" = filter ("Delta SO")) "Sales Invoice Header"."Order No." where ("Bill-to Customer No." = filter ('<>SEILAB'))
             else
-            if ("BA SEI Order Type" = filter ("Delta SVO" | "Int. SVO")) "Service Invoice Header"."Order No." where ("Bill-to Customer No." = field ("BA SEI Customer Lookup Filter"))
+            if ("BA SEI Order Type" = filter ("Int. SO")) "Sales Invoice Header"."External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
+            else
+            if ("BA SEI Order Type" = filter ("Delta SVO")) "Service Invoice Header"."Order No." where ("Bill-to Customer No." = filter ('<>SEILAB'))
+            else
+            if ("BA SEI Order Type" = filter ("Int. SVO")) "Service Invoice Header"."External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
             else
             if ("BA SEI Order Type" = const (Transfer)) "Transfer Shipment Header"."Transfer Order No.";
 
             ValidateTableRelation = false;
-
-            trigger OnLookup()
-            begin
-                SetFilter("BA SEI Customer Lookup Filter", 'SEILAB');
-            end;
         }
         field(80052; "BA Freight Charge Type"; Enum "BA Freight Type")
         {
@@ -48,12 +47,6 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             DataClassification = CustomerContent;
             Caption = 'SEI Invoice No.';
             Editable = false;
-        }
-        field(80054; "BA SEI Customer Lookup Filter"; Code[20])
-        {
-            Caption = 'SEI Customer Lookup Filter';
-            Editable = false;
-            FieldClass = FlowFilter;
         }
         field(80100; "BA Product ID Code"; Code[20])
         {
@@ -78,14 +71,6 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             end;
         }
     }
-
-    // fieldgroups
-    // {
-    //     addlast(Brick; "No.")
-    //     {
-
-    //     }
-    // }
 
 
     local procedure SetNewDimValue(DimCode: Code[20]; DimValue: Code[20])

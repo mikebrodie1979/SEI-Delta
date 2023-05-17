@@ -738,12 +738,21 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesInvHeaderInsert', '', false, false)]
     local procedure SalesPostOnBeforeSalesInveaderInsert(var SalesInvHeader: Record "Sales Invoice Header"; SalesHeader: Record "Sales Header")
+    var
+        FreightTerm: Record "ENC Freight Term";
+        ShippingAgent: Record "Shipping Agent";
     begin
         SalesHeader.CalcFields("BA Ship-to County Fullname", "BA Bill-to County Fullname", "BA Sell-to County Fullname");
         SalesInvHeader."BA Bill-to County Fullname" := SalesHeader."BA Bill-to County Fullname";
         SalesInvHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesInvHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
         SalesInvHeader."BA Order No. DrillDown" := SalesHeader."No.";
+        SalesInvHeader."BA Ext. Doc. No. DrillDown" := SalesHeader."External Document No.";
+        SalesInvHeader."BA Posting Date DrillDown" := SalesHeader."Posting Date";
+        if (SalesInvHeader."Shipping Agent Code" <> '') and ShippingAgent.Get(SalesInvHeader."Shipping Agent Code") then
+            SalesInvHeader."BA Freight Carrier Name" := ShippingAgent.Name;
+        if (SalesInvHeader."ENC Freight Term" <> '') and FreightTerm.Get(SalesInvHeader."ENC Freight Term") then
+            SalesInvHeader."BA Freight Term Name" := FreightTerm.Description;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesCrMemoHeaderInsert', '', false, false)]
@@ -1168,8 +1177,17 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeServiceInvHeaderInsert', '', false, false)]
     local procedure ServicePostOnBeforeServiceInvHeaderInsert(var ServiceInvoiceHeader: Record "Service Invoice Header"; ServiceHeader: Record "Service Header")
+    var
+        FreightTerm: Record "ENC Freight Term";
+        ShippingAgent: Record "Shipping Agent";
     begin
         ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceHeader."No.";
+        ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceHeader."No.";
+        ServiceInvoiceHeader."BA Posting Date DrillDown" := ServiceHeader."Posting Date";
+        if (ServiceInvoiceHeader."Shipping Agent Code" <> '') and ShippingAgent.Get(ServiceInvoiceHeader."Shipping Agent Code") then
+            ServiceInvoiceHeader."BA Freight Carrier Name" := ShippingAgent.Name;
+        if (ServiceInvoiceHeader."ENC Freight Term" <> '') and FreightTerm.Get(ServiceInvoiceHeader."ENC Freight Term") then
+            ServiceInvoiceHeader."BA Freight Term Name" := FreightTerm.Description;
     end;
 
 
@@ -1256,10 +1274,8 @@ codeunit 75010 "BA SEI Subscibers"
         SalesInvHeader.SetCurrentKey("Order No.");
         SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
         FilterText := GetIntCustFilter(LocalCustomer);
-        if FilterText <> '' then begin
+        if FilterText <> '' then
             SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
-            PurchLine.SetFilter("BA SEI Customer Lookup Filter", FilterText);
-        end;
         if not SalesInvHeader.FindFirst() then
             SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
         SalesInvHeader.FindFirst();
@@ -1350,8 +1366,16 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforeInsertTransShptHeader', '', false, false)]
     local procedure TransferOrderPostShptOnBeforeInsertTransShptHeader(var TransShptHeader: Record "Transfer Shipment Header"; TransHeader: Record "Transfer Header")
+    var
+        FreightTerm: Record "ENC Freight Term";
+        ShippingAgent: Record "Shipping Agent";
     begin
         TransShptHeader."BA Trans. Order No. DrillDown" := TransHeader."No.";
+        if (TransShptHeader."Shipping Agent Code" <> '') and ShippingAgent.Get(TransShptHeader."Shipping Agent Code") then
+            TransShptHeader."BA Freight Carrier Name" := ShippingAgent.Name;
+        if (TransShptHeader."ENC Freight Term" <> '') and FreightTerm.Get(TransShptHeader."ENC Freight Term") then
+            TransShptHeader."BA Freight Term Name" := FreightTerm.Description;
+        TransShptHeader."BA Posting Date DrillDown" := TransHeader."Posting Date";
     end;
 
 
