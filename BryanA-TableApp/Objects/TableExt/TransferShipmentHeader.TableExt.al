@@ -33,17 +33,17 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
             Caption = 'Freight Term Name';
             Editable = false;
         }
-        field(80034; "BA Posting Date DrillDown"; Date)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Posting Date';
-            Description = 'Used for Lookup DropDown';
-            Editable = false;
-        }
+        // field(80034; "BA Posting Date DrillDown"; Date)
+        // {
+        //     DataClassification = CustomerContent;
+        //     Caption = 'Posting Date';
+        //     Description = 'Used for Lookup DropDown';
+        //     Editable = false;
+        // }
     }
 
     fieldgroups
     {
-        addlast(DropDown; "BA Trans. Order No. DrillDown", "BA Posting Date DrillDown", "Transfer-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
+        addlast(DropDown; "BA Trans. Order No. DrillDown", "Posting Date", "Transfer-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
     }
 }
