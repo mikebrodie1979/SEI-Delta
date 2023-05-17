@@ -1272,14 +1272,24 @@ codeunit 75010 "BA SEI Subscibers"
         FilterText: Text;
     begin
         SalesInvHeader.SetCurrentKey("Order No.");
-        SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        if LocalCustomer then
+            SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.")
+        else
+            SalesInvHeader.SetRange("External Document No.", PurchLine."BA SEI Order No.");
+
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
             SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
         if not SalesInvHeader.FindFirst() then
-            SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+            if LocalCustomer then
+                SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."))
+            else
+                SalesInvHeader.SetFilter("External Document No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
         SalesInvHeader.FindFirst();
-        PurchLine."BA SEI Order No." := SalesInvHeader."Order No.";
+        if LocalCustomer then
+            PurchLine."BA SEI Order No." := SalesInvHeader."Order No."
+        else
+            PurchLine."BA SEI Order No." := SalesInvHeader."External Document No.";
         PurchLine."BA SEI Invoice No." := SalesInvHeader."No.";
     end;
 
@@ -1289,14 +1299,23 @@ codeunit 75010 "BA SEI Subscibers"
         FilterText: Text;
     begin
         ServiceInvHeader.SetCurrentKey("Order No.");
-        ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.");
+        if LocalCustomer then
+            ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.")
+        else
+            ServiceInvHeader.SetRange("ENC External Document No.", PurchLine."BA SEI Order No.");
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
             ServiceInvHeader.SetFilter("Bill-to Customer No.", FilterText);
         if not ServiceInvHeader.FindFirst() then
-            ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+            if LocalCustomer then
+                ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."))
+            else
+                ServiceInvHeader.SetFilter("ENC External Document No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
         ServiceInvHeader.FindFirst();
-        PurchLine."BA SEI Order No." := ServiceInvHeader."Order No.";
+        if LocalCustomer then
+            PurchLine."BA SEI Order No." := ServiceInvHeader."Order No."
+        else
+            PurchLine."BA SEI Order No." := ServiceInvHeader."ENC External Document No.";
         PurchLine."BA SEI Invoice No." := ServiceInvHeader."No.";
     end;
 
