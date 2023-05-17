@@ -1238,11 +1238,6 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order No.', false, false)]
     local procedure PurchaseLineOnBeforeValidateSEIOrderNo(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
-    var
-        SalesInvHeader: Record "Sales Invoice Header";
-        ServiceInvHeader: Record "Service Invoice Header";
-        Customer: Record Customer;
-        FilterText: Text;
     begin
         if Rec."BA SEI Order No." = xRec."BA SEI Order No." then
             exit;
@@ -1252,84 +1247,111 @@ codeunit 75010 "BA SEI Subscibers"
         end;
         case Rec."BA SEI Order Type" of
             Rec."BA SEI Order Type"::"Delta SO":
-                GetRelatedSalesFields(Rec, true);
+                GetRelatedSalesFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", true);
             Rec."BA SEI Order Type"::"Delta SVO":
-                GetRelatedServiceFields(Rec, true);
+                GetRelatedServiceFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", true);
             Rec."BA SEI Order Type"::"Int. SO":
-                GetRelatedSalesFields(Rec, false);
+                GetRelatedSalesFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", false);
             Rec."BA SEI Order Type"::"Int. SVO":
-                GetRelatedServiceFields(Rec, false);
+                GetRelatedServiceFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", false);
             Rec."BA SEI Order Type"::Transfer:
-                GetRelatedTransferFields(Rec);
+                GetRelatedTransferFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
             Rec."BA SEI Order Type"::" ":
                 Error(MissingOrderTypeErr, Rec.FieldCaption("BA SEI Order Type"), Rec.FieldCaption("BA SEI Order No."));
         end;
     end;
 
-    local procedure GetRelatedSalesFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    [EventSubscriber(ObjectType::Table, Database::"Purch. Inv. Line", 'OnBeforeValidateEvent', 'BA SEI Order No.', false, false)]
+    local procedure PurchInvLineOnBeforeValidateSEIOrderNo(var Rec: Record "Purch. Inv. Line"; var xRec: Record "Purch. Inv. Line")
+    begin
+        if Rec."BA SEI Order No." = xRec."BA SEI Order No." then
+            exit;
+        if Rec."BA SEI Order No." = '' then begin
+            Rec."BA SEI Invoice No." := '';
+            exit;
+        end;
+        case Rec."BA SEI Order Type" of
+            Rec."BA SEI Order Type"::"Delta SO":
+                GetRelatedSalesFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", true);
+            Rec."BA SEI Order Type"::"Delta SVO":
+                GetRelatedServiceFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", true);
+            Rec."BA SEI Order Type"::"Int. SO":
+                GetRelatedSalesFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", false);
+            Rec."BA SEI Order Type"::"Int. SVO":
+                GetRelatedServiceFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.", false);
+            Rec."BA SEI Order Type"::Transfer:
+                GetRelatedTransferFields(Rec."BA SEI Order No.", Rec."BA SEI Invoice No.");
+            Rec."BA SEI Order Type"::" ":
+                Error(MissingOrderTypeErr, Rec.FieldCaption("BA SEI Order Type"), Rec.FieldCaption("BA SEI Order No."));
+        end;
+    end;
+
+    local procedure GetRelatedSalesFields(var DocNo: Code[20]; var PostedDocNo: Code[20]; LocalCustomer: Boolean)
     var
         SalesInvHeader: Record "Sales Invoice Header";
         FilterText: Text;
     begin
         SalesInvHeader.SetCurrentKey("Order No.");
         if LocalCustomer then
-            SalesInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.")
+            SalesInvHeader.SetRange("Order No.", DocNo)
         else
-            SalesInvHeader.SetRange("External Document No.", PurchLine."BA SEI Order No.");
+            SalesInvHeader.SetRange("External Document No.", DocNo);
 
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
             SalesInvHeader.SetFilter("Bill-to Customer No.", FilterText);
         if not SalesInvHeader.FindFirst() then
             if LocalCustomer then
-                SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."))
+                SalesInvHeader.SetFilter("Order No.", StrSubstNo('%1*', DocNo))
             else
-                SalesInvHeader.SetFilter("External Document No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+                SalesInvHeader.SetFilter("External Document No.", StrSubstNo('%1*', DocNo));
         SalesInvHeader.FindFirst();
         if LocalCustomer then
-            PurchLine."BA SEI Order No." := SalesInvHeader."Order No."
+            DocNo := SalesInvHeader."Order No."
         else
-            PurchLine."BA SEI Order No." := SalesInvHeader."External Document No.";
-        PurchLine."BA SEI Invoice No." := SalesInvHeader."No.";
+            DocNo := SalesInvHeader."External Document No.";
+        PostedDocNo := SalesInvHeader."No.";
     end;
 
-    local procedure GetRelatedServiceFields(var PurchLine: Record "Purchase Line"; LocalCustomer: Boolean)
+    local procedure GetRelatedServiceFields(var DocNo: Code[20]; var PostedDocNo: Code[20]; LocalCustomer: Boolean)
     var
         ServiceInvHeader: Record "Service Invoice Header";
         FilterText: Text;
     begin
         ServiceInvHeader.SetCurrentKey("Order No.");
         if LocalCustomer then
-            ServiceInvHeader.SetRange("Order No.", PurchLine."BA SEI Order No.")
+            ServiceInvHeader.SetRange("Order No.", DocNo)
         else
-            ServiceInvHeader.SetRange("ENC External Document No.", PurchLine."BA SEI Order No.");
+            ServiceInvHeader.SetRange("ENC External Document No.", DocNo);
         FilterText := GetIntCustFilter(LocalCustomer);
         if FilterText <> '' then
             ServiceInvHeader.SetFilter("Bill-to Customer No.", FilterText);
         if not ServiceInvHeader.FindFirst() then
             if LocalCustomer then
-                ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."))
+                ServiceInvHeader.SetFilter("Order No.", StrSubstNo('%1*', DocNo))
             else
-                ServiceInvHeader.SetFilter("ENC External Document No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+                ServiceInvHeader.SetFilter("ENC External Document No.", StrSubstNo('%1*', DocNo));
         ServiceInvHeader.FindFirst();
         if LocalCustomer then
-            PurchLine."BA SEI Order No." := ServiceInvHeader."Order No."
+            DocNo := ServiceInvHeader."Order No."
         else
-            PurchLine."BA SEI Order No." := ServiceInvHeader."ENC External Document No.";
-        PurchLine."BA SEI Invoice No." := ServiceInvHeader."No.";
+            DocNo := ServiceInvHeader."ENC External Document No.";
+        PostedDocNo := ServiceInvHeader."No.";
     end;
 
-    local procedure GetRelatedTransferFields(var PurchLine: Record "Purchase Line")
+
+
+    local procedure GetRelatedTransferFields(var DocNo: Code[20]; var PostedDocNo: Code[20])
     var
         TransferShptHeader: Record "Transfer Shipment Header";
     begin
         TransferShptHeader.SetCurrentKey("Transfer Order No.");
-        TransferShptHeader.SetRange("Transfer Order No.", PurchLine."BA SEI Order No.");
+        TransferShptHeader.SetRange("Transfer Order No.", DocNo);
         if not TransferShptHeader.FindFirst() then
-            TransferShptHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', PurchLine."BA SEI Order No."));
+            TransferShptHeader.SetFilter("Transfer Order No.", StrSubstNo('%1*', DocNo));
         TransferShptHeader.FindFirst();
-        PurchLine."BA SEI Order No." := TransferShptHeader."Transfer Order No.";
-        PurchLine."BA SEI Invoice No." := TransferShptHeader."No.";
+        DocNo := TransferShptHeader."Transfer Order No.";
+        PostedDocNo := TransferShptHeader."No.";
     end;
 
     local procedure GetIntCustFilter(Exclude: Boolean): Text
@@ -1375,10 +1397,16 @@ codeunit 75010 "BA SEI Subscibers"
     var
         GLAccount: Record "G/L Account";
     begin
-        if not GLAccount.Get(PurchLine."No.") and not GLAccount."BA Freight Charge" and not GLAccount."BA Transfer Charge" then
+        if not GLAccount.Get(PurchLine."No.") then
             exit;
-        if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
-            PurchLine.FieldError("BA SEI Order Type");
+        if GLAccount."BA Freight Charge" then begin
+            if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+                PurchLine.FieldError("BA SEI Order Type");
+        end else
+            if GLAccount."BA Transfer Charge" then
+                if (PurchLine."BA SEI Order Type" <> PurchLine."BA SEI Order Type"::Transfer)
+                        or (PurchLine."BA Freight Charge Type" = PurchLine."BA Freight Charge Type"::" ") then
+                    exit;
         PurchLine.TestField("BA SEI Order No.");
         PurchLine.TestField("BA Freight Charge Type");
     end;
@@ -1394,7 +1422,6 @@ codeunit 75010 "BA SEI Subscibers"
             TransShptHeader."BA Freight Carrier Name" := ShippingAgent.Name;
         if (TransShptHeader."ENC Freight Term" <> '') and FreightTerm.Get(TransShptHeader."ENC Freight Term") then
             TransShptHeader."BA Freight Term Name" := FreightTerm.Description;
-        TransShptHeader."BA Posting Date DrillDown" := TransHeader."Posting Date";
     end;
 
 
