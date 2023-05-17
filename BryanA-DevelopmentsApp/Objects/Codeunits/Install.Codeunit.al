@@ -142,12 +142,6 @@ codeunit 75011 "BA Install Codeunit"
                     DocNos2.Add(TransferShptHeader.RecordId());
             until TransferShptHeader.Next() = 0;
         TransferShptHeader.Reset();
-        TransferShptHeader.SetRange("BA Posting Date DrillDown", 0D);
-        if TransferShptHeader.FindSet(true) then
-            repeat
-                if not DocNos2.Contains(TransferShptHeader.RecordId()) then
-                    DocNos2.Add(TransferShptHeader.RecordId());
-            until TransferShptHeader.Next() = 0;
         foreach RecID in DocNos3 do begin
             TransferShptHeader.Get(RecID);
             TransferShptHeader."BA Trans. Order No. DrillDown" := TransferShptHeader."Transfer Order No.";
@@ -155,7 +149,6 @@ codeunit 75011 "BA Install Codeunit"
                 TransferShptHeader."BA Freight Carrier Name" := ShippingAgent.Name;
             if (TransferShptHeader."ENC Freight Term" <> '') and FreightTerm.Get(TransferShptHeader."ENC Freight Term") then
                 TransferShptHeader."BA Freight Term Name" := FreightTerm.Description;
-            TransferShptHeader."BA Posting Date DrillDown" := TransferShptHeader."Posting Date";
             TransferShptHeader.Modify(false);
         end;
     end;

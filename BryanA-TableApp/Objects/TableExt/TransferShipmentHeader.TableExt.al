@@ -33,13 +33,6 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
             Caption = 'Freight Term Name';
             Editable = false;
         }
-        // field(80034; "BA Posting Date DrillDown"; Date)
-        // {
-        //     DataClassification = CustomerContent;
-        //     Caption = 'Posting Date';
-        //     Description = 'Used for Lookup DropDown';
-        //     Editable = false;
-        // }
     }
 
     fieldgroups
