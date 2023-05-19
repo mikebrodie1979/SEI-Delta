@@ -13,6 +13,7 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddCustomerSalesActivity();
         // AddNewDimValues();
+        AddJobQueueFailNotificationSetup();
     end;
 
 
