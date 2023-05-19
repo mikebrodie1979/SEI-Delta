@@ -1636,6 +1636,8 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure GetRecord(var RecVar: Variant; var RecRef: RecordRef)
     begin
         RecRef.GetTable(RecVar);
+    end;
+
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeValidateEvent', 'BA SEI Order Type', false, false)]
     local procedure PurchaseLineOnBeforeValidateSEIOrderType(var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
     begin
