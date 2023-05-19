@@ -16,6 +16,7 @@ codeunit 75011 "BA Install Codeunit"
         AddCustomerSalesActivity();
         // AddNewDimValues();
         PopulateDropDownFields();
+        AddJobQueueFailNotificationSetup();
     end;
 
     local procedure PopulateDropDownFields()
