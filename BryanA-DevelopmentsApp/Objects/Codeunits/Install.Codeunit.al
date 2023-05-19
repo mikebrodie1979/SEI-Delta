@@ -154,6 +154,19 @@ codeunit 75011 "BA Install Codeunit"
         end;
     end;
 
+    local procedure AddJobQueueFailNotificationSetup()
+    var
+        NotificationSetup: Record "Notification Setup";
+    begin
+        NotificationSetup.SetRange("Notification Type", NotificationSetup."Notification Type"::"Job Queue Fail");
+        if not NotificationSetup.IsEmpty() then
+            exit;
+        NotificationSetup.Init();
+        NotificationSetup.Validate("Notification Type", NotificationSetup."Notification Type"::"Job Queue Fail");
+        NotificationSetup.Validate("Notification Method", NotificationSetup."Notification Method"::Email);
+        NotificationSetup.Validate(Schedule, NotificationSetup.Schedule::Instantly);
+        NotificationSetup.Insert(true);
+    end;
 
     local procedure AddNewDimValues()
     var
