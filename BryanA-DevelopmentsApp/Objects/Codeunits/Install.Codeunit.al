@@ -27,7 +27,7 @@ codeunit 75011 "BA Install Codeunit"
         NotificationSetup.Init();
         NotificationSetup.Validate("Notification Type", NotificationSetup."Notification Type"::"Job Queue Fail");
         NotificationSetup.Validate("Notification Method", NotificationSetup."Notification Method"::Email);
-        NotificationSetup.Validate(Schedule, NotificationSetup.Schedule::Instantly);
+        NotificationSetup.Validate("Display Target", NotificationSetup."Display Target"::Windows);
         NotificationSetup.Insert(true);
     end;
 
