@@ -17,6 +17,7 @@ codeunit 75011 "BA Install Codeunit"
         // AddNewDimValues();
         PopulateDropDownFields();
         AddJobQueueFailNotificationSetup();
+        PopulateCustomerPostingGroupCurrencies();
     end;
 
     local procedure PopulateDropDownFields()
@@ -332,6 +333,29 @@ codeunit 75011 "BA Install Codeunit"
             Customer.Get(CustNo);
             CustDict.Get(CustNo, Customer."BA Last Sales Activity");
             Customer.Modify(false);
+        end;
+    end;
+
+    local procedure PopulateCustomerPostingGroupCurrencies()
+    var
+        GLSetup: Record "General Ledger Setup";
+        CustPostingGroup: Record "Customer Posting Group";
+        Currency: Record Currency;
+        Codes: list of [Code[10]];
+        Code: Code[10];
+    begin
+        GLSetup.Get();
+        CustPostingGroup.SetFilter(Code, '<>%1', GLSetup."LCY Code");
+        CustPostingGroup.SetRange("BA Posting Currency", '');
+        if CustPostingGroup.FindSet() then
+            repeat
+                if Currency.Get(CustPostingGroup.Code) then
+                    Codes.Add(CustPostingGroup.Code);
+            until CustPostingGroup.Next() = 0;
+        foreach Code in Codes do begin
+            CustPostingGroup.Get(Code);
+            CustPostingGroup.Validate("BA Posting Currency", Code);
+            CustPostingGroup.Modify(true);
         end;
     end;
 }
