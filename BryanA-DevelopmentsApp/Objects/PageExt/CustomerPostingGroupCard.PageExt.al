@@ -8,7 +8,11 @@ pageextension 80047 "BA Cust. Posting Group Card" extends "Customer Posting Grou
             {
                 ApplicationArea = all;
             }
-            field("BA Show Non-Local Currency"; "BA Show Non-Local Currency")
+            field("BA Show Non-Local Currency"; Rec."BA Show Non-Local Currency")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Posting Currency"; Rec."BA Posting Currency")
             {
                 ApplicationArea = all;
             }
