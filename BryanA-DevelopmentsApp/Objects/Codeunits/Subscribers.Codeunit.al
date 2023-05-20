@@ -1316,6 +1316,51 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure SalesPostOnBeforePostSalesDoc(var SalesHeader: Record "Sales Header")
     begin
         CheckIfLinesHaveValidLocationCode(SalesHeader);
+        CheckCustomerCurrency(SalesHeader);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeRun', '', false, false)]
+    local procedure SalesServiceOnBeforeRun(var ServiceHeader: Record "Service Header")
+    begin
+        CheckCustomerCurrency(ServiceHeader);
+    end;
+
+    local procedure CheckCustomerCurrency(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+        CustPostingGroup: Record "Customer Posting Group";
+        CurrCode: Code[10];
+    begin
+        if SalesHeader."Document Type" <> SalesHeader."Document Type"::Order then
+            exit;
+        Customer.Get(SalesHeader."Bill-to Customer No.");
+        CustPostingGroup.Get(SalesHeader."Customer Posting Group");
+        if SalesHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
+            exit;
+        if CustPostingGroup."BA Posting Currency" = '' then
+            CurrCode := 'CAD'
+        else
+            CurrCode := CustPostingGroup."BA Posting Currency";
+        Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
+    end;
+
+    local procedure CheckCustomerCurrency(var ServiceHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+        CustPostingGroup: Record "Customer Posting Group";
+        CurrCode: Code[10];
+    begin
+        if ServiceHeader."Document Type" <> ServiceHeader."Document Type"::Order then
+            exit;
+        Customer.Get(ServiceHeader."Bill-to Customer No.");
+        CustPostingGroup.Get(ServiceHeader."Customer Posting Group");
+        if ServiceHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
+            exit;
+        if CustPostingGroup."BA Posting Currency" = '' then
+            CurrCode := 'CAD'
+        else
+            CurrCode := CustPostingGroup."BA Posting Currency";
+        Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
     end;
 
 
@@ -1335,4 +1380,5 @@ codeunit 75010 "BA SEI Subscibers"
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
         UpdateSalesLinesLocationMsg: Label 'The Location Code on the Sales Header has been changed, do you want to update the lines?';
         SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
+        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use currency %1 for Customers in %2 Customer Posting Group.';
 }
