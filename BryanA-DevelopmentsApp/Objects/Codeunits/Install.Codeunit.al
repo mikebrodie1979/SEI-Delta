@@ -13,6 +13,7 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddCustomerSalesActivity();
         // AddNewDimValues();
+        PopulateCountryRegionDimensions();
     end;
 
 
@@ -160,5 +161,26 @@ codeunit 75011 "BA Install Codeunit"
             CustDict.Get(CustNo, Customer."BA Last Sales Activity");
             Customer.Modify(false);
         end;
+    end;
+
+    local procedure PopulateCountryRegionDimensions()
+    var
+        GLSetup: Record "General Ledger Setup";
+        Dimension: Record Dimension;
+        Update: Boolean;
+    begin
+        GLSetup.Get();
+        if GLSetup."BA Country Code" = '' then
+            if Dimension.Get('COUNTRY') and not Dimension.Blocked and not Dimension."ENC Inactive" then begin
+                GLSetup.Validate("BA Country Code", Dimension.Code);
+                Update := true;
+            end;
+        if GLSetup."BA Region Code" = '' then
+            if Dimension.Get('REGION') and not Dimension.Blocked and not Dimension."ENC Inactive" then begin
+                GLSetup.Validate("BA Region Code", Dimension.Code);
+                Update := true;
+            end;
+        if Update then
+            GLSetup.Modify(true);
     end;
 }

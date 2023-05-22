@@ -1319,6 +1319,21 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::DimensionManagement, 'OnBeforeCheckCodeMandatory', '', false, false)]
+    local procedure DimMgtOnBeforeCheckCodeMandatory(SourceCode: Code[10]; DimensionCode: Code[20]; TableID: Integer; var IsHandled: Boolean)
+    var
+        GLSetup: Record "General Ledger Setup";
+        SourceCodeSetup: Record "Source Code Setup";
+    begin
+        SourceCodeSetup.Get();
+        GLSetup.Get();
+        if '' in [GLSetup."BA Country Code", GLSetup."BA Region Code"] then
+            exit;
+        IsHandled := (SourceCode in ['', SourceCodeSetup.Sales, SourceCodeSetup."Service Management"])
+            and (TableID = Database::Customer) and (DimensionCode in [GLSetup."BA Country Code", GLSetup."BA Region Code"]);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
