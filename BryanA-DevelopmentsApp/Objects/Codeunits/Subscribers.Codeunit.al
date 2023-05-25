@@ -2034,6 +2034,6 @@ codeunit 75010 "BA SEI Subscibers"
         OrderTypeMissingErr: Label '%1 must be specified for line %2.';
         NoSourceRecErr: Label 'Source Record not set.';
         TitleMsg: Label 'Job Queue Failed:';
-        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use currency %1 for Customers in %2 Customer Posting Group.';
+        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
         LocalCurrency: Label 'local (LCY)';
 }
