@@ -1926,7 +1926,7 @@ codeunit 75010 "BA SEI Subscibers"
         if ServiceHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
             exit;
         if CustPostingGroup."BA Posting Currency" = '' then
-            CurrCode := 'CAD'
+            CurrCode := LocalCurrency
         else
             CurrCode := CustPostingGroup."BA Posting Currency";
         Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
@@ -2036,4 +2036,5 @@ codeunit 75010 "BA SEI Subscibers"
         NoSourceRecErr: Label 'Source Record not set.';
         TitleMsg: Label 'Job Queue Failed:';
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use currency %1 for Customers in %2 Customer Posting Group.';
+        LocalCurrency: Label 'local (LCY)';
 }
