@@ -1357,7 +1357,7 @@ codeunit 75010 "BA SEI Subscibers"
         if ServiceHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
             exit;
         if CustPostingGroup."BA Posting Currency" = '' then
-            CurrCode := 'CAD'
+            CurrCode := LocalCurrency
         else
             CurrCode := CustPostingGroup."BA Posting Currency";
         Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
@@ -1380,5 +1380,6 @@ codeunit 75010 "BA SEI Subscibers"
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
         UpdateSalesLinesLocationMsg: Label 'The Location Code on the Sales Header has been changed, do you want to update the lines?';
         SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
-        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use currency %1 for Customers in %2 Customer Posting Group.';
+        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
+        LocalCurrency: Label 'local (LCY)';
 }
