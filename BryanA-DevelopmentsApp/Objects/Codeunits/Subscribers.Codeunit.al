@@ -1898,38 +1898,37 @@ codeunit 75010 "BA SEI Subscibers"
     var
         Customer: Record Customer;
         CustPostingGroup: Record "Customer Posting Group";
-        CurrCode: Code[10];
     begin
         if SalesHeader."Document Type" <> SalesHeader."Document Type"::Order then
             exit;
         Customer.Get(SalesHeader."Bill-to Customer No.");
         CustPostingGroup.Get(SalesHeader."Customer Posting Group");
-        if SalesHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
-            exit;
-        if CustPostingGroup."BA Posting Currency" = '' then
-            CurrCode := 'CAD'
-        else
-            CurrCode := CustPostingGroup."BA Posting Currency";
-        Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
+        if SalesHeader."Currency Code" <> CustPostingGroup."BA Posting Currency" then
+            CheckCustomerCurrency(CustPostingGroup);
     end;
 
     local procedure CheckCustomerCurrency(var ServiceHeader: Record "Service Header")
     var
         Customer: Record Customer;
         CustPostingGroup: Record "Customer Posting Group";
-        CurrCode: Code[10];
     begin
         if ServiceHeader."Document Type" <> ServiceHeader."Document Type"::Order then
             exit;
         Customer.Get(ServiceHeader."Bill-to Customer No.");
         CustPostingGroup.Get(ServiceHeader."Customer Posting Group");
-        if ServiceHeader."Currency Code" = CustPostingGroup."BA Posting Currency" then
-            exit;
+        if ServiceHeader."Currency Code" <> CustPostingGroup."BA Posting Currency" then
+            CheckCustomerCurrency(CustPostingGroup);
+    end;
+
+    local procedure CheckCustomerCurrency(var CustPostingGroup: Record "Customer Posting Group")
+    var
+        CurrencyText: Text;
+    begin
         if CustPostingGroup."BA Posting Currency" = '' then
-            CurrCode := LocalCurrency
+            CurrencyText := LocalCurrency
         else
-            CurrCode := CustPostingGroup."BA Posting Currency";
-        Error(InvalidCustomerPostingGroupCurrencyErr, CurrCode, CustPostingGroup.Code);
+            CurrencyText := CustPostingGroup."BA Posting Currency";
+        Error(InvalidCustomerPostingGroupCurrencyErr, CurrencyText, CustPostingGroup.Code);
     end;
 
 
