@@ -199,6 +199,8 @@ codeunit 75011 "BA Install Codeunit"
             CustPostingGroup.Validate("BA Posting Currency", Code);
             CustPostingGroup.Modify(true);
         end;
+    end;
+
     local procedure PopulateCountryRegionDimensions()
     var
         GLSetup: Record "General Ledger Setup";
