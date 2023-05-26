@@ -12,6 +12,10 @@ pageextension 80043 "BA Cust. Posting Groups" extends "Customer Posting Groups"
             {
                 ApplicationArea = all;
             }
+            field("BA Posting Currency"; Rec."BA Posting Currency")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

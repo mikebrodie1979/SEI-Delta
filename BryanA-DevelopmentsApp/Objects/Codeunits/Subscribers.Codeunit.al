@@ -1316,6 +1316,50 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure SalesPostOnBeforePostSalesDoc(var SalesHeader: Record "Sales Header")
     begin
         CheckIfLinesHaveValidLocationCode(SalesHeader);
+        CheckCustomerCurrency(SalesHeader);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeRun', '', false, false)]
+    local procedure SalesServiceOnBeforeRun(var ServiceHeader: Record "Service Header")
+    begin
+        CheckCustomerCurrency(ServiceHeader);
+    end;
+
+    local procedure CheckCustomerCurrency(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+        if SalesHeader."Document Type" <> SalesHeader."Document Type"::Order then
+            exit;
+        Customer.Get(SalesHeader."Bill-to Customer No.");
+        CustPostingGroup.Get(SalesHeader."Customer Posting Group");
+        if SalesHeader."Currency Code" <> CustPostingGroup."BA Posting Currency" then
+            CheckCustomerCurrency(CustPostingGroup);
+    end;
+
+    local procedure CheckCustomerCurrency(var ServiceHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+        if ServiceHeader."Document Type" <> ServiceHeader."Document Type"::Order then
+            exit;
+        Customer.Get(ServiceHeader."Bill-to Customer No.");
+        CustPostingGroup.Get(ServiceHeader."Customer Posting Group");
+        if ServiceHeader."Currency Code" <> CustPostingGroup."BA Posting Currency" then
+            CheckCustomerCurrency(CustPostingGroup);
+    end;
+
+    local procedure CheckCustomerCurrency(var CustPostingGroup: Record "Customer Posting Group")
+    var
+        CurrencyText: Text;
+    begin
+        if CustPostingGroup."BA Posting Currency" = '' then
+            CurrencyText := LocalCurrency
+        else
+            CurrencyText := CustPostingGroup."BA Posting Currency";
+        Error(InvalidCustomerPostingGroupCurrencyErr, CurrencyText, CustPostingGroup.Code);
     end;
 
 
@@ -1388,4 +1432,6 @@ codeunit 75010 "BA SEI Subscibers"
         SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
         NoSourceRecErr: Label 'Source Record not set.';
         TitleMsg: Label 'Job Queue Failed:';
+        InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
+        LocalCurrency: Label 'local (LCY)';
 }
