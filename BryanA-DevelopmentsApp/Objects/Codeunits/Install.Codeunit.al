@@ -13,9 +13,23 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddCustomerSalesActivity();
         // AddNewDimValues();
+        AddJobQueueFailNotificationSetup();
     end;
 
 
+    local procedure AddJobQueueFailNotificationSetup()
+    var
+        NotificationSetup: Record "Notification Setup";
+    begin
+        NotificationSetup.SetRange("Notification Type", NotificationSetup."Notification Type"::"Job Queue Fail");
+        if not NotificationSetup.IsEmpty() then
+            exit;
+        NotificationSetup.Init();
+        NotificationSetup.Validate("Notification Type", NotificationSetup."Notification Type"::"Job Queue Fail");
+        NotificationSetup.Validate("Notification Method", NotificationSetup."Notification Method"::Email);
+        NotificationSetup.Validate("Display Target", NotificationSetup."Display Target"::Windows);
+        NotificationSetup.Insert(true);
+    end;
 
     local procedure AddNewDimValues()
     var

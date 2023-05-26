@@ -22,5 +22,10 @@ tableextension 80024 "BA User Setup" extends "User Setup"
             DataClassification = CustomerContent;
             Caption = 'Allow Changing Countries';
         }
+        field(80004; "BA Receive Job Queue Notes."; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Receive Job Queue Notifications';
+        }
     }
 }

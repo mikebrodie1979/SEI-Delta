@@ -1319,6 +1319,57 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Job Queue Dispatcher", 'OnAfterHandleRequest', '', false, false)]
+    local procedure JobQueueDispatcherOnAfterHandleRequest(var JobQueueEntry: Record "Job Queue Entry"; WasSuccess: Boolean)
+    var
+        NotificationEntry: Record "Notification Entry";
+        UserSetup: Record "User Setup";
+        PageMgt: Codeunit "Page Management";
+        RecRef: RecordRef;
+    begin
+        if WasSuccess or (JobQueueEntry."Object Type to Run" <> JobQueueEntry."Object Type to Run"::Codeunit) or (JobQueueEntry."Object ID to Run" <> 75009) then
+            exit;
+        UserSetup.SetRange("BA Receive Job Queue Notes.", true);
+        if not UserSetup.FindSet() then
+            exit;
+        RecRef.GetTable(JobQueueEntry);
+        repeat
+            NotificationEntry.CreateNewEntry(NotificationEntry.Type::"Job Queue Fail", UserSetup."User ID",
+                   JobQueueEntry, Page::"Job Queue Entries", PageMgt.GetRTCUrl(RecRef, Page::"Job Queue Entries"), JobQueueEntry."User ID");
+        until UserSetup.Next() = 0;
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Notification Email", 'OnOtherNotificationTypeForTargetRecRef', '', false, false)]
+    local procedure NotificationEmailReportOnOtherNotificationTypeForTargetRecRef(NotificationType: Option; SourceRecRef: RecordRef; var TargetRecRef: RecordRef)
+    var
+        NotificationEntry: Record "Notification Entry";
+    begin
+        if NotificationType <> NotificationEntry.Type::"Job Queue Fail" then
+            exit;
+        if SourceRecRef.Number = 0 then
+            Error(NoSourceRecErr);
+        TargetRecRef := SourceRecRef;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Notification Management", 'OnGetDocumentTypeAndNumber', '', false, false)]
+    local procedure NotificationMgtOnGetDocumentTypeAndNumber(var RecRef: RecordRef; var IsHandled: Boolean; var DocumentNo: Text; var DocumentType: Text)
+    var
+        NotificationEntry: Record "Notification Entry";
+        JobQueueEntry: Record "Job Queue Entry";
+    begin
+        if RecRef.Number() <> Database::"Job Queue Entry" then
+            exit;
+        IsHandled := true;
+        RecRef.SetTable(JobQueueEntry);
+        JobQueueEntry.CalcFields("Object Caption to Run");
+        if JobQueueEntry."Object Caption to Run" <> '' then
+            DocumentNo := StrSubstNo('%1 %2 - %3', JobQueueEntry."Object Type to Run", JobQueueEntry."Object ID to Run", JobQueueEntry."Object Caption to Run")
+        else
+            DocumentNo := StrSubstNo('%1 %2', JobQueueEntry."Object Type to Run", JobQueueEntry."Object ID to Run");
+        DocumentType := TitleMsg;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -1335,4 +1386,6 @@ codeunit 75010 "BA SEI Subscibers"
         ImportWarningsMsg: Label 'Inventory calculation completed with warnings.\Please review warning messages per line, where applicable.';
         UpdateSalesLinesLocationMsg: Label 'The Location Code on the Sales Header has been changed, do you want to update the lines?';
         SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
+        NoSourceRecErr: Label 'Source Record not set.';
+        TitleMsg: Label 'Job Queue Failed:';
 }
