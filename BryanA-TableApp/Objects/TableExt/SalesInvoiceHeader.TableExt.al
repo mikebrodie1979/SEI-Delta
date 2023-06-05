@@ -66,9 +66,22 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             Description = 'Used for Lookup DropDown';
             Editable = false;
         }
+        field(80035; "BA Ship-to Name DrillDown"; Text[100])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Ship-to Name';
+            Description = 'Used for Lookup DropDown';
+            Editable = false;
+        }
     }
+
+    keys
+    {
+        key(K1; "BA Ext. Doc. No. DrillDown") { }
+    }
+
     fieldgroups
     {
-        addlast(DropDown; "BA Order No. DrillDown", "BA Ext. Doc. No. DrillDown", "BA Posting Date DrillDown", "Ship-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "Package Tracking No.", "ENC Physical Ship Date") { }
+        addlast(DropDown; "BA Order No. DrillDown", "No.", "BA Ext. Doc. No. DrillDown", "BA Posting Date DrillDown", "BA Ship-to Name DrillDown", "BA Freight Carrier Name", "BA Freight Term Name", "Package Tracking No.", "ENC Physical Ship Date") { }
     }
 }

@@ -30,6 +30,15 @@ tableextension 80016 "BA Return Shpt. Line" extends "Return Shipment Line"
         {
             DataClassification = CustomerContent;
             Caption = 'SEI Order No.';
+            TableRelation = if ("BA SEI Order Type" = filter ("Delta SO")) "Sales Invoice Header"."Order No." where ("Bill-to Customer No." = filter ('<>SEILAB'))
+            else
+            if ("BA SEI Order Type" = filter ("Int. SO")) "Sales Invoice Header"."External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
+            else
+            if ("BA SEI Order Type" = filter ("Delta SVO")) "Service Invoice Header"."Order No." where ("Bill-to Customer No." = filter ('<>SEILAB'))
+            else
+            if ("BA SEI Order Type" = filter ("Int. SVO")) "Service Invoice Header"."ENC External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
+            else
+            if ("BA SEI Order Type" = const (Transfer)) "Transfer Shipment Header"."Transfer Order No.";
         }
         field(80052; "BA Freight Charge Type"; Enum "BA Freight Type")
         {

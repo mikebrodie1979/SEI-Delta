@@ -13,7 +13,7 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
         {
             DataClassification = CustomerContent;
             Caption = 'Freight Carrier Name';
-            Editable = false;
+            // Editable = false;
         }
         field(80033; "BA Freight Term Name"; Text[100])
         {
@@ -28,10 +28,22 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Description = 'Used for Lookup DropDown';
             Editable = false;
         }
+        field(80035; "BA Ship-to Name DrillDown"; Text[100])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Ship-to Name';
+            Description = 'Used for Lookup DropDown';
+            Editable = false;
+        }
+    }
+
+    keys
+    {
+        key(K1; "BA Order No. DrillDown") { }
     }
 
     fieldgroups
     {
-        addlast(DropDown; "BA Order No. DrillDown", "ENC External Document No.", "BA Posting Date DrillDown", "Ship-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "Package Tracking No.", "ENC Physical Ship Date") { }
+        addlast(DropDown; "BA Order No. DrillDown", "No.", "ENC External Document No.", "BA Posting Date DrillDown", "BA Ship-to Name DrillDown", "ENC Shipping Agent Code", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
     }
 }

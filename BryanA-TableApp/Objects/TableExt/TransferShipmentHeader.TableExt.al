@@ -37,6 +37,6 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
 
     fieldgroups
     {
-        addlast(DropDown; "BA Trans. Order No. DrillDown", "Posting Date", "Transfer-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
+        addlast(DropDown; "No.", "Transfer Order No.", "Posting Date", "Transfer-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
     }
 }

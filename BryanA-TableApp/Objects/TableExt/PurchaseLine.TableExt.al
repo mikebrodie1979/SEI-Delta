@@ -31,7 +31,7 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
             else
             if ("BA SEI Order Type" = filter ("Delta SVO")) "Service Invoice Header"."Order No." where ("Bill-to Customer No." = filter ('<>SEILAB'))
             else
-            if ("BA SEI Order Type" = filter ("Int. SVO")) "Service Invoice Header"."External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
+            if ("BA SEI Order Type" = filter ("Int. SVO")) "Service Invoice Header"."ENC External Document No." where ("Bill-to Customer No." = const ('SEILAB'))
             else
             if ("BA SEI Order Type" = const (Transfer)) "Transfer Shipment Header"."Transfer Order No.";
 
