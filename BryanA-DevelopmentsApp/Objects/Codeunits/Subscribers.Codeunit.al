@@ -1399,17 +1399,8 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not GLAccount.Get(PurchLine."No.") then
             exit;
-        case true of
-            GLAccount."BA Freight Charge":
-                if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
-                    Error(OrderTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
-            GLAccount."BA Transfer Charge":
-                if (PurchLine."BA SEI Order Type" <> PurchLine."BA SEI Order Type"::Transfer)
-                        or (PurchLine."BA Freight Charge Type" = PurchLine."BA Freight Charge Type"::" ") then
-                    exit;
-            else
-                exit;
-        end;
+        if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+            Error(OrderTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
         PurchLine.TestField("BA SEI Order No.");
         PurchLine.TestField("BA Freight Charge Type");
     end;

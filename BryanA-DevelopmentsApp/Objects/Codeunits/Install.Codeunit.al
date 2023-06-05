@@ -14,10 +14,10 @@ codeunit 75011 "BA Install Codeunit"
     begin
         AddCustomerSalesActivity();
         // AddNewDimValues();
-        PopulateDropDownFields();
+        // PopulateDropDownFields();
     end;
 
-    local procedure PopulateDropDownFields()
+    procedure PopulateDropDownFields()
     var
         SalesInvoiceHeader: Record "Sales Invoice Header";
         ServiceInvoiceHeader: Record "Service Invoice Header";
@@ -37,6 +37,13 @@ codeunit 75011 "BA Install Codeunit"
             until SalesInvoiceHeader.Next() = 0;
         SalesInvoiceHeader.Reset();
         SalesInvoiceHeader.SetRange("BA Ext. Doc. No. DrillDown", '');
+        if SalesInvoiceHeader.FindSet(true) then
+            repeat
+                if not DocNos1.Contains(SalesInvoiceHeader.RecordId()) then
+                    DocNos1.Add(SalesInvoiceHeader.RecordId());
+            until SalesInvoiceHeader.Next() = 0;
+        SalesInvoiceHeader.Reset();
+        SalesInvoiceHeader.SetRange("BA Ship-to Name DrillDown", '');
         if SalesInvoiceHeader.FindSet(true) then
             repeat
                 if not DocNos1.Contains(SalesInvoiceHeader.RecordId()) then
@@ -69,6 +76,7 @@ codeunit 75011 "BA Install Codeunit"
             SalesInvoiceHeader.Get(RecID);
             SalesInvoiceHeader."BA Order No. DrillDown" := SalesInvoiceHeader."Order No.";
             SalesInvoiceHeader."BA Ext. Doc. No. DrillDown" := SalesInvoiceHeader."External Document No.";
+            SalesInvoiceHeader."BA Ship-to Name DrillDown" := SalesInvoiceHeader."Ship-to Name";
             if (SalesInvoiceHeader."Shipping Agent Code" <> '') and ShippingAgent.Get(SalesInvoiceHeader."Shipping Agent Code") then
                 SalesInvoiceHeader."BA Freight Carrier Name" := ShippingAgent.Name;
             if (SalesInvoiceHeader."ENC Freight Term" <> '') and FreightTerm.Get(SalesInvoiceHeader."ENC Freight Term") then
@@ -86,7 +94,14 @@ codeunit 75011 "BA Install Codeunit"
                     DocNos2.Add(ServiceInvoiceHeader.RecordId());
             until ServiceInvoiceHeader.Next() = 0;
         ServiceInvoiceHeader.Reset();
-        ServiceInvoiceHeader.SetFilter("Shipping Agent Code", '<>%1', '');
+        ServiceInvoiceHeader.SetRange("BA Ship-to Name DrillDown", '');
+        if ServiceInvoiceHeader.FindSet(true) then
+            repeat
+                if not DocNos2.Contains(ServiceInvoiceHeader.RecordId()) then
+                    DocNos2.Add(ServiceInvoiceHeader.RecordId());
+            until ServiceInvoiceHeader.Next() = 0;
+        ServiceInvoiceHeader.Reset();
+        ServiceInvoiceHeader.SetFilter("ENC Shipping Agent Code", '<>%1', '');
         ServiceInvoiceHeader.SetRange("BA Freight Carrier Name", '');
         if ServiceInvoiceHeader.FindSet(true) then
             repeat
@@ -111,11 +126,12 @@ codeunit 75011 "BA Install Codeunit"
         foreach RecID in DocNos2 do begin
             ServiceInvoiceHeader.Get(RecID);
             ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceInvoiceHeader."Order No.";
-            if (ServiceInvoiceHeader."Shipping Agent Code" <> '') and ShippingAgent.Get(ServiceInvoiceHeader."Shipping Agent Code") then
+            if (ServiceInvoiceHeader."ENC Shipping Agent Code" <> '') and ShippingAgent.Get(ServiceInvoiceHeader."ENC Shipping Agent Code") then
                 ServiceInvoiceHeader."BA Freight Carrier Name" := ShippingAgent.Name;
             if (ServiceInvoiceHeader."ENC Freight Term" <> '') and FreightTerm.Get(ServiceInvoiceHeader."ENC Freight Term") then
                 ServiceInvoiceHeader."BA Freight Term Name" := FreightTerm.Description;
             ServiceInvoiceHeader."BA Posting Date DrillDown" := ServiceInvoiceHeader."Posting Date";
+            ServiceInvoiceHeader."BA Ship-to Name DrillDown" := ServiceInvoiceHeader."Ship-to Name";
             ServiceInvoiceHeader.Modify(false);
         end;
 
@@ -151,6 +167,9 @@ codeunit 75011 "BA Install Codeunit"
                 TransferShptHeader."BA Freight Term Name" := FreightTerm.Description;
             TransferShptHeader.Modify(false);
         end;
+
+        if GuiAllowed then
+            Message('%1, %2, %3', DocNos1.Count, DocNos2.Count, DocNos3.Count);
     end;
 
 
