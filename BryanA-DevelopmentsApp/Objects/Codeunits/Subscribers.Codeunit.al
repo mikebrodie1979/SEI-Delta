@@ -1429,6 +1429,28 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Report, Report::"Copy Item", 'OnAfterCopyItem', '', false, false)]
+    local procedure CopyItemOnAfterCopyItem(SourceItem: Record Item; var TargetItem: Record Item)
+    var
+        RecordLink: Record "Record Link";
+        RecordLink2: Record "Record Link";
+        LinkID: Integer;
+    begin
+        if RecordLink.FindLast() then
+            LinkID := RecordLink."Link ID";
+        RecordLink.SetCurrentKey("Record ID");
+        RecordLink.SetRange("Record ID", SourceItem.RecordId());
+        if RecordLink.FindSet() then
+            repeat
+                LinkID += 1;
+                RecordLink2.TransferFields(RecordLink);
+                RecordLink2."Link ID" := LinkID;
+                RecordLink2."Record ID" := TargetItem.RecordId();
+                RecordLink2.Insert(false);
+            until RecordLink.Next() = 0;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
