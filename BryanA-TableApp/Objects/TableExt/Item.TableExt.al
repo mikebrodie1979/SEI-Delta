@@ -67,6 +67,7 @@ tableextension 80012 "BA Item" extends Item
             Caption = 'Product Profile Code';
             TableRelation = "BA Product Profile"."Profile Code";
             // Editable = false;
+        }
         field(80035; "BC NC Cut Sheet"; Boolean)
         {
             DataClassification = CustomerContent;
