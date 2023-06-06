@@ -2,8 +2,7 @@ tableextension 80012 "BA Item" extends Item
 {
     fields
     {
-
-        Field(80000; "BA Qty. on Sales Quote"; Decimal)
+        field(80000; "BA Qty. on Sales Quote"; Decimal)
         {
             Caption = 'Qty. on Open Sales Quote';
             FieldClass = FlowField;
@@ -68,6 +67,10 @@ tableextension 80012 "BA Item" extends Item
             Caption = 'Product Profile Code';
             TableRelation = "BA Product Profile"."Profile Code";
             // Editable = false;
+        field(80035; "BC NC Cut Sheet"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'NC Cut Sheet';
         }
     }
 
