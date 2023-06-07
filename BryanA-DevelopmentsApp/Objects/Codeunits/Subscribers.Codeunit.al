@@ -1446,6 +1446,7 @@ codeunit 75010 "BA SEI Subscibers"
                 RecordLink2.TransferFields(RecordLink);
                 RecordLink2."Link ID" := LinkID;
                 RecordLink2."Record ID" := TargetItem.RecordId();
+                RecordLink2.Created := CurrentDateTime();
                 RecordLink2.Insert(false);
             until RecordLink.Next() = 0;
     end;
