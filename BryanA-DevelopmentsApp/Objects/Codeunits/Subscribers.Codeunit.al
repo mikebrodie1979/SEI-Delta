@@ -1435,6 +1435,10 @@ codeunit 75010 "BA SEI Subscibers"
         RecordLink: Record "Record Link";
         RecordLink2: Record "Record Link";
         LinkID: Integer;
+        TempBlob: Record TempBlob;
+        IStream: InStream;
+        OStream: OutStream;
+        s: Text;
     begin
         if RecordLink.FindLast() then
             LinkID := RecordLink."Link ID";
@@ -1442,11 +1446,18 @@ codeunit 75010 "BA SEI Subscibers"
         RecordLink.SetRange("Record ID", SourceItem.RecordId());
         if RecordLink.FindSet() then
             repeat
+                RecordLink.CalcFields(Note);
+                RecordLink.Note.CreateInStream(IStream);
+                IStream.ReadText(s);
                 LinkID += 1;
                 RecordLink2.TransferFields(RecordLink);
                 RecordLink2."Link ID" := LinkID;
                 RecordLink2."Record ID" := TargetItem.RecordId();
                 RecordLink2.Created := CurrentDateTime();
+                if s <> '' then begin
+                    RecordLink2.Note.CreateOutStream(OStream);
+                    OStream.WriteText(s);
+                end;
                 RecordLink2.Insert(false);
             until RecordLink.Next() = 0;
     end;
