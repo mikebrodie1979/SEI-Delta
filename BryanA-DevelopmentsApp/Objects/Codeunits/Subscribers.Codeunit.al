@@ -2020,6 +2020,8 @@ codeunit 75010 "BA SEI Subscibers"
                 end;
                 RecordLink2.Insert(false);
             until RecordLink.Next() = 0;
+    end;
+
     [EventSubscriber(ObjectType::Table, Database::Item, 'OnBeforeValidateEvent', 'Description', false, false)]
     local procedure ItemOnBeforeValidateDescription(var Rec: Record Item; var xRec: Record Item)
     begin

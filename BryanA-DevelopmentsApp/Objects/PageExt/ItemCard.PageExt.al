@@ -2,11 +2,7 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 {
     layout
     {
-        modify(Description)
-        {
-            ApplicationArea = all;
-            Caption = 'Description (Max. 40 Char.)';
-        }
+
 
         addafter("Qty. on Sales Order")
         {
@@ -267,6 +263,9 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         modify(Description)
         {
+            ApplicationArea = all;
+            Caption = 'Description (Max. 40 Char.)';
+
             trigger OnAfterValidate()
             begin
                 NewRec := Description = '';
