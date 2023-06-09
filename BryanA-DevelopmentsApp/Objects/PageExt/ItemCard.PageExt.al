@@ -2,6 +2,12 @@ pageextension 80009 "BA Item Card" extends "Item Card"
 {
     layout
     {
+        modify(Description)
+        {
+            ApplicationArea = all;
+            Caption = 'Description (Max. 40 Char.)';
+        }
+
         addafter("Qty. on Sales Order")
         {
             field("BA Qty. on Sales Quote"; Rec."BA Qty. on Sales Quote")

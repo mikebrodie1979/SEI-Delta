@@ -1429,6 +1429,24 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnBeforeValidateEvent', 'Description', false, false)]
+    local procedure ItemOnBeforeValidateDescription(var Rec: Record Item; var xRec: Record Item)
+    begin
+        if Rec.Description <> xRec.Description then
+            if StrLen(Rec.Description) > 40 then
+                Error(DescripLengthErr, Rec.FieldCaption(Description), StrLen(Rec.Description));
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnBeforeValidateEvent', 'Description 2', false, false)]
+    local procedure ItemOnBeforeValidateDescription2(var Rec: Record Item; var xRec: Record Item)
+    begin
+        if Rec."Description 2" <> xRec."Description 2" then
+            if StrLen(Rec."Description 2") > 40 then
+                Error(DescripLengthErr, Rec.FieldCaption("Description 2"), StrLen(Rec."Description 2"));
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -1449,4 +1467,5 @@ codeunit 75010 "BA SEI Subscibers"
         TitleMsg: Label 'Job Queue Failed:';
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
         LocalCurrency: Label 'local (LCY)';
+        DescripLengthErr: Label '%1 can only have at most 40 characters, currently %2.';
 }
