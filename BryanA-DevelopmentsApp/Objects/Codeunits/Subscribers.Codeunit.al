@@ -1460,6 +1460,21 @@ codeunit 75010 "BA SEI Subscibers"
                 end;
                 RecordLink2.Insert(false);
             until RecordLink.Next() = 0;
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnBeforeValidateEvent', 'Description', false, false)]
+    local procedure ItemOnBeforeValidateDescription(var Rec: Record Item; var xRec: Record Item)
+    begin
+        if Rec.Description <> xRec.Description then
+            if StrLen(Rec.Description) > 40 then
+                Error(DescripLengthErr, Rec.FieldCaption(Description), StrLen(Rec.Description));
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnBeforeValidateEvent', 'Description 2', false, false)]
+    local procedure ItemOnBeforeValidateDescription2(var Rec: Record Item; var xRec: Record Item)
+    begin
+        if Rec."Description 2" <> xRec."Description 2" then
+            if StrLen(Rec."Description 2") > 40 then
+                Error(DescripLengthErr, Rec.FieldCaption("Description 2"), StrLen(Rec."Description 2"));
     end;
 
 
@@ -1483,4 +1498,5 @@ codeunit 75010 "BA SEI Subscibers"
         TitleMsg: Label 'Job Queue Failed:';
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
         LocalCurrency: Label 'local (LCY)';
+        DescripLengthErr: Label '%1 can only have at most 40 characters, currently %2.';
 }
