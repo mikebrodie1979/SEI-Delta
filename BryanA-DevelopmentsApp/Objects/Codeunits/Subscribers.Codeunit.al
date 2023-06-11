@@ -1399,10 +1399,17 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not GLAccount.Get(PurchLine."No.") then
             exit;
-        if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
-            Error(OrderTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
-        PurchLine.TestField("BA SEI Order No.");
-        PurchLine.TestField("BA Freight Charge Type");
+        if not GLAccount."BA Freight Charge" or not GLAccount."BA Transfer Charge" then
+            exit;
+        if PurchLine."BA SEI Order Type" <> PurchLine."BA SEI Order Type"::" " then begin
+            PurchLine.TestField("BA SEI Order No.");
+            PurchLine.TestField("BA Freight Charge Type");
+        end;
+        if PurchLine."BA Freight Charge Type" <> PurchLine."BA Freight Charge Type"::" " then begin
+            PurchLine.TestField("BA SEI Order No.");
+            if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+                Error(OrderTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
+        end;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforeInsertTransShptHeader', '', false, false)]

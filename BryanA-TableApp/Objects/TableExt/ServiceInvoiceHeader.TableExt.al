@@ -35,6 +35,13 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Description = 'Used for Lookup DropDown';
             Editable = false;
         }
+        field(80036; "BA Bill-to Name DrillDown"; Text[100])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Bill-to Name';
+            Description = 'Used for Lookup DropDown';
+            Editable = false;
+        }
     }
 
     keys
@@ -44,6 +51,6 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
 
     fieldgroups
     {
-        addlast(DropDown; "BA Order No. DrillDown", "No.", "ENC External Document No.", "BA Posting Date DrillDown", "BA Ship-to Name DrillDown", "ENC Shipping Agent Code", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
+        addlast(DropDown; "BA Order No. DrillDown", "No.", "ENC External Document No.", "BA Posting Date DrillDown", "BA Bill-to Name DrillDown", "BA Ship-to Name DrillDown", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
     }
 }
