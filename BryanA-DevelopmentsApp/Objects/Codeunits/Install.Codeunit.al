@@ -76,6 +76,13 @@ codeunit 75011 "BA Install Codeunit"
                 if not DocNos1.Contains(SalesInvoiceHeader.RecordId()) then
                     DocNos1.Add(SalesInvoiceHeader.RecordId());
             until SalesInvoiceHeader.Next() = 0;
+        SalesInvoiceHeader.Reset();
+        SalesInvoiceHeader.SetRange("BA Bill-to Name DrillDown", '');
+        if SalesInvoiceHeader.FindSet(true) then
+            repeat
+                if not DocNos1.Contains(SalesInvoiceHeader.RecordId()) then
+                    DocNos1.Add(SalesInvoiceHeader.RecordId());
+            until SalesInvoiceHeader.Next() = 0;
         foreach RecID in DocNos1 do begin
             SalesInvoiceHeader.Get(RecID);
             SalesInvoiceHeader."BA Order No. DrillDown" := SalesInvoiceHeader."Order No.";
@@ -86,6 +93,7 @@ codeunit 75011 "BA Install Codeunit"
             if (SalesInvoiceHeader."ENC Freight Term" <> '') and FreightTerm.Get(SalesInvoiceHeader."ENC Freight Term") then
                 SalesInvoiceHeader."BA Freight Term Name" := FreightTerm.Description;
             SalesInvoiceHeader."BA Posting Date DrillDown" := SalesInvoiceHeader."Posting Date";
+            SalesInvoiceHeader."BA Bill-to Name DrillDown" := SalesInvoiceHeader."Bill-to Name";
             SalesInvoiceHeader.Modify(false);
         end;
 
@@ -127,6 +135,13 @@ codeunit 75011 "BA Install Codeunit"
                 if not DocNos2.Contains(ServiceInvoiceHeader.RecordId()) then
                     DocNos2.Add(ServiceInvoiceHeader.RecordId());
             until ServiceInvoiceHeader.Next() = 0;
+        ServiceInvoiceHeader.Reset();
+        ServiceInvoiceHeader.SetRange("BA Bill-to Name DrillDown", '');
+        if ServiceInvoiceHeader.FindSet(true) then
+            repeat
+                if not DocNos2.Contains(ServiceInvoiceHeader.RecordId()) then
+                    DocNos2.Add(ServiceInvoiceHeader.RecordId());
+            until ServiceInvoiceHeader.Next() = 0;
         foreach RecID in DocNos2 do begin
             ServiceInvoiceHeader.Get(RecID);
             ServiceInvoiceHeader."BA Order No. DrillDown" := ServiceInvoiceHeader."Order No.";
@@ -136,6 +151,7 @@ codeunit 75011 "BA Install Codeunit"
                 ServiceInvoiceHeader."BA Freight Term Name" := FreightTerm.Description;
             ServiceInvoiceHeader."BA Posting Date DrillDown" := ServiceInvoiceHeader."Posting Date";
             ServiceInvoiceHeader."BA Ship-to Name DrillDown" := ServiceInvoiceHeader."Ship-to Name";
+            ServiceInvoiceHeader."BA Bill-to Name DrillDown" := ServiceInvoiceHeader."Bill-to Name";
             ServiceInvoiceHeader.Modify(false);
         end;
 
