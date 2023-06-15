@@ -1479,6 +1479,26 @@ codeunit 75010 "BA SEI Subscibers"
                 Error(DescripLengthErr, Rec.FieldCaption("Description 2"), StrLen(Rec."Description 2"));
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterValidateEvent', 'No.', false, false)]
+    local procedure SalesLineOnAfterValidateNo(var Rec: Record "Sales Line"; var xRec: Record "Sales Line")
+    var
+        Item: Record Item;
+    begin
+        if (Rec.Type <> Rec.Type::Item) or (Rec."No." = xRec."No.") or not Item.Get(Rec."No.") then
+            exit;
+        Item.TestField("ENC Not for Sale", false);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterTestSalesLine', '', false, false)]
+    local procedure SalesPostOnAfterTestSalesLine(SalesLine: Record "Sales Line")
+    var
+        Item: Record Item;
+    begin
+        if (SalesLine.Type <> SalesLine.Type::Item) or not Item.Get(SalesLine."No.") then
+            exit;
+        Item.TestField("ENC Not for Sale", false);
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
