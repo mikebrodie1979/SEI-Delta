@@ -1502,11 +1502,32 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnAfterPopulateApprovalEntryArgument', '', false, false)]
     local procedure ApprovalsMgtOnAfterPopulateApprovalEntryArgument(RecRef: RecordRef; var ApprovalEntryArgument: Record "Approval Entry")
+    var
+        SalesHeader: Record "Sales Header";
+        SalesLine: Record "Sales Line";
+        OutstandingAmt: Decimal;
+        OutstandingAmtLCY: Decimal;
     begin
-
-
+        if (RecRef.Number <> Database::"Sales Header") then
+            exit;
+        RecRef.SetTable(SalesHeader);
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", SalesHeader."No.");
+        if SalesLine.FindSet() then
+            repeat
+                OutstandingAmt += SalesLine."Outstanding Amount";
+                OutstandingAmtLCY += SalesLine."Outstanding Amount (LCY)";
+            until SalesLine.Next() = 0;
+        ApprovalEntryArgument."BA Remaining Amount" := OutstandingAmt;
+        ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmtLCY;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnBeforeApprovalEntryInsert', '', false, false)]
+    local procedure ApprovalsMgtOnBeforeApprovalEntryInsert(var ApprovalEntry: Record "Approval Entry"; ApprovalEntryArgument: Record "Approval Entry")
+    begin
+        ApprovalEntry."BA Remaining Amount" := ApprovalEntryArgument."BA Remaining Amount";
+        ApprovalEntry."BA Remaining Amount (LCY)" := ApprovalEntryArgument."BA Remaining Amount (LCY)";
+    end;
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
