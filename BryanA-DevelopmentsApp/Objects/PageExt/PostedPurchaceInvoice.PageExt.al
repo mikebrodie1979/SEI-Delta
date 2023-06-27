@@ -79,6 +79,7 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
             field("User ID"; Rec."User ID")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
     }
