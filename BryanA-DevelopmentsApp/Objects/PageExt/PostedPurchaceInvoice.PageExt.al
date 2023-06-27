@@ -74,5 +74,12 @@ pageextension 80040 "BA Post. Purch. Inv." extends "Posted Purchase Invoice"
                 Visible = true;
             }
         }
+        addlast(General)
+        {
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }
