@@ -24,6 +24,13 @@ pageextension 80012 "BA Posted Purch. Invoices" extends "Posted Purchase Invoice
             ApplicationArea = all;
             Caption = 'Country';
         }
+        addlast(Control1)
+        {
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnOpenPage()
