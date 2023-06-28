@@ -8,6 +8,21 @@ tableextension 80101 "BA Approval Entry" extends "Approval Entry"
             Caption = 'Journal Batch Name';
             TableRelation = "Item Journal Batch".Name where ("Journal Template Name" = const ('ITEM'));
         }
+
+        field(80005; "BA Last Sales Activity"; Date)
+        {
+            Caption = 'Last Sales Activity';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = lookup (Customer."BA Last Sales Activity" where ("No." = Field ("BA Customer No.")));
+        }
+        field(80006; "BA Salesperson Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Salesperson Code';
+            Editable = false;
+            TableRelation = "Salesperson/Purchaser".Code;
+        }
         field(80010; "BA Customer No."; Code[20])
         {
             DataClassification = CustomerContent;
@@ -34,27 +49,13 @@ tableextension 80101 "BA Approval Entry" extends "Approval Entry"
             Caption = 'Credit Limit';
             Editable = false;
         }
-        field(80005; "BA Last Sales Activity"; Date)
-        {
-            Caption = 'Last Sales Activity';
-            Editable = false;
-            FieldClass = FlowField;
-            CalcFormula = lookup (Customer."BA Last Sales Activity" where ("No." = Field ("BA Customer No.")));
-        }
-        field(80006; "BA Salesperson Code"; Code[20])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Salesperson Code';
-            Editable = false;
-            TableRelation = "Salesperson/Purchaser".Code;
-        }
-        field(80010; "BA Remaining Amount"; Decimal)
+        field(80020; "BA Remaining Amount"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Remaining Amount';
             Editable = false;
         }
-        field(80011; "BA Remaining Amount (LCY)"; Decimal)
+        field(80021; "BA Remaining Amount (LCY)"; Decimal)
         {
             DataClassification = CustomerContent;
             Caption = 'Remaining Amount ($)';
