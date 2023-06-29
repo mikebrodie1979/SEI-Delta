@@ -2073,20 +2073,22 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
         OutstandingAmt: Decimal;
-        OutstandingAmtLCY: Decimal;
     begin
         if (RecRef.Number <> Database::"Sales Header") then
             exit;
         RecRef.SetTable(SalesHeader);
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
         SalesLine.SetRange("Document No.", SalesHeader."No.");
+        SalesLine.SetFilter(Quantity, '<>%1', 0);
         if SalesLine.FindSet() then
             repeat
-                OutstandingAmt += SalesLine."Outstanding Amount";
-                OutstandingAmtLCY += SalesLine."Outstanding Amount (LCY)";
+                OutstandingAmt += SalesLine.CalcLineAmount() * SalesLine."Outstanding Quantity" / SalesLine.Quantity;
             until SalesLine.Next() = 0;
         ApprovalEntryArgument."BA Remaining Amount" := OutstandingAmt;
-        ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmtLCY;
+        if SalesHeader."Currency Factor" = 0 then
+            ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmt
+        else
+            ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmt * SalesHeader."Currency Factor";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnBeforeApprovalEntryInsert', '', false, false)]
