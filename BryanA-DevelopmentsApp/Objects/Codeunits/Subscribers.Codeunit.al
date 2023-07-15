@@ -2088,7 +2088,7 @@ codeunit 75010 "BA SEI Subscibers"
         if SalesHeader."Currency Factor" = 0 then
             ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmt
         else
-            ApprovalEntryArgument."BA Remaining Amount (LCY)" := OutstandingAmt * SalesHeader."Currency Factor";
+            ApprovalEntryArgument."BA Remaining Amount (LCY)" := Round(OutstandingAmt / SalesHeader."Currency Factor", 0.01);
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnBeforeApprovalEntryInsert', '', false, false)]
