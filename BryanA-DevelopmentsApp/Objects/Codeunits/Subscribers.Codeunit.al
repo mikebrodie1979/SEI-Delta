@@ -1399,7 +1399,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if not GLAccount.Get(PurchLine."No.") then
             exit;
-        if not GLAccount."BA Freight Charge" or not GLAccount."BA Transfer Charge" then
+        if not GLAccount."BA Freight Charge" and not GLAccount."BA Transfer Charge" then
             exit;
         if PurchLine."BA SEI Order Type" <> PurchLine."BA SEI Order Type"::" " then begin
             PurchLine.TestField("BA SEI Order No.");
