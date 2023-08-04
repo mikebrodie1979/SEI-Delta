@@ -2,6 +2,17 @@ pageextension 80155 "BA Requests to Approve" extends "Requests to Approve"
 {
     layout
     {
+        addafter("Amount (LCY)")
+        {
+            field("BA Remaining Amount"; Rec."BA Remaining Amount")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Remaining Amount (LCY)"; Rec."BA Remaining Amount (LCY)")
+            {
+                ApplicationArea = all;
+            }
+        }
         addlast(Control1)
         {
             field("BA Customer No."; Rec."BA Customer No.")

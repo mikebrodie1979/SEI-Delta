@@ -42,5 +42,17 @@ tableextension 80089 "BA Approval Entry" extends "Approval Entry"
             Editable = false;
             TableRelation = "Salesperson/Purchaser".Code;
         }
+        field(80010; "BA Remaining Amount"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Remaining Amount';
+            Editable = false;
+        }
+        field(80011; "BA Remaining Amount (LCY)"; Decimal)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Remaining Amount ($)';
+            Editable = false;
+        }
     }
 }
