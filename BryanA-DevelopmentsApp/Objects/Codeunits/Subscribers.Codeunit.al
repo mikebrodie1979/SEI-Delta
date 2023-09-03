@@ -1531,6 +1531,37 @@ codeunit 75010 "BA SEI Subscibers"
         ApprovalEntry."BA Remaining Amount (LCY)" := ApprovalEntryArgument."BA Remaining Amount (LCY)";
     end;
 
+
+
+
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'Description', false, false)]
+    local procedure ItemOnAfterValidateDescription(var Rec: Record Item; var xRec: Record Item)
+    var
+        ProdBOMLine: Record "Production BOM Line";
+    begin
+        if Rec.Description = xRec.Description then
+            exit;
+        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
+        ProdBOMLine.SetRange("No.", Rec."No.");
+        ProdBOMLine.ModifyAll(Description, Rec.Description, false);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'Description 2', false, false)]
+    local procedure ItemOnAfterValidateDescription2(var Rec: Record Item; var xRec: Record Item)
+    var
+        ProdBOMLine: Record "Production BOM Line";
+        NewDescr: Text;
+    begin
+        if Rec."Description 2" = xRec."Description 2" then
+            exit;
+        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
+        ProdBOMLine.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec."Description 2", 1, MaxStrLen(ProdBOMLine."Description 2"));
+        ProdBOMLine.ModifyAll("Description 2", NewDescr, false);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
