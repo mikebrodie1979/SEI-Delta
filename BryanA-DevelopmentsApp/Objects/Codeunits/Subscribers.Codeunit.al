@@ -1547,6 +1547,64 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'Description', false, false)]
+    local procedure ItemOnAfterValidateDescription(var Rec: Record Item; var xRec: Record Item)
+    var
+        ProdBOMLine: Record "Production BOM Line";
+        AssemblyLine: Record "Assembly Line";
+        BOMComponent: Record "BOM Component";
+        NewDescr: Text;
+    begin
+        if Rec.Description = xRec.Description then
+            exit;
+        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
+        ProdBOMLine.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec.Description, 1, MaxStrLen(ProdBOMLine.Description));
+        ProdBOMLine.ModifyAll(Description, NewDescr, false);
+
+        AssemblyLine.SetRange(Type, AssemblyLine.Type::Item);
+        AssemblyLine.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec.Description, 1, MaxStrLen(AssemblyLine.Description));
+        AssemblyLine.ModifyAll(Description, NewDescr, false);
+
+        BOMComponent.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec.Description, 1, MaxStrLen(BOMComponent.Description));
+        BOMComponent.ModifyAll(Description, NewDescr, false);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::Item, 'OnAfterValidateEvent', 'Description 2', false, false)]
+    local procedure ItemOnAfterValidateDescription2(var Rec: Record Item; var xRec: Record Item)
+    var
+        ProdBOMLine: Record "Production BOM Line";
+        AssemblyLine: Record "Assembly Line";
+        BOMComponent: Record "BOM Component";
+        NewDescr: Text;
+    begin
+        if Rec."Description 2" = xRec."Description 2" then
+            exit;
+        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
+        ProdBOMLine.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec."Description 2", 1, MaxStrLen(ProdBOMLine."ENC Description 2"));
+        ProdBOMLine.ModifyAll("ENC Description 2", NewDescr, false);
+
+        AssemblyLine.SetRange(Type, AssemblyLine.Type::Item);
+        AssemblyLine.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec."Description 2", 1, MaxStrLen(AssemblyLine."Description 2"));
+        AssemblyLine.ModifyAll("Description 2", NewDescr, false);
+
+        BOMComponent.SetRange("No.", Rec."No.");
+        NewDescr := CopyStr(Rec."Description 2", 1, MaxStrLen(BOMComponent."BA Description 2"));
+        BOMComponent.ModifyAll("BA Description 2", NewDescr, false);
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"BOM Buffer", 'OnTransferFromBOMCompCopyFields', '', false, false)]
+    local procedure BOMBufferOnTransferFromBOMCompCopyFields(var BOMBuffer: Record "BOM Buffer"; BOMComponent: Record "BOM Component")
+    begin
+        BOMBuffer."BA Description 2" := BOMComponent."BA Description 2";
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';

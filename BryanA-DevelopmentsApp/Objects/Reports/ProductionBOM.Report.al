@@ -38,7 +38,7 @@ report 50070 "BA Production BOM"
                 column(Association; "ENC Association") { }
                 column(AuthorizeItem; "ENC Authorize Item") { }
                 column(Line_Description; Description) { }
-                column(Line_Desc2; "ENC Desc2") { }
+                column(Line_Desc2; "ENC Description 2") { }
                 column(LineDescription2; "ENC Description 2") { }
                 column(Quantity; Round(Quantity, 0.01)) { }
                 column(QuantityPer; Round("Quantity per", 0.01)) { }
