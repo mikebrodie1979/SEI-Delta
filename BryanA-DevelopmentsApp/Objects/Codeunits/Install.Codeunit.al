@@ -11,11 +11,23 @@ codeunit 75011 "BA Install Codeunit"
 
     trigger OnInstallAppPerCompany()
     begin
-        AddCustomerSalesActivity();
+        // AddCustomerSalesActivity();
         // AddNewDimValues();
-        AddJobQueueFailNotificationSetup();
-        PopulateCustomerPostingGroupCurrencies();
-        PopulateCountryRegionDimensions();
+        // AddJobQueueFailNotificationSetup();
+        // PopulateCustomerPostingGroupCurrencies();
+        // PopulateCountryRegionDimensions();
+        // UpdateItemDescriptions();
+    end;
+
+    local procedure UpdateItemDescriptions()
+    var
+        Item: Record Item;
+    begin
+        if Item.FindSet() then
+            repeat
+                Item.Validate(Description);
+                Item.Validate("Description 2");
+            until Item.Next() = 0;
     end;
 
 
