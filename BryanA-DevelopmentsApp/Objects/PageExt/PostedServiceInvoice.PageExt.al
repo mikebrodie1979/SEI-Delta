@@ -47,5 +47,13 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 Editable = false;
             }
         }
+        addBefore(ServInvLines)
+        {
+            part(ServLines; "Service Invoice Subform")
+            {
+                ApplicationArea = all;
+                SubPageLink =
+            }
+        }
     }
 }
