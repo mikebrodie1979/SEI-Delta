@@ -15,6 +15,10 @@ page 80030 "BA Posted Service Shpt. Lines"
                 {
                     ApplicationArea = all;
                 }
+                field(Type; Rec.Type)
+                {
+                    ApplicationArea = all;
+                }
                 field("Service Item Serial No."; Rec."Service Item Serial No.")
                 {
                     ApplicationArea = all;

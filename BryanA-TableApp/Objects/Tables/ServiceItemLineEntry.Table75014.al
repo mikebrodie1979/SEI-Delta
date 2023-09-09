@@ -1,10 +1,7 @@
 table 75014 "BA Service Item Line Entry"
 {
     Caption = 'Service Item Line Entry';
-    DrillDownPageID = "Service Item Lines";
-    LookupPageID = "Service Item Lines";
-    Permissions = TableData "Loaner Entry" = rimd,
-         TableData "Service Order Allocation" = rimd;
+    DataClassification = CustomerContent;
 
     fields
     {
@@ -13,8 +10,6 @@ table 75014 "BA Service Item Line Entry"
             Caption = 'Source Document No.';
             Editable = false;
             TableRelation = "Service Header"."No." WHERE ("Document Type" = FIELD ("Document Type"));
-
-
         }
         field(2; "Line No."; Integer)
         {
@@ -391,42 +386,9 @@ table 75014 "BA Service Item Line Entry"
 
     keys
     {
-        key(Key1; "Document Type", "Document No.", "Line No.")
+        key(Key1; "Document Type", "Source Document No.", "Line No.")
         {
             Clustered = true;
-        }
-        key(Key2; "Document No.", "Line No.", "Document Type")
-        {
-        }
-        key(Key3; "Document Type", "Document No.", "Service Item No.", "Contract No.", "Contract Line No.")
-        {
-            MaintainSQLIndex = false;
-        }
-        key(Key4; "Service Item No.")
-        {
-        }
-        key(Key5; "Document Type", "Document No.", "Response Date", "Response Time")
-        {
-        }
-        key(Key6; "Response Date", "Response Time", Priority)
-        {
-        }
-        key(Key7; "Loaner No.")
-        {
-        }
-        key(Key8; "Document Type", "Document No.", "Starting Date", "Starting Time")
-        {
-            MaintainSQLIndex = false;
-        }
-        key(Key9; "Document Type", "Document No.", "Finishing Date", "Finishing Time")
-        {
-            MaintainSQLIndex = false;
-        }
-        key(Key10; "Fault Reason Code")
-        {
-        }
-        key(Key11; "Contract No.")
-        {
         }
     }
 
