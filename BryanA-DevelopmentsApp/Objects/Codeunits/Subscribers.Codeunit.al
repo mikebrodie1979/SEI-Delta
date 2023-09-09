@@ -2124,7 +2124,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if Rec.Description = xRec.Description then
             exit;
-        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
         ProdBOMLine.SetRange("No.", Rec."No.");
         NewDescr := CopyStr(Rec.Description, 1, MaxStrLen(ProdBOMLine.Description));
         ProdBOMLine.ModifyAll(Description, NewDescr, false);
@@ -2149,7 +2148,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if Rec."Description 2" = xRec."Description 2" then
             exit;
-        ProdBOMLine.SetRange(Type, ProdBOMLine.Type::Item);
         ProdBOMLine.SetRange("No.", Rec."No.");
         NewDescr := CopyStr(Rec."Description 2", 1, MaxStrLen(ProdBOMLine."ENC Description 2"));
         ProdBOMLine.ModifyAll("ENC Description 2", NewDescr, false);
