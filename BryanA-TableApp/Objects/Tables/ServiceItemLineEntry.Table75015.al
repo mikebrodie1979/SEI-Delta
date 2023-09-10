@@ -1,4 +1,4 @@
-table 75014 "BA Service Item Line Entry"
+table 75015 "BA Service Item Line Entry"
 {
     Caption = 'Service Item Line Entry';
     DataClassification = CustomerContent;
