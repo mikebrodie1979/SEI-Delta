@@ -9,7 +9,7 @@ table 75014 "BA Service Item Line Entry"
         {
             Caption = 'Source Document No.';
             Editable = false;
-            TableRelation = "Service Header"."No." WHERE ("Document Type" = FIELD ("Document Type"));
+            TableRelation = "Service Header"."No." WHERE("Document Type" = FIELD("Document Type"));
         }
         field(2; "Line No."; Integer)
         {
@@ -19,35 +19,28 @@ table 75014 "BA Service Item Line Entry"
         {
             Caption = 'Service Item No.';
             TableRelation = "Service Item"."No.";
-
-
         }
         field(4; "Service Item Group Code"; Code[10])
         {
             Caption = 'Service Item Group Code';
             TableRelation = "Service Item Group".Code;
-
         }
         field(5; "Item No."; Code[20])
         {
             Caption = 'Item No.';
             TableRelation = Item."No.";
-
         }
         field(6; "Serial No."; Code[50])
         {
             Caption = 'Serial No.';
-
         }
         field(7; Description; Text[100])
         {
             Caption = 'Description';
-
         }
         field(8; "Description 2"; Text[50])
         {
             Caption = 'Description 2';
-
         }
         field(9; "Repair Status Code"; Code[10])
         {
@@ -131,11 +124,11 @@ table 75014 "BA Service Item Line Entry"
         field(26; "Contract No."; Code[20])
         {
             Caption = 'Contract No.';
-            TableRelation = "Service Contract Header"."Contract No." WHERE ("Contract Type" = CONST (Contract));
+            TableRelation = "Service Contract Header"."Contract No." WHERE("Contract Type" = CONST(Contract));
         }
         field(27; "Location of Service Item"; Text[30])
         {
-            CalcFormula = Lookup ("Service Item"."Location of Service Item" WHERE ("No." = FIELD ("Service Item No.")));
+            CalcFormula = Lookup("Service Item"."Location of Service Item" WHERE("No." = FIELD("Service Item No.")));
             Caption = 'Location of Service Item';
             Editable = false;
             FieldClass = FlowField;
@@ -183,51 +176,18 @@ table 75014 "BA Service Item Line Entry"
         field(35; "Fault Code"; Code[10])
         {
             Caption = 'Fault Code';
-            TableRelation = "Fault Code".Code WHERE ("Fault Area Code" = FIELD ("Fault Area Code"),
-                          "Symptom Code" = FIELD ("Symptom Code"));
+            TableRelation = "Fault Code".Code WHERE("Fault Area Code" = FIELD("Fault Area Code"),
+                          "Symptom Code" = FIELD("Symptom Code"));
         }
         field(36; "Resolution Code"; Code[10])
         {
             Caption = 'Resolution Code';
             TableRelation = "Resolution Code";
         }
-        field(37; "Fault Comment"; Boolean)
-        {
-            CalcFormula = Exist ("Service Comment Line" WHERE ("Table Name" = CONST ("Service Header"),
-                               "Table Subtype" = FIELD ("Document Type"),
-                               "No." = FIELD ("Source Document No."),
-                               Type = CONST (Fault),
-                               "Table Line No." = FIELD ("Line No.")));
-            Caption = 'Fault Comment';
-            Editable = false;
-            FieldClass = FlowField;
-        }
-        field(38; "Resolution Comment"; Boolean)
-        {
-            CalcFormula = Exist ("Service Comment Line" WHERE ("Table Name" = CONST ("Service Header"),
-                               "Table Subtype" = FIELD ("Document Type"),
-                               "No." = FIELD ("Source Document No."),
-                               Type = CONST (Resolution),
-                               "Table Line No." = FIELD ("Line No.")));
-            Caption = 'Resolution Comment';
-            Editable = false;
-            FieldClass = FlowField;
-        }
         field(40; "Variant Code"; Code[10])
         {
             Caption = 'Variant Code';
-            TableRelation = "Item Variant".Code WHERE ("Item No." = FIELD ("Item No."));
-        }
-        field(41; "Service Item Loaner Comment"; Boolean)
-        {
-            CalcFormula = Exist ("Service Comment Line" WHERE ("Table Name" = CONST ("Service Header"),
-                               "Table Subtype" = FIELD ("Document Type"),
-                               "No." = FIELD ("Source Document No."),
-                               Type = CONST ("Service Item Loaner"),
-                               "Table Line No." = FIELD ("Line No.")));
-            Caption = 'Service Item Loaner Comment';
-            Editable = false;
-            FieldClass = FlowField;
+            TableRelation = "Item Variant".Code WHERE("Item No." = FIELD("Item No."));
         }
         field(42; "Actual Response Time (Hours)"; Decimal)
         {
@@ -258,35 +218,10 @@ table 75014 "BA Service Item Line Entry"
             Caption = 'Base Amount to Adjust';
             Editable = false;
         }
-        field(60; "No. of Active/Finished Allocs"; Integer)
-        {
-            CalcFormula = Count ("Service Order Allocation" WHERE ("Document Type" = FIELD ("Document Type"),
-                                 "Document No." = FIELD ("Source Document No."),
-                                 "Service Item Line No." = FIELD ("Line No."),
-                                 "Resource No." = FIELD ("Resource Filter"),
-                                 "Resource Group No." = FIELD ("Resource Group Filter"),
-                                 "Allocation Date" = FIELD ("Allocation Date Filter"),
-                                 Status = FILTER (Active | Finished)));
-            Caption = 'No. of Active/Finished Allocs';
-            Editable = false;
-            FieldClass = FlowField;
-        }
-        field(61; "No. of Allocations"; Integer)
-        {
-            CalcFormula = Count ("Service Order Allocation" WHERE (Status = FIELD ("Allocation Status Filter"),
-                                 "Resource No." = FIELD ("Resource Filter"),
-                                 "Resource Group No." = FIELD ("Resource Group Filter"),
-                                 "Document Type" = FIELD ("Document Type"),
-                                 "Document No." = FIELD ("Source Document No."),
-                                 "Service Item Line No." = FIELD ("Line No.")));
-            Caption = 'No. of Allocations';
-            Editable = false;
-            FieldClass = FlowField;
-        }
         field(62; "No. of Previous Services"; Integer)
         {
-            CalcFormula = Count ("Service Shipment Item Line" WHERE ("Item No." = FIELD ("Item No."),
-                                  "Serial No." = FIELD ("Serial No.")));
+            CalcFormula = Count("Service Shipment Item Line" WHERE("Item No." = FIELD("Item No."),
+                                  "Serial No." = FIELD("Serial No.")));
             Caption = 'No. of Previous Services';
             Editable = false;
             FieldClass = FlowField;
@@ -294,14 +229,14 @@ table 75014 "BA Service Item Line Entry"
         field(63; "Contract Line No."; Integer)
         {
             Caption = 'Contract Line No.';
-            TableRelation = "Service Contract Line"."Line No." WHERE ("Contract Type" = CONST (Contract),
-                                   "Contract No." = FIELD ("Contract No."));
+            TableRelation = "Service Contract Line"."Line No." WHERE("Contract Type" = CONST(Contract),
+                                   "Contract No." = FIELD("Contract No."));
         }
         field(64; "Ship-to Code"; Code[10])
         {
             Caption = 'Ship-to Code';
             Editable = false;
-            TableRelation = "Ship-to Address".Code WHERE ("Customer No." = FIELD ("Customer No."));
+            TableRelation = "Ship-to Address".Code WHERE("Customer No." = FIELD("Customer No."));
         }
         field(65; "Customer No."; Code[20])
         {
@@ -360,15 +295,15 @@ table 75014 "BA Service Item Line Entry"
         {
             CaptionClass = '1,2,1';
             Caption = 'Shortcut Dimension 1 Code';
-            TableRelation = "Dimension Value".Code WHERE ("Global Dimension No." = CONST (1),
-                             Blocked = CONST (false));
+            TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(1),
+                             Blocked = CONST(false));
         }
         field(101; "Shortcut Dimension 2 Code"; Code[20])
         {
             CaptionClass = '1,2,2';
             Caption = 'Shortcut Dimension 2 Code';
-            TableRelation = "Dimension Value".Code WHERE ("Global Dimension No." = CONST (2),
-                             Blocked = CONST (false));
+            TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(2),
+                             Blocked = CONST(false));
         }
         field(130; "Release Status"; Option)
         {
@@ -382,21 +317,30 @@ table 75014 "BA Service Item Line Entry"
             Editable = false;
             TableRelation = "Dimension Set Entry";
         }
+        field(500; "Entry No."; Integer)
+        {
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(510; "No. 2"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
+        field(511; "Document No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Editable = false;
+        }
     }
 
     keys
     {
-        key(Key1; "Document Type", "Source Document No.", "Line No.")
+        key(PK; "Entry No.")
         {
             Clustered = true;
         }
-    }
-
-    fieldgroups
-    {
-        fieldgroup(DropDown; "Service Item No.", Description, "Serial No.")
-        {
-        }
+        key(Key1; "Document Type", "Source Document No.", "Line No.") { }
     }
 }
 
