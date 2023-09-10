@@ -1,4 +1,4 @@
-page 80030 "BA Service Item Line Entries"
+page 50067 "BA Service Item Line Entries"
 {
     PageType = ListPart;
     SourceTable = "BA Service Item Line Entry";
