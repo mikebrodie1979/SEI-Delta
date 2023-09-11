@@ -1612,4 +1612,4 @@ codeunit 75010 "BA SEI Subscibers"
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
         LocalCurrency: Label 'local (LCY)';
         DescripLengthErr: Label '%1 can only have at most 40 characters, currently %2.';
-}
+}//
