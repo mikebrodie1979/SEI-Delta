@@ -1591,6 +1591,20 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Production BOM Line", 'OnAfterValidateEvent', 'No.', false, false)]
+    local procedure ProdBOMLineOnAfterValidateNo(var Rec: Record "Production BOM Line"; var xRec: Record "Production BOM Line")
+    var
+        Item: Record Item;
+    begin
+        if (Rec."No." <> xRec."No.") and Item.Get(Rec."No.") then
+            Rec.Validate("ENC Description 2", Item."Description 2");
+        s
+    end;
+
+
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
