@@ -74,6 +74,7 @@ pageextension 80062 "BA Posted Sales Cr.Memo" extends "Posted Sales Credit Memo"
             field("User ID"; Rec."User ID")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
     }

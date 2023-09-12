@@ -52,6 +52,7 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
             field("User ID"; Rec."User ID")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
     }

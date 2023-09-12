@@ -89,6 +89,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             field("User ID"; Rec."User ID")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
     }
