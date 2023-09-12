@@ -2184,6 +2184,30 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Deposit-Post", 'OnBeforeDepositPost', '', false, false)]
+    local procedure DepositPostOnBeforeCheckDepositPost(DepositHeader: Record "Deposit Header")
+    var
+        GenJnlLine: Record "Gen. Journal Line";
+        Customer: Record Customer;
+    begin
+        GenJnlLine.SetRange("Journal Template Name", DepositHeader."Journal Template Name");
+        GenJnlLine.SetRange("Journal Batch Name", DepositHeader."Journal Batch Name");
+        GenJnlLine.SetRange("Account Type", GenJnlLine."Account Type"::Customer);
+        GenJnlLine.SetFilter("Account No.", '<>%1', '');
+        if GenJnlLine.FindSet() then
+            repeat
+                Customer.Get(GenJnlLine."Account No.");
+                if Customer."Currency Code" <> DepositHeader."Currency Code" then begin
+                    if not Confirm(CurrencyPostingMsg) then
+                        Error('');
+                    exit;
+                end;
+            until GenJnlLine.Next() = 0;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -2223,4 +2247,5 @@ codeunit 75010 "BA SEI Subscibers"
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
         LocalCurrency: Label 'local (LCY)';
         DescripLengthErr: Label '%1 can only have at most 40 characters, currently %2.';
+        CurrencyPostingMsg: Label 'The Currency Code of the deposit being posted does not match the Currency Code of the customer.\Continue with the posting?';
 }
