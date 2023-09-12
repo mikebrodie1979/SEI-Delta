@@ -52,6 +52,7 @@ pageextension 80064 "BA Posted Service Cr.Memo" extends "Posted Service Credit M
             field("User ID"; Rec."User ID")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
     }
