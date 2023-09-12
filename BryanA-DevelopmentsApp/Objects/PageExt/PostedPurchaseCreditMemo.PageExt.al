@@ -47,5 +47,12 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
                 Editable = false;
             }
         }
+        addlast(General)
+        {
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

@@ -47,5 +47,12 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 Editable = false;
             }
         }
+        addlast(General)
+        {
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }
