@@ -7,6 +7,26 @@ pageextension 80009 "BA Item Card" extends "Item Card"
             ApplicationArea = all;
             Caption = 'Description (Max. 40 Char.)';
         }
+        modify(GTIN)
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Item Category Code")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Automatic Ext. Texts")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Common Item No.")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
 
         addafter("Qty. on Sales Order")
         {
