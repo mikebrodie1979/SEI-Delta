@@ -79,5 +79,17 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
             }
         }
+        addafter("External Document No.")
+        {
+            field("ENC Assigned User ID"; "ENC Assigned User ID")
+            {
+                ApplicationArea = all;
+                Caption = 'Assigned User ID';
+            }
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

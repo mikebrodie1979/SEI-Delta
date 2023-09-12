@@ -17,6 +17,13 @@ pageextension 80013 "BA Posted Purch. Cr.Memos" extends "Posted Purchase Credit 
             ApplicationArea = all;
             Caption = 'Country';
         }
+        addlast(Control1)
+        {
+            field("User ID"; Rec."User ID")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnOpenPage()
