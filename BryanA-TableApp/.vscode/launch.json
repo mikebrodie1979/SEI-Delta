@@ -21,7 +21,8 @@
         //     "serverInstance": "Test",
         //     "authentication": "UserPassword",
         //     // "schemaUpdateMode": "ForceSync"
-        // },
+        // }
+        //,
         // {
         //     "type": "al",
         //     "request": "launch",
