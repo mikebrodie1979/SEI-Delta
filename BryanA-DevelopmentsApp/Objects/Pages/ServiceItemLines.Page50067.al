@@ -86,5 +86,6 @@ page 50067 "BA Service Item Lines"
                 end;
             until ServiceLedgerEntry.Next() = 0;
         Rec.Reset();
+        CurrPage.Update(true);
     end;
 }

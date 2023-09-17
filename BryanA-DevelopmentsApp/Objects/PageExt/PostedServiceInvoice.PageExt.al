@@ -52,20 +52,14 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
             part(ServLines; "BA Service Item Lines")
             {
                 ApplicationArea = all;
-                // SubPageLink = "Document No." = field ("No.");
                 Caption = 'Service Item Lines';
             }
         }
     }
 
-    trigger OnAfterGetCurrRecord()
+    trigger OnAfterGetRecord()
     begin
-        if DocNo <> Rec."No." then begin
-            CurrPage.ServLines.Page.SetSource(Rec."Order No.");
-            DocNo := Rec."No.";
-        end;
+        CurrPage.ServLines.Page.SetSource(Rec."Order No.");
+        // CurrPage.ServLines.Page.Update(false);
     end;
-
-    var
-        DocNo: Code[20];
 }
