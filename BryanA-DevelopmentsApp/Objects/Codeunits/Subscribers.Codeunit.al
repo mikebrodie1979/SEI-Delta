@@ -2170,6 +2170,15 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Production BOM Line", 'OnAfterValidateEvent', 'No.', false, false)]
+    local procedure ProdBOMLineOnAfterValidateNo(var Rec: Record "Production BOM Line"; var xRec: Record "Production BOM Line")
+    var
+        Item: Record Item;
+    begin
+        if (Rec."No." <> xRec."No.") and Item.Get(Rec."No.") then
+            Rec.Validate("ENC Description 2", Item."Description 2");
+    end;s
+
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Deposit-Post", 'OnBeforeDepositPost', '', false, false)]
@@ -2192,6 +2201,11 @@ codeunit 75010 "BA SEI Subscibers"
                 end;
             until GenJnlLine.Next() = 0;
     end;
+
+
+
+
+
 
 
     var
