@@ -2169,20 +2169,6 @@ codeunit 75010 "BA SEI Subscibers"
         BOMBuffer."BA Description 2" := BOMComponent."BA Description 2";
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Serv-Documents Mgt.", 'OnBeforeServShptItemLineInsert', '', false, false)]
-    local procedure ServDocsMgtOnBeforeServShptItemLineInsert(ServiceItemLine: Record "Service Item Line")
-    var
-        ServiceItemLineEntry: Record "BA Service Item Line Entry";
-        EntryNo: Integer;
-    begin
-        if ServiceItemLineEntry.FindLast() then
-            EntryNo := ServiceItemLineEntry."Entry No.";
-        ServiceItemLineEntry.TransferFields(ServiceItemLine);
-        ServiceItemLineEntry."Entry No." := EntryNo + 1;
-        ServiceItemLineEntry."No. 2" := ServiceItemLine."ENC No. 2";
-        ServiceItemLineEntry.Insert(true);
-    end;
-
 
 
 
