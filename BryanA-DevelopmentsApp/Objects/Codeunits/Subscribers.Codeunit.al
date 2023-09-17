@@ -2177,7 +2177,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if (Rec."No." <> xRec."No.") and Item.Get(Rec."No.") then
             Rec.Validate("ENC Description 2", Item."Description 2");
-    end;s
+    end;
 
 
 
