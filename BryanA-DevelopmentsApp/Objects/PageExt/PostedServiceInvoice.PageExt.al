@@ -53,6 +53,7 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
             {
                 ApplicationArea = all;
                 Caption = 'Service Item Lines';
+                SubPageLink = "No." = field ("BA Shipment No.");
             }
         }
         addlast(General)
@@ -65,9 +66,8 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
         }
     }
 
-    trigger OnAfterGetRecord()
+    trigger OnAfterGetCurrRecord()
     begin
-        CurrPage.ServLines.Page.SetSource(Rec."Order No.");
-        // CurrPage.ServLines.Page.Update(false);
+        Rec.CalcFields("BA Shipment No.");
     end;
 }
