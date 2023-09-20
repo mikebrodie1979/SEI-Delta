@@ -2169,7 +2169,6 @@ codeunit 75010 "BA SEI Subscibers"
         BOMBuffer."BA Description 2" := BOMComponent."BA Description 2";
     end;
 
-
     [EventSubscriber(ObjectType::Table, Database::"Production BOM Line", 'OnAfterValidateEvent', 'No.', false, false)]
     local procedure ProdBOMLineOnAfterValidateNo(var Rec: Record "Production BOM Line"; var xRec: Record "Production BOM Line")
     var
