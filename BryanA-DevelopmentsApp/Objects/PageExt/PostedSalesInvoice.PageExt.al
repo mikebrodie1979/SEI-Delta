@@ -75,6 +75,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
                 Caption = 'Source';
                 Editable = Editable;
+                TableRelation = "BA Sales Source".Name;
 
                 trigger OnValidate()
                 begin
