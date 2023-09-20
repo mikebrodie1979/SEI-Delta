@@ -70,13 +70,27 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addafter("Order No.")
         {
-            field("BA Sales Source"; "BA Sales Source")
+            field("BA Sales Source"; SalesSource)
             {
                 ApplicationArea = all;
+                Caption = 'Source';
+                Editable = Editable;
+
+                trigger OnValidate()
+                begin
+                    Rec."BA Sales Source" := SalesSource;
+                end;
             }
-            field("BA Web Lead Date"; "BA Web Lead Date")
+            field("BA Web Lead Date"; WebLeadDate)
             {
                 ApplicationArea = all;
+                Caption = 'Web Lead Date';
+                Editable = Editable;
+
+                trigger OnValidate()
+                begin
+                    Rec."BA Web Lead Date" := WebLeadDate;
+                end;
             }
         }
         addafter("External Document No.")
@@ -93,4 +107,17 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             }
         }
     }
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        SalesSource := Rec."BA Sales Source";
+        WebLeadDate := Rec."BA Web Lead Date";
+        Editable := CurrPage.Editable();
+    end;
+
+    var
+        SalesSource: Text[30];
+        WebLeadDate: Date;
+        [InDataSet]
+        Editable: Boolean;
 }
