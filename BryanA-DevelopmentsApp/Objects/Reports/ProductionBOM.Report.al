@@ -27,7 +27,7 @@ report 50070 "BA Production BOM"
 
             dataitem("Production BOM Line"; "Production BOM Line")
             {
-                DataItemLink = "Production BOM No." = field ("No."), "Version Code" = field ("BA Active Version");
+                DataItemLink = "Production BOM No." = field("No."), "Version Code" = field("BA Active Version");
 
                 column(Line_ProdBOMNo; "Production BOM No.") { }
                 column(Line_LineNo; "Line No.") { }

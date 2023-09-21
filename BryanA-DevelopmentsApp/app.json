@@ -33,5 +33,6 @@
     "to": 89999
   },
   "showMyCode": true,
-  "target": "Internal"
+  "target": "Internal",
+  "runtime" : "3.2"
 }

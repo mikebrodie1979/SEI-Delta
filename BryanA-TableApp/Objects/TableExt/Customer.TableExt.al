@@ -16,19 +16,19 @@ tableextension 80030 "BA Customer" extends Customer
         {
             Caption = 'Region';
             FieldClass = FlowField;
-            CalcFormula = lookup ("Country/Region"."BA Region" where (Code = field ("Country/Region Code")));
+            CalcFormula = lookup("Country/Region"."BA Region" where(Code = field("Country/Region Code")));
             Editable = false;
         }
-        field(80011; "BA County Fullname"; Text[30])
+        field(80011; "BA County Fullname"; Text[50])
         {
             Caption = 'Province/State Fullname';
             FieldClass = FlowField;
-            CalcFormula = lookup ("BA Province/State".Name where ("Print Full Name" = const (true), "Country/Region Code" = field ("Country/Region Code"), Symbol = field (County)));
+            CalcFormula = lookup("BA Province/State".Name where("Print Full Name" = const(true), "Country/Region Code" = field("Country/Region Code"), Symbol = field(County)));
             Editable = false;
         }
         modify(County)
         {
-            TableRelation = "BA Province/State".Symbol where ("Country/Region Code" = field ("Country/Region Code"));
+            TableRelation = "BA Province/State".Symbol where("Country/Region Code" = field("Country/Region Code"));
         }
         modify("Country/Region Code")
         {
@@ -45,27 +45,27 @@ tableextension 80030 "BA Customer" extends Customer
         {
             Caption = 'Outstanding Serv. Orders';
             FieldClass = FlowField;
-            CalcFormula = Sum ("Service Line"."Outstanding Amount" WHERE ("Document Type" = CONST (Order), "Bill-to Customer No." = FIELD ("No."),
-            "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
-            "Currency Code" = FIELD ("Currency Filter")));
+            CalcFormula = Sum("Service Line"."Outstanding Amount" WHERE("Document Type" = CONST(Order), "Bill-to Customer No." = FIELD("No."),
+            "Shortcut Dimension 1 Code" = FIELD("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD("Global Dimension 2 Filter"),
+            "Currency Code" = FIELD("Currency Filter")));
             Editable = false;
         }
         field(80021; "BA Serv Shipped Not Invoiced"; Decimal)
         {
             Caption = 'Serv Shipped Not Invoiced';
             FieldClass = FlowField;
-            CalcFormula = Sum ("Service Line"."Shipped Not Invoiced" WHERE ("Document Type" = CONST (Order), "Bill-to Customer No." = FIELD ("No."),
-            "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
-            "Currency Code" = FIELD ("Currency Filter")));
+            CalcFormula = Sum("Service Line"."Shipped Not Invoiced" WHERE("Document Type" = CONST(Order), "Bill-to Customer No." = FIELD("No."),
+            "Shortcut Dimension 1 Code" = FIELD("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD("Global Dimension 2 Filter"),
+            "Currency Code" = FIELD("Currency Filter")));
             Editable = false;
         }
         field(80022; "BA Outstanding Serv.Invoices"; Decimal)
         {
             Caption = 'Outstanding Serv.Invoices';
             FieldClass = FlowField;
-            CalcFormula = Sum ("Service Line"."Outstanding Amount" WHERE ("Document Type" = CONST (Invoice), "Bill-to Customer No." = FIELD ("No."),
-                "Shortcut Dimension 1 Code" = FIELD ("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD ("Global Dimension 2 Filter"),
-                "Currency Code" = FIELD ("Currency Filter")));
+            CalcFormula = Sum("Service Line"."Outstanding Amount" WHERE("Document Type" = CONST(Invoice), "Bill-to Customer No." = FIELD("No."),
+                "Shortcut Dimension 1 Code" = FIELD("Global Dimension 1 Filter"), "Shortcut Dimension 2 Code" = FIELD("Global Dimension 2 Filter"),
+                "Currency Code" = FIELD("Currency Filter")));
             Editable = false;
         }
         field(80025; "BA Credit Limit"; Decimal)

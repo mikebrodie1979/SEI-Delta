@@ -55,5 +55,19 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 Editable = false;
             }
         }
+        addBefore(ServInvLines)
+        {
+            part(ServLines; "BA Service Item Lines")
+            {
+                ApplicationArea = all;
+                Caption = 'Service Item Lines';
+                SubPageLink = "No." = field ("BA Shipment No.");
+            }
+        }
     }
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        Rec.CalcFields("BA Shipment No.");
+    end;
 }
