@@ -1,4 +1,4 @@
-tableextension 80038 "BA Service Inv. Header" extends "Service Invoice Header"
+tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
 {
     fields
     {
