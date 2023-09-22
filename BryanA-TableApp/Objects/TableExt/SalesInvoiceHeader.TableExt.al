@@ -2,6 +2,11 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
 {
     fields
     {
+        field(80005; "BA Package Tracking No. Date"; DateTime)
+        {
+            Caption = 'Package Tracking No. Last Modified';
+            Editable = false;
+        }
         field(80011; "BA Sell-to County Fullname"; Text[30])
         {
             DataClassification = CustomerContent;

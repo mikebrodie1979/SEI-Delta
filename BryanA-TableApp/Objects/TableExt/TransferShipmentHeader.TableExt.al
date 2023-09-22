@@ -14,5 +14,10 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
             Caption = 'Phone No.';
             Editable = false;
         }
+        field(80005; "BA Package Tracking No. Date"; DateTime)
+        {
+            Caption = 'Package Tracking No. Last Modified';
+            Editable = false;
+        }
     }
 }
