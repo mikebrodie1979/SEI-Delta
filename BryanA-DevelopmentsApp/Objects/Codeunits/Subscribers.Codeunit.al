@@ -6,6 +6,9 @@ codeunit 75010 "BA SEI Subscibers"
                   tabledata "Purch. Rcpt. Line" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
                   tabledata "Sales Shipment Header" = rimd,
+                  tabledata "Sales Invoice Header" = rimd,
+                  tabledata "Service Invoice Header" = rimd,
+                  tabledata "Transfer Shipment Header" = rimd,
                   tabledata "Item Ledger Entry" = rimd,
                   tabledata "Approval Entry" = rimd;
 
@@ -2204,6 +2207,33 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Invoice Header", 'OnAfterValidateEvent', 'Package Tracking No.', false, false)]
+    local procedure SalesInvoiceHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Sales Invoice Header"; var xRec: Record "Sales Invoice Header")
+    begin
+        if Rec."Package Tracking No." <> xRec."Package Tracking No." then begin
+            Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec.Modify(false);
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterValidateEvent', 'ENC Package Tracking No.', false, false)]
+    local procedure ServiceInvoiceHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Service Invoice Header"; var xRec: Record "Service Invoice Header")
+    begin
+        if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
+            Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec.Modify(false);
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Shipment Header", 'OnAfterValidateEvent', 'ENC Package Tracking No.', false, false)]
+    local procedure TransferShptHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Transfer Shipment Header"; var xRec: Record "Transfer Shipment Header")
+    begin
+        if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
+            Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec.Modify(false);
+        end;
+    end;
 
 
 

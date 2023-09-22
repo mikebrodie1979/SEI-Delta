@@ -14,6 +14,11 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
             Caption = 'Phone No.';
             Editable = false;
         }
+        field(80005; "BA Package Tracking No. Date"; DateTime)
+        {
+            Caption = 'Package Tracking No. Last Modified';
+            Editable = false;
+        }
         field(80030; "BA Trans. Order No. DrillDown"; Code[20])
         {
             DataClassification = CustomerContent;
@@ -38,5 +43,6 @@ tableextension 80023 "BA Transfer Shpt. Header" extends "Transfer Shipment Heade
     fieldgroups
     {
         addlast(DropDown; "No.", "Transfer Order No.", "Posting Date", "Transfer-to Name", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
+
     }
 }
