@@ -1654,7 +1654,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterValidateEvent', 'ENC Package Tracking No.', false, false)]
     local procedure ServiceInvoiceHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Service Invoice Header"; var xRec: Record "Service Invoice Header")
     begin
-        CheckFreightCarrier(Rec."Shipping Agent Code");
+        CheckFreightCarrier(Rec."ENC Shipping Agent Code");
         if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
             Rec.Modify(false);
