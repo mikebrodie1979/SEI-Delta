@@ -2211,6 +2211,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Sales Invoice Header", 'OnAfterValidateEvent', 'Package Tracking No.', false, false)]
     local procedure SalesInvoiceHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Sales Invoice Header"; var xRec: Record "Sales Invoice Header")
     begin
+        CheckFreightCarrier(Rec."Shipping Agent Code");
         if Rec."Package Tracking No." <> xRec."Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
             Rec.Modify(false);
@@ -2220,6 +2221,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterValidateEvent', 'ENC Package Tracking No.', false, false)]
     local procedure ServiceInvoiceHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Service Invoice Header"; var xRec: Record "Service Invoice Header")
     begin
+        CheckFreightCarrier(Rec."Shipping Agent Code");
         if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
             Rec.Modify(false);
@@ -2229,13 +2231,22 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Table, Database::"Transfer Shipment Header", 'OnAfterValidateEvent', 'ENC Package Tracking No.', false, false)]
     local procedure TransferShptHeaderOnAfterValidatePackageTrackingNo(var Rec: Record "Transfer Shipment Header"; var xRec: Record "Transfer Shipment Header")
     begin
+        CheckFreightCarrier(Rec."Shipping Agent Code");
         if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
             Rec.Modify(false);
         end;
     end;
 
-
+    local procedure CheckFreightCarrier(ShippingAgentCode: Code[10])
+    var
+        ShippingAgent: Record "Shipping Agent";
+    begin
+        if ShippingAgentCode = '' then
+            Error(NoFreightCarrierErr);
+        if ShippingAgent.Get(ShippingAgentCode) and ShippingAgent."BA Block Tracking No." then
+            Error(InvalidFreightCarrierErr);
+    end;
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
@@ -2277,4 +2288,6 @@ codeunit 75010 "BA SEI Subscibers"
         LocalCurrency: Label 'local (LCY)';
         DescripLengthErr: Label '%1 can only have at most 40 characters, currently %2.';
         CurrencyPostingMsg: Label 'The Currency Code of the deposit being posted does not match the Currency Code of the customer.\Continue with the posting?';
+        NoFreightCarrierErr: Label 'Freight Carrier must be specified.';
+        InvalidFreightCarrierErr: Label 'The value for Freight Carrier must be updated with the freight company before the tracking # can be entered.\ Please update the Freight Carrier field and try again.';
 }
