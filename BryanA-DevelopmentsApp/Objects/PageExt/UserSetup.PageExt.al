@@ -24,6 +24,10 @@ pageextension 80044 "BA User Setup" extends "User Setup"
             {
                 ApplicationArea = all;
             }
+            field("BA Can Edit Dimensions"; "BA Can Edit Dimensions")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
