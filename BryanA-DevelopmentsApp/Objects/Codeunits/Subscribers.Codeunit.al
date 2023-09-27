@@ -2248,6 +2248,21 @@ codeunit 75010 "BA SEI Subscibers"
             Error(InvalidFreightCarrierErr);
     end;
 
+
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterShowDimensions', '', false, false)]
+    local procedure SalesLineOnAfterShowDimensions(var Rec: Record "Sales Line"; IsChanged: Boolean)
+    var
+        UserSetup: Record "User Setup";
+    begin
+        If not IsChanged or not (Rec."Document Type" in [Rec."Document Type"::Quote, Rec."Document Type"::Order]) then
+            exit;
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Can Edit Dimensions" then
+            Error(DimPermissionErr);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -2290,4 +2305,5 @@ codeunit 75010 "BA SEI Subscibers"
         CurrencyPostingMsg: Label 'The Currency Code of the deposit being posted does not match the Currency Code of the customer.\Continue with the posting?';
         NoFreightCarrierErr: Label 'Freight Carrier must be specified.';
         InvalidFreightCarrierErr: Label 'The value for Freight Carrier must be updated with the freight company before the tracking # can be entered.\ Please update the Freight Carrier field and try again.';
+        DimPermissionErr: Label 'You do not have permission to edit dimensions.';
 }
