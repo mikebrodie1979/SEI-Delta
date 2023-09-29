@@ -30,7 +30,7 @@ tableextension 80024 "BA User Setup" extends "User Setup"
         field(80005; "BA Can Edit Dimensions"; Boolean)
         {
             DataClassification = CustomerContent;
-            Caption = 'Can Edit Dimensions';
+            Caption = 'Can Edit Dimensions on SQ/SO';
         }
     }
 }
