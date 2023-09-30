@@ -1647,6 +1647,7 @@ codeunit 75010 "BA SEI Subscibers"
         CheckFreightCarrier(Rec."Shipping Agent Code");
         if Rec."Package Tracking No." <> xRec."Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec."Package Tracking No." := Rec."Package Tracking No.".Replace(' ', '');
             Rec.Modify(false);
         end;
     end;
@@ -1657,6 +1658,7 @@ codeunit 75010 "BA SEI Subscibers"
         CheckFreightCarrier(Rec."ENC Shipping Agent Code");
         if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec."ENC Package Tracking No." := Rec."ENC Package Tracking No.".Replace(' ', '');
             Rec.Modify(false);
         end;
     end;
@@ -1667,6 +1669,7 @@ codeunit 75010 "BA SEI Subscibers"
         CheckFreightCarrier(Rec."Shipping Agent Code");
         if Rec."ENC Package Tracking No." <> xRec."ENC Package Tracking No." then begin
             Rec.Validate("BA Package Tracking No. Date", CurrentDateTime());
+            Rec."ENC Package Tracking No." := Rec."ENC Package Tracking No.".Replace(' ', '');
             Rec.Modify(false);
         end;
     end;
