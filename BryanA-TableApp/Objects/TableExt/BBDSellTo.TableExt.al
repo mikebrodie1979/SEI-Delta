@@ -46,4 +46,9 @@ tableextension 80027 "BA BBD Sell-To" extends "ENC BBD Sell-To"
             Caption = 'Contact';
         }
     }
+
+    fieldgroups
+    {
+        addlast(DropDown; "BA Address", "BA Address 2", "BA City", "BA Country/Region Code", "BA County", "BA Postal/Zip Code") { }
+    }
 }

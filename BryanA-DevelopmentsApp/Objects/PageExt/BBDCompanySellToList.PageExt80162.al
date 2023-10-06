@@ -1,4 +1,4 @@
-pageextension 80048 "BA BDD Sell To List" extends "ENC BBD Sell-To List"
+pageextension 80162 "BA Company Sell-To List" extends "ENC Company Sell-To List"
 {
     layout
     {
