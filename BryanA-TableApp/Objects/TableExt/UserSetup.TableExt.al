@@ -27,5 +27,10 @@ tableextension 80024 "BA User Setup" extends "User Setup"
             DataClassification = CustomerContent;
             Caption = 'Receive Job Queue Notifications';
         }
+        field(80005; "BA Can Edit Dimensions"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Can Edit Dimensions on SQ/SO';
+        }
     }
 }
