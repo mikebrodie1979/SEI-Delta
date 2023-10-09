@@ -1810,10 +1810,15 @@ codeunit 75010 "BA SEI Subscibers"
     var
         GLAccount: Record "G/L Account";
     begin
-        if not GLAccount.Get(PurchLine."No.") then
+        if not GLAccount.Get(PurchLine."No.") or
+            (not GLAccount."BA Freight Charge" and not GLAccount."BA Transfer Charge") then
             exit;
-        if not GLAccount."BA Freight Charge" and not GLAccount."BA Transfer Charge" then
-            exit;
+        if GLAccount."BA Freight Charge" then begin
+            if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
+                Error(LineFieldTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
+            if PurchLine."BA Freight Charge Type" = PurchLine."BA Freight Charge Type"::" " then
+                Error(LineFieldTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA Freight Charge Type"), PurchLine."Line No.");
+        end;
         if PurchLine."BA SEI Order Type" <> PurchLine."BA SEI Order Type"::" " then begin
             PurchLine.TestField("BA SEI Order No.");
             PurchLine.TestField("BA Freight Charge Type");
@@ -1821,7 +1826,7 @@ codeunit 75010 "BA SEI Subscibers"
         if PurchLine."BA Freight Charge Type" <> PurchLine."BA Freight Charge Type"::" " then begin
             PurchLine.TestField("BA SEI Order No.");
             if PurchLine."BA SEI Order Type" = PurchLine."BA SEI Order Type"::" " then
-                Error(OrderTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
+                Error(LineFieldTypeMissingErr, PurchLine.FieldCaption(PurchLine."BA SEI Order Type"), PurchLine."Line No.");
         end;
     end;
 
@@ -2299,7 +2304,7 @@ codeunit 75010 "BA SEI Subscibers"
         MissingOrderTypeErr: Label '%1 must be specified before a value can be entered in the %2 field.';
         UpdateSalesLinesLocationMsg: Label 'The Location Code on the Sales Header has been changed, do you want to update the lines?';
         SalesLinesLocationCodeErr: Label 'There is one or more lines that do not have %1 as their location code.';
-        OrderTypeMissingErr: Label '%1 must be specified for line %2.';
+        LineFieldTypeMissingErr: Label '%1 must be specified for line %2.';
         NoSourceRecErr: Label 'Source Record not set.';
         TitleMsg: Label 'Job Queue Failed:';
         InvalidCustomerPostingGroupCurrencyErr: Label 'Must use %1 currency for Customers in %2 Customer Posting Group.';
