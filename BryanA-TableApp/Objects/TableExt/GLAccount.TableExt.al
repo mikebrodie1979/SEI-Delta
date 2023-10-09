@@ -12,5 +12,10 @@ tableextension 80051 "BA G/L Account" extends "G/L Account"
             DataClassification = CustomerContent;
             Caption = 'Transfer Charge';
         }
+        field(80005; "BA Require Description Change"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Require Description Change';
+        }
     }
 }
