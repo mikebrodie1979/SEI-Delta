@@ -24,5 +24,19 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             Caption = 'Exchange Rate';
             Editable = false;
         }
+        field(80030; "BA Amount"; Decimal)
+        {
+            Caption = 'Amount';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum ("Service Line".Amount where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
+        }
+        field(80031; "BA Amount Including VAT"; Decimal)
+        {
+            Caption = 'Amount Including VAT';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum ("Service Line"."Amount Including VAT" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
+        }
     }
 }
