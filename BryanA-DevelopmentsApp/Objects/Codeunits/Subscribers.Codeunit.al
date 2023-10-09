@@ -2271,6 +2271,13 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Deposit-Post", 'OnBeforePostedDepositHeaderInsert', '', false, false)]
+    local procedure DepositPostOnBeforePostedDepositHeaderInsert(var PostedDepositHeader: Record "Posted Deposit Header")
+    begin
+        PostedDepositHeader."BA User ID" := UserId();
+    end;
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
