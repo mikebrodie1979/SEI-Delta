@@ -12,6 +12,10 @@ pageextension 80085 "BA G/L Account Card" extends "G/L Account Card"
             {
                 ApplicationArea = all;
             }
+            field("BA Require Description Change"; "BA Require Description Change")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

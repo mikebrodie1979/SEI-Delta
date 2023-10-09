@@ -2278,6 +2278,33 @@ codeunit 75010 "BA SEI Subscibers"
         PostedDepositHeader."BA User ID" := UserId();
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Check Line", 'OnAfterCheckGenJnlLine', '', false, false)]
+    local procedure GenJnlCheckLineOnAfterCheckGenJnlLine(var GenJournalLine: Record "Gen. Journal Line")
+    var
+        GLAccount: Record "G/L Account";
+    begin
+        if (GenJournalLine."Account Type" <> GenJournalLine."Account Type"::"G/L Account")
+                or not GLAccount.Get(GenJournalLine."Account No.") or not GLAccount."BA Require Description Change" then
+            exit;
+        GenJournalLine.TestField(Description);
+        if GenJournalLine.Description = GLAccount.Name then
+            Error(UnchangedDescrErr, GenJournalLine.FieldCaption(Description), GenJournalLine.Description, GenJournalLine."Line No.");
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Purch.-Post", 'OnBeforePostGLAccICLine', '', false, false)]
+    local procedure PostPurchOnBeforePostGLAccICLine(var PurchLine: Record "Purchase Line")
+    var
+        GLAccount: Record "G/L Account";
+    begin
+        if (PurchLine.Type <> PurchLine.Type::"G/L Account")
+                or not GLAccount.Get(PurchLine."No.") or not GLAccount."BA Require Description Change" then
+            exit;
+        PurchLine.TestField(Description);
+        if PurchLine.Description = GLAccount.Name then
+            Error(UnchangedDescrErr, PurchLine.FieldCaption(Description), PurchLine.Description, PurchLine."Line No.");
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -2321,4 +2348,5 @@ codeunit 75010 "BA SEI Subscibers"
         NoFreightCarrierErr: Label 'Freight Carrier must be specified.';
         InvalidFreightCarrierErr: Label 'The value for Freight Carrier must be updated with the freight company before the tracking # can be entered.\ Please update the Freight Carrier field and try again.';
         DimPermissionErr: Label 'You do not have permission to edit dimensions.';
+        UnchangedDescrErr: Label '%1 "%2" on line %3 must be changed.';
 }
