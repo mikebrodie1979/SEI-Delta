@@ -8,10 +8,20 @@ pageextension 80092 "BA Service Orders" extends "Service Orders"
             {
                 ApplicationArea = all;
             }
-            field("BA Amount Including VAT"; "BA Amount Including VAT")
+            field("BA Amount Including VAT"; "BA Amount Including Tax")
             {
                 ApplicationArea = all;
             }
+            field("BA Amount Including VAT (LCY)"; "BA Amount Including Tax (LCY)")
+            {
+                ApplicationArea = all;
+                Visible = false;
+            }
         }
     }
+
+    trigger OnAfterGetRecord()
+    begin
+        Rec.CalcFields("BA Amount", "BA Amount Including Tax", "BA Amount Including Tax (LCY)");
+    end;
 }

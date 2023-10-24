@@ -29,14 +29,21 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             Caption = 'Amount';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum ("Service Line".Amount where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
+            CalcFormula = sum ("Service Line"."Line Amount" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
         }
-        field(80031; "BA Amount Including VAT"; Decimal)
+        field(80031; "BA Amount Including Tax"; Decimal)
         {
-            Caption = 'Amount Including VAT';
+            Caption = 'Amount Including Tax';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum ("Service Line"."Amount Including VAT" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
+            CalcFormula = sum ("Service Line"."Outstanding Amount" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
+        }
+        field(80032; "BA Amount Including Tax (LCY)"; Decimal)
+        {
+            Caption = 'Amount Including Tax (LCY)';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum ("Service Line"."Outstanding Amount (LCY)" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
         }
     }
 }
