@@ -1,30 +1,27 @@
-// pageextension 80092 "BA Service Orders" extends "Service Orders"
-// {
-//     layout
-//     {
-//         modify(Control1902018507)
-//         {
-//             Visible = ShowLCYBalances;
-//         }
-//         addafter(Control1902018507)
-//         {
-//             part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
-//             {
-//                 SubPageLink = "No." = Field ("Bill-to Customer No.");
-//                 Visible = not ShowLCYBalances;
-//                 ApplicationArea = all;
-//             }
-//         }
-//     }
+pageextension 80092 "BA Service Orders" extends "Service Orders"
+{
+    layout
+    {
+        addlast(Control1)
+        {
+            field("BA Amount"; "BA Amount")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Amount Including VAT"; "BA Amount Including Tax")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Amount Including VAT (LCY)"; "BA Amount Including Tax (LCY)")
+            {
+                ApplicationArea = all;
+                Visible = false;
+            }
+        }
+    }
 
-//     var
-//         [InDataSet]
-//         ShowLCYBalances: Boolean;
-
-//     trigger OnAfterGetRecord()
-//     var
-//         CustPostingGroup: Record "Customer Posting Group";
-//     begin
-//         ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
-//     end;
-// }
+    trigger OnAfterGetRecord()
+    begin
+        Rec.CalcFields("BA Amount", "BA Amount Including Tax", "BA Amount Including Tax (LCY)");
+    end;
+}

@@ -64,6 +64,13 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 SubPageLink = "No." = field ("BA Shipment No.");
             }
         }
+        addbefore("Order No.")
+        {
+            field("ENC S. Quote No."; Rec."ENC S. Quote No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()
