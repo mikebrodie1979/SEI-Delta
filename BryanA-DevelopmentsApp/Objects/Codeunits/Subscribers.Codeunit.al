@@ -2305,6 +2305,21 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Document-Print", 'OnBeforeCalcServDisc', '', false, false)]
+    local procedure DocumentPrintOnBeforeCalcServDisc(var ServiceHeader: Record "Service Header"; var IsHandled: Boolean)
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        ServLine: Record "Service Line";
+    begin
+        if not SalesRecSetup.Get('') or not SalesRecSetup."Calc. Inv. Discount" then
+            exit;
+        ServLine.SetRange("Document Type", ServiceHeader."Document Type");
+        ServLine.SetRange("Document No.", ServiceHeader."No.");
+        IsHandled := ServLine.IsEmpty();
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
