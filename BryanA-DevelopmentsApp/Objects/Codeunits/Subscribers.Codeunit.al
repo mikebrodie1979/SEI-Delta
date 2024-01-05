@@ -1733,6 +1733,39 @@ codeunit 75010 "BA SEI Subscibers"
         PostedDepositHeader."BA User ID" := UserId();
     end;
 
+
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Production Order", 'OnAfterValidateEvent', 'Source No.', false, false)]
+    local procedure ProductionOrderOnAfterValidateSourceNo(var Rec: Record "Production Order"; var xRec: Record "Production Order")
+    var
+        Item: Record Item;
+        InventorySetup: Record "Inventory Setup";
+    begin
+        if (Rec."Source Type" <> Rec."Source Type"::Item) or (Rec."Source No." = xRec."Source No.") or not Item.Get(Rec."Source No.")
+                or (Rec.Status <> Rec.Status::Released) then
+            exit;
+        InventorySetup.Get();
+        if InventorySetup."BA Default Location Code" = '' then
+            exit;
+        Rec.Validate("Location Code", InventorySetup."BA Default Location Code");
+        Rec.Modify(true);
+        Rec.Get(Rec.RecordId);
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Refresh Production Order", 'OnBeforeCalcProdOrder', '', false, false)]
+    local procedure RefreshProductionOrderOnBeforeCalcProdOrder(var ProductionOrder: Record "Production Order")
+    var
+        Item: Record Item;
+    begin
+        ProductionOrder.TestField("Source No.");
+        if (ProductionOrder."Source Type" <> ProductionOrder."Source Type"::Item) or not Item.Get(ProductionOrder."Source No.") then
+            exit;
+        ProductionOrder.TestField("Bin Code");
+        ProductionOrder.TestField("Location Code");
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';

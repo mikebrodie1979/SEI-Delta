@@ -15,6 +15,9 @@ pageextension 80023 "BA Released Prod. Order" extends "Released Production Order
         }
         modify("Location Code")
         {
+            ApplicationArea = all;
+            ShowMandatory = true;
+
             trigger OnLookup(var Text: Text): Boolean
             var
                 Subscribers: Codeunit "BA SEI Subscibers";
@@ -22,6 +25,11 @@ pageextension 80023 "BA Released Prod. Order" extends "Released Production Order
                 Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
+        }
+        modify("Bin Code")
+        {
+            ApplicationArea = all;
+            ShowMandatory = true;
         }
         addafter("Source No.")
         {
