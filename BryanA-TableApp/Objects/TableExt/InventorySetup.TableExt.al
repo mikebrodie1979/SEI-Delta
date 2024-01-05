@@ -31,5 +31,11 @@ tableextension 80100 "BA Inventory Setup" extends "Inventory Setup"
             Caption = 'Approval Code';
             TableRelation = "Approval Code".Code;
         }
+        field(80010; "BA Default Location Code"; Code[10])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Default Location Code';
+            TableRelation = Location.Code;
+        }
     }
 }

@@ -36,6 +36,13 @@ pageextension 80150 "BA Inventory Setup" extends "Inventory Setup"
                 }
             }
         }
+        addlast(General)
+        {
+            field("BA Default Location Code"; "BA Default Location Code")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     local procedure CheckEmail(User: Code[50])
