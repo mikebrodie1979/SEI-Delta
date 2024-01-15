@@ -2353,7 +2353,7 @@ codeunit 75010 "BA SEI Subscibers"
 
 
     [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterInsertEvent', '', false, false)]
-    local procedure BinContentOnAfterInsertEvent(var Rec: Record "Bin Content")
+    local procedure BinContentOnAfterInsert(var Rec: Record "Bin Content")
     begin
         if '' in [Rec."Item No.", Rec."Bin Code", Rec."Location Code"] then
             exit;
@@ -2382,6 +2382,13 @@ codeunit 75010 "BA SEI Subscibers"
         if '' in [Rec."Item No.", Rec."Bin Code", Rec."Location Code"] then
             exit;
         UpdateProductionOrderBinCodes(Rec."Item No.", Rec."Bin Code", Rec."Location Code");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterDeleteEvent', '', false, false)]
+    local procedure BinContentOnAfterDelete(var Rec: Record "Bin Content")
+    begin
+        if Rec."Item No." <> '' then
+            UpdateProductionOrderBinCodes(Rec."Item No.", '', Rec."Location Code");
     end;
 
     local procedure UpdateProductionOrderBinCodes(ItemNo: Code[20]; BinCode: Code[20]; LocationCode: Code[20])
