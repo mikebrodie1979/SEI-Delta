@@ -2352,6 +2352,55 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterInsertEvent', '', false, false)]
+    local procedure BinContentOnAfterInsertEvent(var Rec: Record "Bin Content")
+    begin
+        if '' in [Rec."Item No.", Rec."Bin Code", Rec."Location Code"] then
+            exit;
+        UpdateProductionOrderBinCodes(Rec."Item No.", Rec."Bin Code", Rec."Location Code");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterValidateEvent', 'Bin Code', false, false)]
+    local procedure BinContentOnAfterValidateBinCode(var Rec: Record "Bin Content")
+    begin
+        if '' in [Rec."Item No.", Rec."Location Code"] then
+            exit;
+        UpdateProductionOrderBinCodes(Rec."Item No.", Rec."Bin Code", Rec."Location Code");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterValidateEvent', 'Item No.', false, false)]
+    local procedure BinContentOnAfterValidateItemNo(var Rec: Record "Bin Content")
+    begin
+        if '' in [Rec."Item No.", Rec."Bin Code", Rec."Location Code"] then
+            exit;
+        UpdateProductionOrderBinCodes(Rec."Item No.", Rec."Bin Code", Rec."Location Code");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Bin Content", 'OnAfterValidateEvent', 'Location Code', false, false)]
+    local procedure BinContentOnAfterValidateLocationCode(var Rec: Record "Bin Content")
+    begin
+        if '' in [Rec."Item No.", Rec."Bin Code", Rec."Location Code"] then
+            exit;
+        UpdateProductionOrderBinCodes(Rec."Item No.", Rec."Bin Code", Rec."Location Code");
+    end;
+
+    local procedure UpdateProductionOrderBinCodes(ItemNo: Code[20]; BinCode: Code[20]; LocationCode: Code[20])
+    var
+        ProdOrder: Record "Production Order";
+    begin
+        ProdOrder.SetRange(Status, ProdOrder.Status::Released);
+        ProdOrder.SetCurrentKey("Source Type", "Source No.");
+        ProdOrder.SetRange("Source Type", ProdOrder."Source Type"::Item);
+        ProdOrder.SetRange("Source No.", ItemNo);
+        ProdOrder.SetRange("Location Code", LocationCode);
+        if ProdOrder.FindSet() then
+            repeat
+                ProdOrder.Validate("Bin Code", BinCode);
+                ProdOrder.Modify(false);
+            until ProdOrder.Next() = 0;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
