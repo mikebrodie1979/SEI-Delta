@@ -49,5 +49,12 @@ pageextension 80023 "BA Released Prod. Order" extends "Released Production Order
                 ApplicationArea = all;
             }
         }
+        addafter("Due Date")
+        {
+            field("BA Assigned Dept."; "BA Assigned Dept.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }
