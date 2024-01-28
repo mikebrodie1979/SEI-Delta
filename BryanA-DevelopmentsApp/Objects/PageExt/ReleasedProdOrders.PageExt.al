@@ -20,6 +20,10 @@ pageextension 80024 "BA Relased Prod. Orders" extends "Released Production Order
             {
                 ApplicationArea = all;
             }
+            field("BA Assigned Dept."; "BA Assigned Dept.")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter("Source No.")
         {

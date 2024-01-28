@@ -29,6 +29,12 @@ tableextension 80018 "BA Production Order" extends "Production Order"
             TableRelation = "User Setup"."User ID";
             ValidateTableRelation = false;
         }
+        field(80025; "BA Assigned Dept."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Assigned Dept.';
+            TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (2), Blocked = const (false), "ENC Inactive" = const (false));
+        }
     }
 
     trigger OnBeforeInsert()
