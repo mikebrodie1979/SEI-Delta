@@ -1,4 +1,4 @@
-table 75015 "BA Warehouse Department"
+table 75016 "BA Warehouse Department"
 {
     DataClassification = CustomerContent;
 
