@@ -33,7 +33,7 @@ tableextension 80018 "BA Production Order" extends "Production Order"
         {
             DataClassification = CustomerContent;
             Caption = 'Assigned Dept.';
-            TableRelation = "Dimension Value".Code where ("Global Dimension No." = const (2), Blocked = const (false), "ENC Inactive" = const (false));
+            TableRelation = "BA Warehouse Department".Code;
         }
     }
 
