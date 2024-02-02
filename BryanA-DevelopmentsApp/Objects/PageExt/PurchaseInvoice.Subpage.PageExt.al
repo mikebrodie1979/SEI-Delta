@@ -54,6 +54,11 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
                 ApplicationArea = all;
                 Editable = "No." <> '';
             }
+            field("BA Shareholder Code"; Rec."BA Shareholder Code")
+            {
+                ApplicationArea = all;
+                Editable = "No." <> '';
+            }
         }
         modify("Location Code")
         {
@@ -73,7 +78,7 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
         {
             trigger OnAfterAction()
             begin
-                GetDimensionCodes();
+                Rec.GetDimensionCodes(GLSetup, SalesPersonCode);
             end;
         }
     }
@@ -81,14 +86,12 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
 
     trigger OnAfterGetRecord()
     begin
-        GetDimensionCodes();
+        Rec.GetDimensionCodes(GLSetup, SalesPersonCode);
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
-        SalesPersonCode := '';
-        Rec."BA Product ID Code" := '';
-        Rec."BA Project Code" := '';
+        Rec.OnNewRecord(SalesPersonCode);
         Rec.Validate("BA SEI Order Type", Rec."BA SEI Order Type"::" ");
         Rec.Validate("BA Freight Charge Type", Rec."BA Freight Charge Type"::" ");
     end;
@@ -110,29 +113,11 @@ pageextension 80001 "BA Purch. Inv. Subpage" extends "Purch. Invoice Subform"
     end;
 
 
-    local procedure GetDimensionCodes()
-    var
-        TempDimSetEntry: Record "Dimension Set Entry" temporary;
-    begin
-        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
-        Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
-        Rec."BA Salesperson Filter Code" := GLSetup."ENC Salesperson Dim. Code";
-        SalesPersonCode := GetDimensionCode(TempDimSetEntry, GLSetup."ENC Salesperson Dim. Code");
-    end;
 
-    local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
-    begin
-        TempDimSetEntry.SetRange("Dimension Code", DimCode);
-        if TempDimSetEntry.FindFirst() then
-            exit(TempDimSetEntry."Dimension Value Code");
-        exit('');
-    end;
 
 
 
     var
         GLSetup: Record "General Ledger Setup";
-        DimMgt: Codeunit DimensionManagement;
         SalesPersonCode: Code[20];
 }

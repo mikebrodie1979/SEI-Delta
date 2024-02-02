@@ -44,5 +44,12 @@ tableextension 80015 "BA Purch. Cr. Memo Line" extends "Purch. Cr. Memo Line"
             TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('PROJECT'), Blocked = const (false), "ENC Inactive" = const (false));
             Editable = false;
         }
+        field(80102; "BA Shareholder Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shareholder Code';
+            TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('SHAREHOLDER'), Blocked = const (false), "ENC Inactive" = const (false));
+            Editable = false;
+        }
     }
 }
