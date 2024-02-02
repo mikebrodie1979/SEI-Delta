@@ -7,14 +7,17 @@ pageextension 80150 "BA General Journal" extends "General Journal"
             field("BA Product ID Code"; Rec."BA Product ID Code")
             {
                 ApplicationArea = all;
+                Editable = EditableDims;
             }
             field("BA Project Code"; Rec."BA Project Code")
             {
                 ApplicationArea = all;
+                Editable = EditableDims;
             }
             field("BA Shareholder Code"; "BA Shareholder Code")
             {
                 ApplicationArea = all;
+                Editable = EditableDims;
             }
         }
         modify("Account No.")
