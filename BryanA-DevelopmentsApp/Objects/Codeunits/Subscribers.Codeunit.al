@@ -2425,6 +2425,7 @@ codeunit 75010 "BA SEI Subscibers"
         IsHandled := true;
         PurchaseHeader.Modify(false);
         StdCodeMgt.GetPurchRecurringLines(PurchaseHeader);
+        PurchaseHeader.Get(PurchaseHeader.RecordId());
     end;
 
 
