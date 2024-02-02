@@ -31,6 +31,10 @@ pageextension 80020 "BA Posted Purch. Rcpt. Subpage" extends "Posted Purchase Rc
             {
                 ApplicationArea = all;
             }
+            field("BA Shareholder Code"; "BA Shareholder Code")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 

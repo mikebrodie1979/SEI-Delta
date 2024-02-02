@@ -24,6 +24,17 @@ tableextension 80090 "BA General Journal" extends "Gen. Journal Line"
                 SetNewDimValue('PROJECT', "BA Project Code");
             end;
         }
+        field(80002; "BA Shareholder Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shareholder Code';
+            TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('SHAREHOLDER'), Blocked = const (false), "ENC Inactive" = const (false));
+
+            trigger OnValidate()
+            begin
+                SetNewDimValue('SHAREHOLDER', "BA Shareholder Code");
+            end;
+        }
     }
 
     local procedure SetNewDimValue(DimCode: Code[20]; DimValue: Code[20])

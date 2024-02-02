@@ -35,5 +35,12 @@ tableextension 80016 "BA Return Shpt. Line" extends "Return Shipment Line"
             TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('PROJECT'), Blocked = const (false), "ENC Inactive" = const (false));
             Editable = false;
         }
+        field(80102; "BA Shareholder Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shareholder Code';
+            TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('SHAREHOLDER'), Blocked = const (false), "ENC Inactive" = const (false));
+            Editable = false;
+        }
     }
 }
