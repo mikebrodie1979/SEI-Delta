@@ -1822,6 +1822,23 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Standard Codes Mgt.", 'OnBeforeShowGetPurchRecurringLinesNotification', '', false, false)]
+    local procedure StandardCodesMgtOnBeforeShowGetPurchRecurringLinesNotification(var PurchaseHeader: Record "Purchase Header"; var IsHandled: Boolean)
+    var
+        StdVendorPurchCode: Record "Standard Vendor Purchase Code";
+        StdCodeMgt: Codeunit "Standard Codes Mgt.";
+    begin
+        StdVendorPurchCode.SetRange("Vendor No.", PurchaseHeader."Buy-from Vendor No.");
+        StdVendorPurchCode.SetRange("Insert Rec. Lines On Invoices", StdVendorPurchCode."Insert Rec. Lines On Invoices"::Automatic);
+        if StdVendorPurchCode.IsEmpty() then
+            exit;
+        IsHandled := true;
+        StdCodeMgt.GetPurchRecurringLines(PurchaseHeader);
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
