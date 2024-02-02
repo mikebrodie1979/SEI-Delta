@@ -2416,13 +2416,17 @@ codeunit 75010 "BA SEI Subscibers"
         StdVendorPurchCode: Record "Standard Vendor Purchase Code";
         StdCodeMgt: Codeunit "Standard Codes Mgt.";
     begin
+        if PurchaseHeader."Document Type" <> PurchaseHeader."Document Type"::Invoice then
+            exit;
         StdVendorPurchCode.SetRange("Vendor No.", PurchaseHeader."Buy-from Vendor No.");
         StdVendorPurchCode.SetRange("Insert Rec. Lines On Invoices", StdVendorPurchCode."Insert Rec. Lines On Invoices"::Automatic);
         if StdVendorPurchCode.IsEmpty() then
             exit;
         IsHandled := true;
+        PurchaseHeader.Modify(false);
         StdCodeMgt.GetPurchRecurringLines(PurchaseHeader);
     end;
+
 
 
     var
