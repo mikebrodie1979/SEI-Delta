@@ -8,7 +8,8 @@ codeunit 75011 "BA Install Codeunit"
                   tabledata "Purch. Inv. Header" = m,
                   tabledata "Purch. Cr. Memo Hdr." = m,
                   tabledata "Purch. Rcpt. Header" = m,
-                  tabledata "Purchase Header" = m;
+                  tabledata "Purchase Header" = m,
+                  tabledata "Tax Group" = m;
 
     trigger OnInstallAppPerCompany()
     begin
@@ -25,6 +26,7 @@ codeunit 75011 "BA Install Codeunit"
         // PopulateCustomerPostingGroupCurrencies();
         // PopulateCountryRegionDimensions();
         // UpdateItemDescriptions();
+        DefineNonTaxTaxGroup();
     end;
 
     local procedure UpdateItemDescriptions()
@@ -431,5 +433,15 @@ codeunit 75011 "BA Install Codeunit"
             end;
         if Update then
             GLSetup.Modify(true);
+    end;
+
+    local procedure DefineNonTaxTaxGroup()
+    var
+        TaxGroup: Record "Tax Group";
+    begin
+        if TaxGroup.Get('NONTAX') then begin
+            TaxGroup."BA Non-Taxable" := true;
+            TaxGroup.Modify(false);
+        end;
     end;
 }
