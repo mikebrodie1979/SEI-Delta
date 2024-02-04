@@ -1842,6 +1842,20 @@ codeunit 75010 "BA SEI Subscibers"
         PurchaseHeader.Get(PurchaseHeader.RecordId());
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Standard Vendor Purchase Code", 'OnBeforeApplyStdCodesToPurchaseLines', '', false, false)]
+    local procedure StandardVendorPurchaseCodeOnBeforeApplyStdCodesToPurchaseLines(var PurchLine: Record "Purchase Line"; StdPurchLine: Record "Standard Purchase Line")
+    var
+        Vendor: Record Vendor;
+        TaxGroup: Record "Tax Group";
+    begin
+        PurchLine.Description := StdPurchLine.Description;
+        if not Vendor.Get(PurchLine."Buy-from Vendor No.") or not Vendor."Tax Liable" then
+            exit;
+        TaxGroup.SetRange("BA Non-Taxable", false);
+        if TaxGroup.FindFirst() then
+            PurchLine.Validate("Tax Group Code", TaxGroup.Code);
+    end;
+
 
 
     var
