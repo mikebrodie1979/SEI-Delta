@@ -44,10 +44,7 @@ tableextension 80090 "BA General Journal" extends "Gen. Journal Line"
     begin
         DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
         TempDimSetEntry.SetRange("Dimension Code", DimCode);
-        if DimValue = '' then begin
-            if TempDimSetEntry.FindFirst() then
-                TempDimSetEntry.Delete(false);
-        end else begin
+        if DimValue <> '' then begin
             DimValueRec.Get(DimCode, DimValue);
             if TempDimSetEntry.FindFirst() then begin
                 TempDimSetEntry."Dimension Value Code" := DimValue;
@@ -60,7 +57,9 @@ tableextension 80090 "BA General Journal" extends "Gen. Journal Line"
                 TempDimSetEntry."Dimension Value ID" := DimValueRec."Dimension Value ID";
                 TempDimSetEntry.Insert(false);
             end;
-        end;
+        end else
+            if TempDimSetEntry.FindFirst() then
+                TempDimSetEntry.Delete(false);
         Rec."Dimension Set ID" := DimMgt.GetDimensionSetID(TempDimSetEntry);
     end;
 
