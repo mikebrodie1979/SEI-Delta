@@ -1,4 +1,4 @@
-tableextension 80100 "BA Tax Group" extends "Tax Group"
+tableextension 80102 "BA Tax Group" extends "Tax Group"
 {
     fields
     {
