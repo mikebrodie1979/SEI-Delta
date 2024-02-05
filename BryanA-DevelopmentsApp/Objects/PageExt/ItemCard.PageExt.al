@@ -44,6 +44,10 @@ pageextension 80009 "BA Item Card" extends "Item Card"
         }
         addafter("Base Unit of Measure")
         {
+            field("BA Service Item Only"; "BA Service Item Only")
+            {
+                ApplicationArea = all;
+            }
             field("ENC Is Fabric"; Rec."ENC Is Fabric")
             {
                 ApplicationArea = all;
