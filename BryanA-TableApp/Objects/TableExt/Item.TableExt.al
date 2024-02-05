@@ -66,6 +66,11 @@ tableextension 80012 "BA Item" extends Item
             DataClassification = CustomerContent;
             Caption = 'NC Cut Sheet';
         }
+        field(80040; "BA Service Item Only"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Service Item Only';
+        }
     }
 
     procedure SetLastCurrencyPurchCost(CurrCode: Code[10]; LastPurchCost: Decimal)
