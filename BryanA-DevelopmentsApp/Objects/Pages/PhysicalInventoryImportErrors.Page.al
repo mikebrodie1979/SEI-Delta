@@ -41,7 +41,7 @@ page 50069 "BA Phys. Invt. Import Errors"
                         PhysicalInvJnl.RunModal();
                     end;
                 }
-                field(Error; Rec.Value)
+                field(Error; Rec."Value Long")
                 {
                     ApplicationArea = all;
                     Caption = 'Error Message';
