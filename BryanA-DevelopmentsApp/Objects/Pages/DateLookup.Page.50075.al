@@ -1,4 +1,4 @@
-page 50070 "BA Date Lookup"
+page 50075 "BA Date Lookup"
 {
     PageType = ConfirmationDialog;
     Caption = 'Select Posting Date';
