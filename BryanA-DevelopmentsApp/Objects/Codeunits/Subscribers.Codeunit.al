@@ -1822,6 +1822,42 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Standard Codes Mgt.", 'OnBeforeShowGetPurchRecurringLinesNotification', '', false, false)]
+    local procedure StandardCodesMgtOnBeforeShowGetPurchRecurringLinesNotification(var PurchaseHeader: Record "Purchase Header"; var IsHandled: Boolean)
+    var
+        StdVendorPurchCode: Record "Standard Vendor Purchase Code";
+        StdCodeMgt: Codeunit "Standard Codes Mgt.";
+    begin
+        if PurchaseHeader."Document Type" <> PurchaseHeader."Document Type"::Invoice then
+            exit;
+        StdVendorPurchCode.SetRange("Vendor No.", PurchaseHeader."Buy-from Vendor No.");
+        StdVendorPurchCode.SetRange("Insert Rec. Lines On Invoices", StdVendorPurchCode."Insert Rec. Lines On Invoices"::Automatic);
+        if StdVendorPurchCode.IsEmpty() then
+            exit;
+        IsHandled := true;
+        PurchaseHeader.Modify(false);
+        StdCodeMgt.GetPurchRecurringLines(PurchaseHeader);
+        PurchaseHeader.Get(PurchaseHeader.RecordId());
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Standard Vendor Purchase Code", 'OnBeforeApplyStdCodesToPurchaseLines', '', false, false)]
+    local procedure StandardVendorPurchaseCodeOnBeforeApplyStdCodesToPurchaseLines(var PurchLine: Record "Purchase Line"; StdPurchLine: Record "Standard Purchase Line")
+    var
+        Vendor: Record Vendor;
+        TaxGroup: Record "Tax Group";
+    begin
+        PurchLine.Description := StdPurchLine.Description;
+        if not Vendor.Get(PurchLine."Buy-from Vendor No.") or not Vendor."Tax Liable" then
+            exit;
+        TaxGroup.SetRange("BA Non-Taxable", false);
+        if TaxGroup.FindFirst() then
+            PurchLine.Validate("Tax Group Code", TaxGroup.Code);
+    end;
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
