@@ -24,11 +24,15 @@ pageextension 80046 "BA Item List" extends "Item List"
             {
                 ApplicationArea = all;
             }
-            field("BA Default Cross-Ref. No."; "BA Default Cross-Ref. No.")
+            field("BA Default Cross-Ref. No."; Rec."BA Default Cross-Ref. No.")
             {
                 ApplicationArea = all;
             }
-            field("BA Default Vendor No."; "BA Default Vendor No.")
+            field("BA Default Vendor No."; Rec."BA Default Vendor No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Service Item Only"; Rec."BA Service Item Only")
             {
                 ApplicationArea = all;
             }
