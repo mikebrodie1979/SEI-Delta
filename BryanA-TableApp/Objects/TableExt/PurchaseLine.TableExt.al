@@ -37,6 +37,17 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
                 SetNewDimValue('PROJECT', "BA Project Code");
             end;
         }
+        field(80102; "BA Shareholder Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shareholder Code';
+            TableRelation = "Dimension Value".Code where ("Dimension Code" = const ('SHAREHOLDER'), Blocked = const (false), "ENC Inactive" = const (false));
+
+            trigger OnValidate()
+            begin
+                SetNewDimValue('SHAREHOLDER', "BA Shareholder Code");
+            end;
+        }
     }
 
     local procedure SetNewDimValue(DimCode: Code[20]; DimValue: Code[20])
@@ -65,6 +76,36 @@ tableextension 80000 "BA Purchase Line" extends "Purchase Line"
         end;
         Rec."Dimension Set ID" := DimMgt.GetDimensionSetID(TempDimSetEntry);
     end;
+
+    procedure GetDimensionCodes(var GLSetup: Record "General Ledger Setup"; var SalesPersonCode: Code[20])
+    var
+        TempDimSetEntry: Record "Dimension Set Entry" temporary;
+    begin
+        DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
+        Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
+        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, GLSetup."ENC Product ID Dim. Code");
+        Rec."BA Shareholder Code" := GetDimensionCode(TempDimSetEntry, GLSetup."BA Shareholder Code");
+
+        Rec."BA Salesperson Filter Code" := GLSetup."ENC Salesperson Dim. Code";
+        SalesPersonCode := GetDimensionCode(TempDimSetEntry, GLSetup."ENC Salesperson Dim. Code");
+    end;
+
+    local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
+    begin
+        TempDimSetEntry.SetRange("Dimension Code", DimCode);
+        if TempDimSetEntry.FindFirst() then
+            exit(TempDimSetEntry."Dimension Value Code");
+        exit('');
+    end;
+
+    procedure OnNewRecord(var SalesPersonCode: Code[20])
+    begin
+        SalesPersonCode := '';
+        Rec."BA Product ID Code" := '';
+        Rec."BA Project Code" := '';
+        Rec."BA Shareholder Code" := '';
+    end;
+
 
     var
         DimMgt: Codeunit DimensionManagement;

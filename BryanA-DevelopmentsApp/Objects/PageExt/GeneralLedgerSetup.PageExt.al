@@ -12,6 +12,10 @@ pageextension 80119 "BA General Ledger Setup" extends "General Ledger Setup"
             {
                 ApplicationArea = all;
             }
+            field("BA Shareholder Code"; "BA Shareholder Code")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

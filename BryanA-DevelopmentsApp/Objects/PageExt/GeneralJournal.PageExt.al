@@ -12,15 +12,17 @@ pageextension 80150 "BA General Journal" extends "General Journal"
             {
                 ApplicationArea = all;
             }
+            field("BA Shareholder Code"; "BA Shareholder Code")
+            {
+                ApplicationArea = all;
+            }
         }
         modify("Account No.")
         {
             trigger OnAfterValidate()
             begin
-                if Rec."Account No." = '' then begin
-                    Rec."BA Product ID Code" := '';
-                    Rec."BA Project Code" := '';
-                end;
+                if Rec."Account No." = '' then
+                    ClearDimensions();
             end;
         }
     }
@@ -32,10 +34,15 @@ pageextension 80150 "BA General Journal" extends "General Journal"
             trigger OnAfterAction()
             begin
                 GetDimensionCodes();
-                EditableDims := Rec."Account No." <> '';
+                // EditableDims := Rec."Account No." <> '';
             end;
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        GLSetup.Get();
+    end;
 
     trigger OnAfterGetRecord()
     begin
@@ -44,8 +51,7 @@ pageextension 80150 "BA General Journal" extends "General Journal"
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
-        Rec."BA Product ID Code" := '';
-        Rec."BA Project Code" := '';
+        ClearDimensions();
     end;
 
     local procedure GetDimensionCodes()
@@ -53,18 +59,27 @@ pageextension 80150 "BA General Journal" extends "General Journal"
         TempDimSetEntry: Record "Dimension Set Entry" temporary;
     begin
         if Rec."Account No." = '' then begin
-            Rec."BA Product ID Code" := '';
-            Rec."BA Project Code" := '';
+            ClearDimensions();
             exit;
         end;
         DimMgt.GetDimensionSet(TempDimSetEntry, Rec."Dimension Set ID");
-        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, 'PRODUCT ID');
+        Rec."BA Product ID Code" := GetDimensionCode(TempDimSetEntry, GLSetup."ENC Product ID Dim. Code");
         Rec."BA Project Code" := GetDimensionCode(TempDimSetEntry, 'PROJECT');
+        Rec."BA Shareholder Code" := GetDimensionCode(TempDimSetEntry, GLSetup."BA Shareholder Code");
+    end;
+
+    local procedure ClearDimensions()
+    begin
+        Rec."BA Product ID Code" := '';
+        Rec."BA Project Code" := '';
+        Rec."BA Shareholder Code" := '';
     end;
 
 
     local procedure GetDimensionCode(var TempDimSetEntry: Record "Dimension Set Entry"; DimCode: Code[20]): Code[20]
     begin
+        if DimCode = '' then
+            exit('');
         TempDimSetEntry.SetRange("Dimension Code", DimCode);
         if TempDimSetEntry.FindFirst() then
             exit(TempDimSetEntry."Dimension Value Code");
@@ -72,8 +87,9 @@ pageextension 80150 "BA General Journal" extends "General Journal"
     end;
 
     var
+        GLSetup: Record "General Ledger Setup";
         DimMgt: Codeunit DimensionManagement;
 
-        [InDataSet]
-        EditableDims: Boolean;
+        // [InDataSet]
+        // EditableDims: Boolean;
 }

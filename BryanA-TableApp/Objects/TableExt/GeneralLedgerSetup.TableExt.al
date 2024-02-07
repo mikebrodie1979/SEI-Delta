@@ -14,5 +14,11 @@ tableextension 80097 "BA General Ledger Setup" extends "General Ledger Setup"
             Caption = 'Country Code';
             TableRelation = Dimension.Code where (Blocked = const (false), "ENC Inactive" = const (false));
         }
+        field(80002; "BA Shareholder Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shareholder Code';
+            TableRelation = Dimension.Code where (Blocked = const (false), "ENC Inactive" = const (false));
+        }
     }
 }
