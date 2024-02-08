@@ -11,7 +11,11 @@ pageextension 80083 "BA Customer List" extends "Customer List"
         }
         addlast(Control1)
         {
-            field("BA Last Sales Activity"; "BA Last Sales Activity")
+            field("BA Last Sales Activity"; Rec."BA Last Sales Activity")
+            {
+                ApplicationArea = all;
+            }
+            field("BA SEI Service Center"; Rec."BA SEI Service Center")
             {
                 ApplicationArea = all;
             }
