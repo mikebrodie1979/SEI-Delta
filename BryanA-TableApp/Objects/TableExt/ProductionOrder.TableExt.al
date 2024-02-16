@@ -29,11 +29,11 @@ tableextension 80018 "BA Production Order" extends "Production Order"
             TableRelation = "User Setup"."User ID";
             ValidateTableRelation = false;
         }
-        field(80025; "BA Assigned Dept."; Code[20])
+        field(80025; "BA Assigned Dept."; Text[35])
         {
             DataClassification = CustomerContent;
             Caption = 'Assigned Dept.';
-            TableRelation = "BA Warehouse Department".Code;
+            TableRelation = "ENC Department Code".Name where (Type = const (Manufacturing), "Purchasing Only" = const (false));
         }
     }
 
