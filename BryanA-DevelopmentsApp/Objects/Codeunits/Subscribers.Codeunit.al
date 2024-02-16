@@ -1875,6 +1875,47 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Prod. Order Line", 'OnAfterValidateEvent', 'ENC Manufacturing Dept.', false, false)]
+    local procedure ProdOrderLineOnAfterValdidateManufacturingDept(var Rec: Record "Prod. Order Line"; var xRec: Record "Prod. Order Line")
+    var
+        ProdOrder: Record "Production Order";
+        ProdOrderLine: Record "Prod. Order Line";
+        Item: Record Item;
+    begin
+        ProdOrderLine.SetRange(Status, Rec.Status);
+        ProdOrderLine.SetRange("Prod. Order No.", Rec."Prod. Order No.");
+        ProdOrderLine.SetFilter("Line No.", '<%1', Rec."Line No.");
+        if ProdOrderLine.IsEmpty() and (Rec."ENC Manufacturing Dept." <> xRec."ENC Manufacturing Dept.")
+                and Item.Get(Rec."Item No.") and ProdOrder.Get(Rec.Status, Rec."Prod. Order No.") then
+            UpdateItemAndProdOrderManfDept(Item, ProdOrder, Rec."ENC Manufacturing Dept.");
+    end;
+
+    [EventSubscriber(ObjectType::Report, Report::"Refresh Production Order", 'OnAfterRefreshProdOrder', '', false, false)]
+    local procedure RefreshProductionOrderOnAfterRefreshProdOrder(var ProductionOrder: Record "Production Order")
+    var
+        ProdOrderLine: Record "Prod. Order Line";
+        Item: Record Item;
+    begin
+        ProdOrderLine.SetRange(Status, ProductionOrder.Status);
+        ProdOrderLine.SetRange("Prod. Order No.", ProductionOrder."No.");
+        if ProdOrderLine.FindFirst() and (ProdOrderLine."ENC Manufacturing Dept." <> '')
+                and Item.Get(ProdOrderLine."Item No.") then
+            UpdateItemAndProdOrderManfDept(Item, ProductionOrder, ProdOrderLine."ENC Manufacturing Dept.");
+    end;
+
+    local procedure UpdateItemAndProdOrderManfDept(var Item: Record Item; var ProdOrder: Record "Production Order"; DeptCode: Text)
+    begin
+        if (Item."ENC Manufacturing Dept." = '') and (DeptCode <> '') then
+            if Confirm(StrSubstNo(UpdateItemManfDeptConf, Item.FieldCaption("ENC Manufacturing Dept."))) then begin
+                Item.Validate("ENC Manufacturing Dept.", DeptCode);
+                Item.Modify(true);
+            end;
+        ProdOrder.Validate("BA Assigned Dept.", DeptCode);
+        ProdOrder.Modify(true);
+    end;
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -1902,4 +1943,5 @@ codeunit 75010 "BA SEI Subscibers"
         DimPermissionErr: Label 'You do not have permission to edit dimensions.';
         UnchangedDescrErr: Label '%1 "%2" on line %3 must be changed.';
         NonServiceCustomerErr: Label '%1 can only be sold to Service Center customers.';
+        UpdateItemManfDeptConf: Label 'Would you like to update the %1 listed on the Item Card?';
 }
