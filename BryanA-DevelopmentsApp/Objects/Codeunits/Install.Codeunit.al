@@ -26,7 +26,7 @@ codeunit 75011 "BA Install Codeunit"
         // PopulateCustomerPostingGroupCurrencies();
         // PopulateCountryRegionDimensions();
         // UpdateItemDescriptions();
-        DefineNonTaxTaxGroup();
+        // DefineNonTaxTaxGroup();
     end;
 
     local procedure UpdateItemDescriptions()
