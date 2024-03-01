@@ -1914,6 +1914,13 @@ codeunit 75010 "BA SEI Subscibers"
         ProdOrder.Modify(true);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterSalesInvHeaderInsert', '', false, false)]
+    local procedure SalesPostPrepayments(SalesHeader: Record "Sales Header")
+    var
+        ArchiveMgt: Codeunit ArchiveManagement;
+    begin
+        ArchiveMgt.StoreSalesDocument(SalesHeader, false);
+    end;
 
 
     var
