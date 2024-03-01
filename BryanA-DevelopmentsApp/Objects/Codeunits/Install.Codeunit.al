@@ -19,6 +19,16 @@ codeunit 75011 "BA Install Codeunit"
         // PopulateCountryRegionDimensions();
         // UpdateItemDescriptions();
         // DefineNonTaxTaxGroup();
+        InitiateDeptCodesPurchaseLookup();
+    end;
+
+
+    local procedure InitiateDeptCodesPurchaseLookup()
+    var
+        DeptCode: Record "ENC Department Code";
+    begin
+        DeptCode.SetRange("Purchasing Lookup", false);
+        DeptCode.ModifyAll("Purchasing Lookup", true);
     end;
 
     local procedure UpdateItemDescriptions()
