@@ -119,19 +119,18 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 ApplicationArea = all;
             }
         }
+        modify("Posting Date")
+        {
+            trigger OnAfterValidate()
+            begin
+                Rec."BA Modified Posting Date" := true;
+                Rec.Modify(true);
+            end;
+        }
     }
 
 
-    // var
-    //     [InDataSet]
-    //     ShowLCYBalances: Boolean;
 
-    // trigger OnAfterGetRecord()
-    // var
-    //     CustPostingGroup: Record "Customer Posting Group";
-    // begin
-    //     ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
-    // end;
 
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -148,5 +147,20 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
             Rec."BA Quote Exch. Rate" := ExchangeRate."Relational Exch. Rate Amount";
             CurrPage.SalesLines.Page.SetExchangeRate(Rec."BA Quote Exch. Rate");
         end
+    end;
+
+    trigger OnAfterGetRecord()
+    var
+        ResetStatus: Boolean;
+        SalesLine: Record "Sales Line";
+    begin
+        if Rec."BA Modified Posting Date" or (Rec."Posting Date" = WorkDate()) or not CurrPage.Editable() or (Rec.Status <> Rec.Status::Open) then
+            exit;
+        Rec.SetHideValidationDialog(true);
+        Rec."BA Skip Sales Line Recreate" := true;
+        Rec.Validate("Posting Date", WorkDate());
+        Rec.SetHideValidationDialog(false);
+        Rec."BA Skip Sales Line Recreate" := false;
+        Rec.Modify(true);
     end;
 }
