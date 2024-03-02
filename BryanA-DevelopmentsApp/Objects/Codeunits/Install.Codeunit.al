@@ -27,7 +27,7 @@ codeunit 75011 "BA Install Codeunit"
         // PopulateCountryRegionDimensions();
         // UpdateItemDescriptions();
         // DefineNonTaxTaxGroup();
-        InitiateDeptCodesPurchaseLookup();
+        // InitiateDeptCodesPurchaseLookup();
     end;
 
 
