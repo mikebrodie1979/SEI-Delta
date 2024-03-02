@@ -1914,13 +1914,24 @@ codeunit 75010 "BA SEI Subscibers"
         ProdOrder.Modify(true);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterSalesInvHeaderInsert', '', false, false)]
-    local procedure SalesPostPrepayments(SalesHeader: Record "Sales Header")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header")
     var
         ArchiveMgt: Codeunit ArchiveManagement;
     begin
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
     end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeTempPrepmtSalesLineInsert', '', false, false)]
+    local procedure SalesPostOnBeforeTempPrepmtSalesLineInsert(var TempPrepmtSalesLine: Record "Sales Line"; var TempSalesLine: Record "Sales Line")
+    begin
+        TempPrepmtSalesLine."Tax Group Code" := TempSalesLine."Tax Group Code";
+        TempPrepmtSalesLine."Tax Area Code" := TempSalesLine."Tax Area Code";
+        TempPrepmtSalesLine."Tax Category" := TempSalesLine."Tax Category";
+        TempPrepmtSalesLine."Tax Liable" := TempSalesLine."Tax Liable";
+    end;
+
+    //OnBeforeTempPrepmtSalesLineInsert
 
 
     var
