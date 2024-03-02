@@ -1915,6 +1915,20 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeRecreateSalesLinesHandler', '', false, false)]
+    local procedure SalesHeaderOnBeforeRecreateSalesLinesHandler(var SalesHeader: Record "Sales Header"; var IsHandled: Boolean)
+    begin
+        if SalesHeader."BA Skip Sales Line Recreate" then
+            IsHandled := true;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnBeforeRecreateServiceLinesHandler', '', false, false)]
+    local procedure ServiceHeaderOnBeforeRecreateServiceLinesHandler(var Rec: Record "Service Header"; var IsHandled: Boolean)
+    begin
+        if Rec."BA Skip Sales Line Recreate" then
+            IsHandled := true;
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
