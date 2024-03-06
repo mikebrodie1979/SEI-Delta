@@ -89,14 +89,18 @@ pageextension 80050 "BA Service Order" extends "Service Order"
 
     trigger OnAfterGetRecord()
     var
-        ResetStatus: Boolean;
         SalesLine: Record "Sales Line";
+        CurrExchRate: Record "Currency Exchange Rate";
+        OldCurrFactor: Decimal;
     begin
         if Rec."BA Modified Posting Date" or (Rec."Posting Date" = WorkDate()) or not CurrPage.Editable() or (Rec.Status <> Rec.Status::"In Process") then
             exit;
+        OldCurrFactor := Rec."Currency Factor";
         Rec.SetHideValidationDialog(true);
         Rec."BA Skip Sales Line Recreate" := true;
         Rec.Validate("Posting Date", WorkDate());
+        if (Rec."Currency Code" <> '') and (Rec."Currency Factor" = 0) then
+            Rec.Validate("Currency Factor", CurrExchRate.GetCurrentCurrencyFactor(Rec."Currency Code"));
         Rec.SetHideValidationDialog(false);
         Rec."BA Skip Sales Line Recreate" := false;
         Rec.Modify(true);

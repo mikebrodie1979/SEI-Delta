@@ -2515,6 +2515,25 @@ codeunit 75010 "BA SEI Subscibers"
             IsHandled := true;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeModifySalesOrderHeader', '', false, false)]
+    local procedure SalesQuoteToOrderOnBeforeModifySalesOrderHeader(var SalesOrderHeader: Record "Sales Header"; SalesQuoteHeader: Record "Sales Header")
+    var
+        CustPostingGroup: Record "Customer Posting Group";
+        CurrExchRate: Record "Currency Exchange Rate";
+    begin
+        if (SalesOrderHeader."Order Date" = WorkDate()) and (SalesOrderHeader."Posting Date" = WorkDate()) then
+            exit;
+        SalesOrderHeader.SetHideValidationDialog(true);
+        SalesOrderHeader."BA Skip Sales Line Recreate" := true;
+        SalesOrderHeader.Validate("Posting Date", WorkDate());
+        if ((Date2DMY(WorkDate(), 2) <> Date2DMY(SalesOrderHeader."Order Date", 2)) or (Date2DMY(WorkDate(), 3) <> Date2DMY(SalesOrderHeader."Order Date", 3)))
+                and CustPostingGroup.Get(SalesOrderHeader."Customer Posting Group") and (CustPostingGroup."BA Posting Currency" <> '') then
+            SalesOrderHeader.Validate("Currency Factor", CurrExchRate.GetCurrentCurrencyFactor(SalesOrderHeader."Currency Code"));
+        SalesOrderHeader.SetHideValidationDialog(false);
+        SalesOrderHeader."BA Skip Sales Line Recreate" := false;
+        SalesOrderHeader.Modify(true);
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
