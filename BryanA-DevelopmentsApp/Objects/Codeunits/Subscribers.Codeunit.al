@@ -1920,6 +1920,9 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if SalesHeader."BA Skip Sales Line Recreate" then
             IsHandled := true;
+
+        if not Confirm(StrSubstNo('%1: %2, %3', SalesHeader.RecordId, SalesHeader."BA Skip Sales Line Recreate", IsHandled)) then
+            Error('');
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnBeforeRecreateServiceLinesHandler', '', false, false)]
@@ -1927,6 +1930,41 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if Rec."BA Skip Sales Line Recreate" then
             IsHandled := true;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeModifySalesOrderHeader', '', false, false)]
+    local procedure SalesQuoteToOrderOnBeforeModifySalesOrderHeader(var SalesOrderHeader: Record "Sales Header"; SalesQuoteHeader: Record "Sales Header")
+    var
+        CustPostingGroup: Record "Customer Posting Group";
+    begin
+
+
+        if not Confirm(StrSubstNo('%1, %2: %3', SalesOrderHeader."Order Date", SalesOrderHeader."Posting Date", WorkDate())) then
+            Error('');
+
+        if (SalesOrderHeader."Order Date" = WorkDate()) and (SalesOrderHeader."Posting Date" = WorkDate()) then
+            exit;
+
+        SalesOrderHeader.SetHideValidationDialog(true);
+        SalesOrderHeader."BA Skip Sales Line Recreate" := true;
+        SalesOrderHeader.Validate("Posting Date", WorkDate());
+
+        if not Confirm(StrSubstNo('%1, %2, %3, %4',
+            Date2DMY(WorkDate(), 2) <> Date2DMY(SalesOrderHeader."Order Date", 2),
+            Date2DMY(WorkDate(), 3) <> Date2DMY(SalesOrderHeader."Order Date", 3),
+            CustPostingGroup.Get(SalesOrderHeader."Customer Posting Group"),
+            CustPostingGroup."BA Posting Currency")) then
+            Error('');
+
+        if ((Date2DMY(WorkDate(), 2) <> Date2DMY(SalesOrderHeader."Order Date", 2)) or (Date2DMY(WorkDate(), 3) <> Date2DMY(SalesOrderHeader."Order Date", 3)))
+                and CustPostingGroup.Get(SalesOrderHeader."Customer Posting Group") and (CustPostingGroup."BA Posting Currency" <> '') then begin
+            SalesOrderHeader.UpdateCurrencyFactor();
+            if not Confirm(StrSubstNo('%1 -> %2', SalesQuoteHeader."Currency Factor", SalesOrderHeader."Currency Factor")) then
+                Error('');
+        end;
+        SalesOrderHeader.SetHideValidationDialog(false);
+        SalesOrderHeader."BA Skip Sales Line Recreate" := false;
+        SalesOrderHeader.Modify(true);
     end;
 
 
