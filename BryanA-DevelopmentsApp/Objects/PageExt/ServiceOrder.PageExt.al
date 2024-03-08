@@ -98,6 +98,11 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         OldCurrFactor := Rec."Currency Factor";
         Rec.SetHideValidationDialog(true);
         Rec."BA Skip Sales Line Recreate" := true;
+        if (Rec."Currency Code" <> '') and (Rec."Currency Factor" = 0) then
+            if Rec."BA Quote Exch. Rate" <> 0 then
+                Rec."Currency Factor" := 1 / Rec."BA Quote Exch. Rate"
+            else
+                Rec."Currency Factor" := CurrExchRate.GetCurrentCurrencyFactor(Rec."Currency Code");
         Rec.Validate("Posting Date", WorkDate());
         if (Rec."Currency Code" <> '') and (Rec."Currency Factor" = 0) then
             Rec.Validate("Currency Factor", CurrExchRate.GetCurrentCurrencyFactor(Rec."Currency Code"));
