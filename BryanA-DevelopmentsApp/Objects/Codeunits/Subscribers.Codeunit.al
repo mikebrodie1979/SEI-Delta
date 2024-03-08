@@ -1940,6 +1940,23 @@ codeunit 75010 "BA SEI Subscibers"
         end;
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Tax Calculate", 'OnBeforeAddSalesLineGetSalesHeader', '', false, false)]
+    local procedure SalesTaxCalculateOnBeforeAddSalesLineGetSalesHeader(var SalesLine: Record "Sales Line"; var SalesHeader: Record "Sales Header"; var IsHandled: Boolean)
+    var
+        SalesHeaderArchive: Record "Sales Header Archive";
+    begin
+        if not SalesLine."Prepayment Line" and (SalesLine."Prepayment Amount" = 0) then
+            exit;
+        IsHandled := true;
+        if SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.") then
+            exit;
+        SalesHeaderArchive.SetRange("Document Type", SalesLine."Document Type");
+        SalesHeaderArchive.SetRange("No.", SalesLine."Document No.");
+        SalesHeaderArchive.FindLast();
+        SalesHeader.Init();
+        SalesHeader.TransferFields(SalesHeaderArchive, true);
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
