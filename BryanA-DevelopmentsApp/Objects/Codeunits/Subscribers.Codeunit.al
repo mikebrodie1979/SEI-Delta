@@ -1931,7 +1931,14 @@ codeunit 75010 "BA SEI Subscibers"
         TempPrepmtSalesLine."Tax Liable" := TempSalesLine."Tax Liable";
     end;
 
-    //OnBeforeTempPrepmtSalesLineInsert
+    [EventSubscriber(ObjectType::Table, database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
+    local procedure OnBeforeSalesHeaderInsert(var Rec: Record "Sales Header")
+    begin
+        if Rec."Document Type" = Rec."Document Type"::Order then begin
+            Rec."Compress Prepayment" := true;
+            Rec."Prepmt. Include Tax" := true;
+        end;
+    end;
 
 
     var
