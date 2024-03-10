@@ -28,6 +28,42 @@ codeunit 75011 "BA Install Codeunit"
         // UpdateItemDescriptions();
         // DefineNonTaxTaxGroup();
         // InitiateDeptCodesPurchaseLookup();
+        UpdateExchangeRates();
+    end;
+
+
+    local procedure UpdateExchangeRates()
+    var
+        SalesHeader: Record "Sales Header";
+        ExchangeRate: Record "Currency Exchange Rate";
+        SalesRecSetup: Record "Sales & Receivables Setup";
+        Currency: Record Currency;
+        GLSetup: Record "General Ledger Setup";
+        ExchRate: Decimal;
+        ExchDate: Date;
+    begin
+        SalesRecSetup.Get();
+        if not SalesRecSetup."BA Use Single Currency Pricing" then
+            exit;
+        SalesRecSetup.TestField("BA Single Price Currency");
+        GLSetup.Get();
+        GLSetup.TestField("LCY Code");
+        Currency.SetFilter(Code, '<>%1', GLSetup."LCY Code");
+        if Currency.FindSet() then
+            repeat
+                SalesHeader.SetRange("Currency Code", Currency.Code);
+                if SalesHeader.FindSet(true) then begin
+                    repeat
+                        ExchDate := SalesHeader."Posting Date";
+                        ExchRate := 0;
+                        ExchangeRate.GetLastestExchangeRate(Currency.Code, ExchDate, ExchRate);
+                        if ExchRate <> 0 then begin
+                            SalesHeader."BA Quote Exch. Rate" := ExchRate;
+                            SalesHeader.Modify(false);
+                        end;
+                    until SalesHeader.Next() = 0;
+                end;
+            until Currency.Next() = 0;
     end;
 
 
