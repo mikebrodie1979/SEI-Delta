@@ -134,6 +134,11 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
 
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        UpdateExchangeRate();
+    end;
+
+    local procedure UpdateExchangeRate()
     var
         ExchangeRate: Record "Currency Exchange Rate";
         SalesRecSetup: Record "Sales & Receivables Setup";
@@ -143,10 +148,8 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         if not SalesRecSetup."BA Use Single Currency Pricing" then
             exit;
         SalesRecSetup.TestField("BA Single Price Currency");
-        if Subscribers.GetExchangeRate(ExchangeRate, SalesRecSetup."BA Single Price Currency") then begin
+        if Subscribers.GetExchangeRate(ExchangeRate, SalesRecSetup."BA Single Price Currency") then
             Rec."BA Quote Exch. Rate" := ExchangeRate."Relational Exch. Rate Amount";
-            CurrPage.SalesLines.Page.SetExchangeRate(Rec."BA Quote Exch. Rate");
-        end
     end;
 
     trigger OnAfterGetRecord()
@@ -159,6 +162,7 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         Rec.SetHideValidationDialog(true);
         Rec."BA Skip Sales Line Recreate" := true;
         Rec.Validate("Posting Date", WorkDate());
+        UpdateExchangeRate();
         Rec.SetHideValidationDialog(false);
         Rec."BA Skip Sales Line Recreate" := false;
         Rec.Modify(true);
