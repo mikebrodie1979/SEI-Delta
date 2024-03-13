@@ -2500,6 +2500,48 @@ codeunit 75010 "BA SEI Subscibers"
         ProdOrder.Modify(true);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header")
+    var
+        ArchiveMgt: Codeunit ArchiveManagement;
+    begin
+        ArchiveMgt.StoreSalesDocument(SalesHeader, false);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeTempPrepmtSalesLineInsert', '', false, false)]
+    local procedure SalesPostOnBeforeTempPrepmtSalesLineInsert(var TempPrepmtSalesLine: Record "Sales Line"; var TempSalesLine: Record "Sales Line")
+    begin
+        TempPrepmtSalesLine."Tax Group Code" := TempSalesLine."Tax Group Code";
+        TempPrepmtSalesLine."Tax Area Code" := TempSalesLine."Tax Area Code";
+        TempPrepmtSalesLine."Tax Category" := TempSalesLine."Tax Category";
+        TempPrepmtSalesLine."Tax Liable" := TempSalesLine."Tax Liable";
+    end;
+
+    [EventSubscriber(ObjectType::Table, database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
+    local procedure OnBeforeSalesHeaderInsert(var Rec: Record "Sales Header")
+    begin
+        if Rec."Document Type" = Rec."Document Type"::Order then begin
+            Rec."Compress Prepayment" := true;
+            Rec."Prepmt. Include Tax" := true;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Tax Calculate", 'OnBeforeAddSalesLineGetSalesHeader', '', false, false)]
+    local procedure SalesTaxCalculateOnBeforeAddSalesLineGetSalesHeader(var SalesLine: Record "Sales Line"; var SalesHeader: Record "Sales Header"; var IsHandled: Boolean)
+    var
+        SalesHeaderArchive: Record "Sales Header Archive";
+    begin
+        if not SalesLine."Prepayment Line" and (SalesLine."Prepayment Amount" = 0) then
+            exit;
+        IsHandled := true;
+        if SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.") then
+            exit;
+        SalesHeaderArchive.SetRange("Document Type", SalesLine."Document Type");
+        SalesHeaderArchive.SetRange("No.", SalesLine."Document No.");
+        SalesHeaderArchive.FindLast();
+        SalesHeader.Init();
+        SalesHeader.TransferFields(SalesHeaderArchive, true);
+    end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeRecreateSalesLinesHandler', '', false, false)]
     local procedure SalesHeaderOnBeforeRecreateSalesLinesHandler(var SalesHeader: Record "Sales Header"; var IsHandled: Boolean)
