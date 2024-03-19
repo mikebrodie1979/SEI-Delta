@@ -2508,14 +2508,7 @@ codeunit 75010 "BA SEI Subscibers"
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeTempPrepmtSalesLineInsert', '', false, false)]
-    local procedure SalesPostOnBeforeTempPrepmtSalesLineInsert(var TempPrepmtSalesLine: Record "Sales Line"; var TempSalesLine: Record "Sales Line")
-    begin
-        TempPrepmtSalesLine."Tax Group Code" := TempSalesLine."Tax Group Code";
-        TempPrepmtSalesLine."Tax Area Code" := TempSalesLine."Tax Area Code";
-        TempPrepmtSalesLine."Tax Category" := TempSalesLine."Tax Category";
-        TempPrepmtSalesLine."Tax Liable" := TempSalesLine."Tax Liable";
-    end;
+
 
     [EventSubscriber(ObjectType::Table, database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
     local procedure OnBeforeSalesHeaderInsert(var Rec: Record "Sales Header")
