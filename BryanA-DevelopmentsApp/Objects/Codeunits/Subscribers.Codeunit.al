@@ -2501,16 +2501,18 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
-    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header")
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
     var
         ArchiveMgt: Codeunit ArchiveManagement;
     begin
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
+        SalesInvoiceHeader."Order No." := SalesHeader."No.";
+        SalesInvoiceHeader.Modify(false);
     end;
 
 
 
-    [EventSubscriber(ObjectType::Table, database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
     local procedure OnBeforeSalesHeaderInsert(var Rec: Record "Sales Header")
     begin
         if Rec."Document Type" = Rec."Document Type"::Order then begin
