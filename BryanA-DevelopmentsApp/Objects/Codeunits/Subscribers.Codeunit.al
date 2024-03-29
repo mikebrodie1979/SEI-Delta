@@ -1915,6 +1915,20 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Inventory Adjustment", 'OnPostItemJnlLineCopyFromValueEntry', '', false, false)]
+    local procedure InventoryAdjustmentOnPostItemJnlLineCopyFromValueEntry(var ItemJournalLine: Record "Item Journal Line"; ValueEntry: Record "Value Entry")
+    var
+        UserSetup: Record "User Setup";
+        GLSetup: Record "General Ledger Setup";
+    begin
+        GLSetup.Get();
+        if UserSetup.Get(UserId()) then;
+        if (ItemJournalLine."Posting Date" >= GLSetup."Allow Posting From") and (ItemJournalLine."Posting Date" >= UserSetup."Allow Posting From") then
+            exit;
+        if UserSetup."Allow Posting From" > ItemJournalLine."Posting Date" then
+            ItemJournalLine."Posting Date" := UserSetup."Allow Posting From";
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
