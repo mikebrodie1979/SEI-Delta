@@ -1921,6 +1921,7 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
         SalesInvoiceHeader."Order No." := SalesHeader."No.";
+        SalesInvoiceHeader."ENC Assigned User ID" := SalesHeader."Assigned User ID";
         SalesInvoiceHeader.Modify(false);
     end;
 
