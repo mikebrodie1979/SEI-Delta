@@ -31,4 +31,45 @@ pageextension 80044 "BA User Setup" extends "User Setup"
             }
         }
     }
+
+    actions
+    {
+        addlast(Processing)
+        {
+            action("BA Update All Posting Dates")
+            {
+                ApplicationArea = all;
+                Caption = 'Update All Posting Dates';
+                Image = DateRange;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+
+                trigger OnAction()
+                var
+                    UserSetup: Record "User Setup";
+                    DateRec: Record Date;
+                    DateLookup: Page "BA Date Lookup";
+                    FromDate: Date;
+                    ToDate: Date;
+                begin
+                    DateRec.SetRange("Period Type", DateRec."Period Type"::Month);
+                    DateRec.SetRange("Period Start", DMY2Date(1));
+                    DateRec.FindFirst();
+                    DateLookup.SetDates(DateRec."Period Start", DateRec."Period End");
+                    if DateLookup.RunModal() <> Action::Yes then
+                        exit;
+                    DateLookup.GetDates(FromDate, ToDate);
+                    if UserSetup.FindSet() then
+                        repeat
+                            UserSetup."Allow Posting From" := FromDate;
+                            UserSetup."Allow Posting To" := ToDate;
+                            UserSetup.Modify(true);
+                            UserSetup.CheckAllowedPostingDates(0);
+                        until UserSetup.Next() = 0;
+                end;
+            }
+        }
+    }
 }
