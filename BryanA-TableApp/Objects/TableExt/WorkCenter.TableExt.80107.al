@@ -1,4 +1,4 @@
-tableextension 80105 "BA Work Center" extends "Work Center"
+tableextension 80107 "BA Work Center" extends "Work Center"
 {
     fields
     {
