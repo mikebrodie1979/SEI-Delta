@@ -1,0 +1,32 @@
+{
+  "id": "069f3d48-1111-459e-bbc6-3f00693bb507",
+  "name": "BryanA - Zetadocs Customizations",
+  "publisher": "BryanA BC Developments Inc.",
+  "brief": "Provides functionality to extent Zetadocs.",
+  "description": "",
+  "version": "14.0.1.0",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "capabilities": [],
+  "dependencies": [
+    {
+      "appId": "069f3d48-1c17-459e-bbc6-3f00693bb507",
+      "name": "Zetadocs - AP automation and bulk emailing",
+      "publisher": "Equisys",
+      "version": "1.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "14.0.0.0",
+  "application": "14.0.0.0",
+  "idRange": {
+    "from": 80900,
+    "to": 80999
+  },
+  "showMyCode": true,
+  "target": "Internal",
+  "runtime" : "3.2"
+}
