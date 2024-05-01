@@ -55,5 +55,12 @@ pageextension 80066 "BA Posted Purch. Cr.Memo" extends "Posted Purchase Credit M
                 Editable = false;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

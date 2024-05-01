@@ -1,15 +1,7 @@
-tableextension 80098 "BA Posted Deposit Header" extends "Posted Deposit Header"
+tableextension 80101 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header"
 {
     fields
     {
-        field(80000; "BA User ID"; Code[50])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'User ID';
-            TableRelation = "User Setup"."User ID";
-            ValidateTableRelation = false;
-            Editable = false;
-        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;

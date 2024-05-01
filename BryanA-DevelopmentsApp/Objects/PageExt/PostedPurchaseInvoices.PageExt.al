@@ -31,6 +31,13 @@ pageextension 80012 "BA Posted Purch. Invoices" extends "Posted Purchase Invoice
                 ApplicationArea = all;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnOpenPage()

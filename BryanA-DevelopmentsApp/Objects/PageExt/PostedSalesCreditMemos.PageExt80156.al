@@ -9,5 +9,12 @@ pageextension 80156 "BA Posted Sales Cr.Memos" extends "Posted Sales Credit Memo
                 ApplicationArea = all;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

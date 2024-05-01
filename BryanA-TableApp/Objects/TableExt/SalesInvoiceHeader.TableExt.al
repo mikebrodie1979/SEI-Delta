@@ -83,6 +83,10 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             DataClassification = CustomerContent;
             Caption = 'Bill-to Name';
             Description = 'Used for Lookup DropDown';
+        field(80100; "BA Actual Posting DateTime"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Actual Posting DateTime';
             Editable = false;
         }
     }
@@ -90,10 +94,17 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
     keys
     {
         key(K1; "BA Ext. Doc. No. DrillDown") { }
+        key("BA Actual Posting"; "BA Actual Posting DateTime") { }
     }
 
     fieldgroups
     {
         addlast(DropDown; "BA Order No. DrillDown", "No.", "BA Ext. Doc. No. DrillDown", "BA Posting Date DrillDown", "BA Bill-to Name DrillDown", "BA Ship-to Name DrillDown", "BA Freight Carrier Name", "BA Freight Term Name", "Package Tracking No.", "ENC Physical Ship Date") { }
+       
     }
+
+    trigger OnInsert()
+    begin
+        Rec."BA Actual Posting DateTime" := CurrentDateTime();
+    end;
 }

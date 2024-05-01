@@ -8,6 +8,10 @@ pageextension 80167 "BA Posted Deposit List" extends "Posted Deposit List"
             {
                 ApplicationArea = all;
             }
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

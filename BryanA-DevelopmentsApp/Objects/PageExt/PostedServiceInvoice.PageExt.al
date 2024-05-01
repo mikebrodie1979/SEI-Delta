@@ -71,6 +71,13 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 ApplicationArea = all;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()
