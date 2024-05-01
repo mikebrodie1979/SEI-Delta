@@ -1,15 +1,7 @@
-tableextension 80098 "BA Posted Deposit Header" extends "Posted Deposit Header"
+tableextension 80100 "BA G/L Entry" extends "G/L Entry"
 {
     fields
     {
-        field(80000; "BA User ID"; Code[50])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'User ID';
-            TableRelation = "User Setup"."User ID";
-            ValidateTableRelation = false;
-            Editable = false;
-        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;

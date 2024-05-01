@@ -38,5 +38,21 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             Caption = 'Web Lead Date';
             Editable = false;
         }
+        field(80100; "BA Actual Posting DateTime"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Actual Posting DateTime';
+            Editable = false;
+        }
     }
+
+    keys
+    {
+        key("BA Actual Posting"; "BA Actual Posting DateTime") { }
+    }
+
+    trigger OnInsert()
+    begin
+        Rec."BA Actual Posting DateTime" := CurrentDateTime();
+    end;
 }
