@@ -1,4 +1,4 @@
-tableextension 80101 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header"
+tableextension 80106 "BA G/L Entry" extends "G/L Entry"
 {
     fields
     {
