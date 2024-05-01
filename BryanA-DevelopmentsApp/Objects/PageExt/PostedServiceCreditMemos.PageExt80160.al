@@ -9,5 +9,12 @@ pageextension 80160 "BA Posted Service Cr.Memos" extends "Posted Service Credit 
                 ApplicationArea = all;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

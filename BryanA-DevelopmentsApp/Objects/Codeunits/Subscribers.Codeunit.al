@@ -8,9 +8,11 @@ codeunit 75010 "BA SEI Subscibers"
                   tabledata "Sales Shipment Header" = rimd,
                   tabledata "Sales Invoice Header" = rimd,
                   tabledata "Service Invoice Header" = rimd,
+                  tabledata "Service Cr.Memo Header" = m,
                   tabledata "Transfer Shipment Header" = rimd,
                   tabledata "Item Ledger Entry" = rimd,
-                  tabledata "Approval Entry" = m;
+                  tabledata "Approval Entry" = m,
+                  tabledata "Posted Deposit Header" = m;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -1927,6 +1929,27 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         if UserSetup."Allow Posting From" > ItemJournalLine."Posting Date" then
             ItemJournalLine."Posting Date" := UserSetup."Allow Posting From";
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Posted Deposit Header", 'OnAfterInsertEvent', '', false, false)]
+    local procedure PostedDepositHeaderOnAfterInsert(var Rec: Record "Posted Deposit Header")
+    begin
+        Rec."BA Actual Posting DateTime" := CurrentDateTime();
+        Rec.Modify(false);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterInsertEvent', '', false, false)]
+    local procedure ServiceInvoiceHeaderOnAfterInsert(var Rec: Record "Service Invoice Header")
+    begin
+        Rec."BA Actual Posting DateTime" := CurrentDateTime();
+        Rec.Modify(false);
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Cr.Memo Header", 'OnAfterInsertEvent', '', false, false)]
+    local procedure ServiceCrMemoHeaderOnAfterInsert(var Rec: Record "Service Cr.Memo Header")
+    begin
+        Rec."BA Actual Posting DateTime" := CurrentDateTime();
+        Rec.Modify(false);
     end;
 
 

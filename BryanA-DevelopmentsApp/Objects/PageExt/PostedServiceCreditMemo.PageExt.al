@@ -55,5 +55,12 @@ pageextension 80064 "BA Posted Service Cr.Memo" extends "Posted Service Credit M
                 Editable = false;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 }

@@ -107,6 +107,13 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 Editable = false;
             }
         }
+        addafter("Posting Date")
+        {
+            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()
