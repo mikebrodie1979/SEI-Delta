@@ -1,4 +1,4 @@
-tableextension 80106 "BA G/L Entry" extends "G/L Entry"
+tableextension 80109 "BA G/L Entry" extends "G/L Entry"
 {
     fields
     {
