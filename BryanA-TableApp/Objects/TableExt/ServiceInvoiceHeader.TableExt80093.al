@@ -52,6 +52,7 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             DataClassification = CustomerContent;
             Caption = 'Bill-to Name';
             Description = 'Used for Lookup DropDown';
+        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;
@@ -69,7 +70,7 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
     fieldgroups
     {
         addlast(DropDown; "BA Order No. DrillDown", "No.", "ENC External Document No.", "BA Posting Date DrillDown", "BA Bill-to Name DrillDown", "BA Ship-to Name DrillDown", "BA Freight Carrier Name", "BA Freight Term Name", "ENC Package Tracking No.", "ENC Physical Ship Date") { }
-        
+
     }
 
     trigger OnInsert()
