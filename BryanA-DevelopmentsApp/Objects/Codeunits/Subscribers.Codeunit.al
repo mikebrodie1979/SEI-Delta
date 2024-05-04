@@ -1952,6 +1952,13 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Modify(false);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
+    begin
+        SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
+        SalesInvoiceHeader.Modify(false);
+    end;
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
