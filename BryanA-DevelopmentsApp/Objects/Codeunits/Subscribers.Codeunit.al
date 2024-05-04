@@ -2510,6 +2510,7 @@ codeunit 75010 "BA SEI Subscibers"
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
         SalesInvoiceHeader."Order No." := SalesHeader."No.";
         SalesInvoiceHeader."ENC Assigned User ID" := SalesHeader."Assigned User ID";
+        SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
         SalesInvoiceHeader.Modify(false);
     end;
 
@@ -2607,13 +2608,6 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         Rec."BA Actual Posting DateTime" := CurrentDateTime();
         Rec.Modify(false);
-    end;
-
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
-    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
-    begin
-        SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
-        SalesInvoiceHeader.Modify(false);
     end;
 
 
