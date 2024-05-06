@@ -80,6 +80,6 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             Caption = 'Skip Sales Line Recreate';
             Editable = false;
             Description = 'System field. Used for the OnBeforeRecreateSalesLinesHandler subscriber.';
-        
+        }
     }
 }
