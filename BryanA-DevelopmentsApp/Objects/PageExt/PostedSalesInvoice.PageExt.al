@@ -114,6 +114,13 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
             }
         }
+        addbefore("Work Description")
+        {
+            field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()

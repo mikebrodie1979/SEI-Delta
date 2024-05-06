@@ -743,6 +743,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesShptHeader."BA Bill-to County Fullname" := SalesHeader."BA Bill-to County Fullname";
         SalesShptHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesShptHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
+        SalesShptHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesInvHeaderInsert', '', false, false)]
@@ -762,6 +763,7 @@ codeunit 75010 "BA SEI Subscibers"
             SalesInvHeader."BA Freight Carrier Name" := ShippingAgent.Name;
         if (SalesInvHeader."ENC Freight Term" <> '') and FreightTerm.Get(SalesInvHeader."ENC Freight Term") then
             SalesInvHeader."BA Freight Term Name" := FreightTerm.Description;
+        SalesInvHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesCrMemoHeaderInsert', '', false, false)]
@@ -771,6 +773,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesCrMemoHeader."BA Bill-to County Fullname" := SalesHeader."BA Bill-to County Fullname";
         SalesCrMemoHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesCrMemoHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
+        SalesCrMemoHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
     end;
 
 
@@ -2610,6 +2613,11 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Modify(false);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnAfterOnRun', '', false, false)]
+    local procedure SalesQuoteToOrderOnAfterRun(var SalesHeader: Record "Sales Header"; var SalesOrderHeader: Record "Sales Header")
+    begin
+        SalesHeader."BA SEI Int'l Ref. No." := SalesOrderHeader."BA SEI Int'l Ref. No.";
+    end;
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
