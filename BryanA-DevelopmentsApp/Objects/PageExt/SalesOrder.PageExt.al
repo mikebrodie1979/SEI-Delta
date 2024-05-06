@@ -119,6 +119,13 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 ApplicationArea = all;
             }
         }
+        addbefore("Work Description")
+        {
+            field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
 
