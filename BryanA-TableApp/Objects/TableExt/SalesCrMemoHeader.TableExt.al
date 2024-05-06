@@ -20,7 +20,7 @@ tableextension 80062 "BA Sales Cr.Memo Header" extends "Sales Cr.Memo Header"
             Caption = 'Province/State Fullname';
             Editable = false;
         }
-        field(80030; "BA SEI Int'l Ref. No."; Code[10])
+        field(80060; "BA SEI Int'l Ref. No."; Code[10])
         {
             DataClassification = CustomerContent;
             Caption = 'SEI Int''l Ref. No.';

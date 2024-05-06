@@ -63,7 +63,7 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             DataClassification = CustomerContent;
             Caption = 'Web Lead Date';
         }
-        field(80030; "BA SEI Int'l Ref. No."; Code[10])
+        field(80060; "BA SEI Int'l Ref. No."; Code[10])
         {
             DataClassification = CustomerContent;
             Caption = 'SEI Int''l Ref. No.';
