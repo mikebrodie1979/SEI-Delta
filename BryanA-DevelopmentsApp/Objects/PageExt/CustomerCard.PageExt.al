@@ -259,6 +259,30 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 exit(Text <> '');
             end;
         }
+
+        addafter("Tax Exemption No.")
+        {
+            field("ENC FID No."; Rec."ENC FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA EORI No."; Rec."BA EORI No.")
+            {
+                ApplicationArea = all;
+            }
+            field("PST Exemption No."; Rec."VAT Registration No.")
+            {
+                Caption = 'PST Exemption No.';
+                ApplicationArea = all;
+            }
+        }
+        addafter(Name)
+        {
+            field("BA SEI Int'l Cust. No."; "BA SEI Int'l Cust. No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions

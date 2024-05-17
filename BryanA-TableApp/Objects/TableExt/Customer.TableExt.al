@@ -98,5 +98,15 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'SEI Service Center';
         }
+        field(80050; "BA SEI Int'l Cust. No."; Code[12])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Int''l Cust. No.';
+        }
+        field(80051; "BA EORI No."; Code[12])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'EORI No.';
+        }
     }
 }
