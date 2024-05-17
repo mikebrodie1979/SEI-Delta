@@ -103,7 +103,7 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'SEI Int''l Cust. No.';
         }
-        field(80051; "BA EORI No."; Code[12])
+        field(80051; "BA EORI No."; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'EORI No.';
