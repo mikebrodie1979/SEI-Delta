@@ -19,6 +19,10 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             {
                 ApplicationArea = all;
             }
+            field("BA SEI Int'l Cust. No."; Rec."BA SEI Int'l Cust. No.")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
