@@ -45,5 +45,11 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Caption = 'Web Lead Date';
             Editable = false;
         }
+        field(80060; "BA SEI Int'l Ref. No."; Code[10])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Int''l Ref. No.';
+            Editable = false;
+        }
     }
 }

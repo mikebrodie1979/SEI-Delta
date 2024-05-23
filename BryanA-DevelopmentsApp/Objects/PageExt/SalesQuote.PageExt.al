@@ -120,6 +120,13 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
                 exit(Text <> '');
             end;
         }
+        addbefore("Work Description")
+        {
+            field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions

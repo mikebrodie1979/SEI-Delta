@@ -16,6 +16,10 @@ pageextension 80123 "BA Posted Sales Invoices" extends "Posted Sales Invoices"
             {
                 ApplicationArea = all;
             }
+            field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter("Posting Date")
         {

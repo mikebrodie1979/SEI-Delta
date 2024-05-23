@@ -12,6 +12,10 @@ pageextension 80120 "BA Sales Quotes" extends "Sales Quotes"
             {
                 ApplicationArea = all;
             }
+            field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }
