@@ -25,4 +25,28 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             }
         }
     }
+    actions
+    {
+
+        addlast(Processing)
+        {
+            action("BA Import Customers")
+            {
+                ApplicationArea = all;
+                Image = ImportExcel;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Caption = 'Import Customers';
+
+                trigger OnAction()
+                var
+                    Subsribers: Codeunit "BA SEI Subscibers";
+                begin
+                    Subsribers.ImportCustomerList();
+                end;
+            }
+        }
+    }
 }

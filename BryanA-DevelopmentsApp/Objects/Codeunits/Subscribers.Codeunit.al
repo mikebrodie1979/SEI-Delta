@@ -1970,6 +1970,93 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader."BA SEI Int'l Ref. No." := SalesOrderHeader."BA SEI Int'l Ref. No.";
     end;
 
+
+    procedure ImportCustomerList()
+    var
+        ExcelBuffer: Record "Excel Buffer" temporary;
+        ExcelBuffer2: Record "Excel Buffer" temporary;
+        ErrorBuffer: Record "Name/Value Buffer" temporary;
+        TempBlob: Record TempBlob;
+        Customer: Record Customer;
+        FileMgt: Codeunit "File Management";
+        IStream: InStream;
+        Window: Dialog;
+        FileName: Text;
+        RecCount: Integer;
+        i: Integer;
+        i2: Integer;
+        i3: Integer;
+    begin
+        if FileMgt.BLOBImportWithFilter(TempBlob, 'Select Customer List', '', 'Excel|*.xlsx', 'Excel|*.xlsx') = '' then
+            exit;
+        TempBlob.Blob.CreateInStream(IStream);
+        if not ExcelBuffer.GetSheetsNameListFromStream(IStream, ErrorBuffer) then
+            Error('No Sheets in file.');
+        ErrorBuffer.FindFirst();
+        ExcelBuffer.OpenBookStream(IStream, ErrorBuffer.Value);
+        ExcelBuffer.ReadSheet();
+
+
+        ExcelBuffer.SetFilter("Row No.", '>%1', 1);
+        ExcelBuffer.SetFilter("Cell Value as Text", '<>%1', '');
+        if not ExcelBuffer.FindSet() then
+            exit;
+        Window.Open('#1####/#2####');
+        Window.Update(1, 'Reading Lines');
+        repeat
+            ExcelBuffer2 := ExcelBuffer;
+            ExcelBuffer2.Insert(true);
+        until ExcelBuffer.Next() = 0;
+        ExcelBuffer.SetRange("Column No.", 1);
+        ExcelBuffer.FindSet();
+        RecCount := ExcelBuffer.Count();
+
+        repeat
+            i += 1;
+            Window.Update(2, StrSubstNo('%1 of %2', i, RecCount));
+            if not Customer.Get(ExcelBuffer."Cell Value as Text") then begin
+                Customer.Init();
+                Customer.Validate("No.", ExcelBuffer."Cell Value as Text");
+                ExcelBuffer2.Get(ExcelBuffer."Row No.", 2);
+                Customer."ENC Created By" := ExcelBuffer2."Cell Value as Text";
+                ExcelBuffer2.Get(ExcelBuffer."Row No.", 3);
+                Customer."ENC Creation Date" := ParseDate(ExcelBuffer2."Cell Value as Text");
+                Customer.Insert(false);
+                i2 += 1;
+            end else begin
+                ExcelBuffer2.Get(ExcelBuffer."Row No.", 2);
+                Customer."ENC Created By" := ExcelBuffer2."Cell Value as Text";
+                ExcelBuffer2.Get(ExcelBuffer."Row No.", 3);
+                Customer."ENC Creation Date" := ParseDate(ExcelBuffer2."Cell Value as Text");
+                Customer.Modify(false);
+                i3 += 1;
+            end;
+        until ExcelBuffer.Next() = 0;
+        Window.Close();
+        Message('Inserted %1 new customers, updated %2 existing customers.', i2, i3);
+    end;
+
+    local procedure ParseDate(Input: Text): Date
+    var
+        Parts: list of [Text];
+        s: Text;
+        DD: Integer;
+        MM: Integer;
+        YY: Integer;
+    begin
+        Parts := Input.Split('/');
+        Parts.Get(1, s);
+        Evaluate(MM, s);
+        Parts.Get(2, s);
+        Evaluate(DD, s);
+        Parts.Get(3, s);
+        Evaluate(YY, s);
+        if YY < 100 then
+            YY += 2000;
+        exit(DMY2Date(DD, MM, YY));
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
