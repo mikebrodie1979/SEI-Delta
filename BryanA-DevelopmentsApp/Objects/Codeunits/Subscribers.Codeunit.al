@@ -1915,10 +1915,12 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
-    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"; DocumentType: Option)
     var
         ArchiveMgt: Codeunit ArchiveManagement;
     begin
+        if DocumentType <> 1 then
+            exit;
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
         SalesInvoiceHeader."Order No." := SalesHeader."No.";
         SalesInvoiceHeader."ENC Assigned User ID" := SalesHeader."Assigned User ID";
