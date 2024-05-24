@@ -1956,10 +1956,12 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
-    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header")
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"; DocumentType: Option)
     begin
-        SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
-        SalesInvoiceHeader.Modify(false);
+        if DocumentType = 1 then begin
+            SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
+            SalesInvoiceHeader.Modify(false);
+        end;
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnAfterOnRun', '', false, false)]
