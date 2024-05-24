@@ -1919,7 +1919,7 @@ codeunit 75010 "BA SEI Subscibers"
     var
         ArchiveMgt: Codeunit ArchiveManagement;
     begin
-        if DocumentType <> 1 then
+        if (DocumentType <> 1) or (SalesInvoiceHeader."No." = '') then
             exit;
         ArchiveMgt.StoreSalesDocument(SalesHeader, false);
         SalesInvoiceHeader."Order No." := SalesHeader."No.";
