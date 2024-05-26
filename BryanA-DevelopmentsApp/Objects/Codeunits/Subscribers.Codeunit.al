@@ -1958,7 +1958,7 @@ codeunit 75010 "BA SEI Subscibers"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
     local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"; DocumentType: Option)
     begin
-        if DocumentType = 1 then begin
+        if (DocumentType = 1) and (SalesInvoiceHeader."No." <> '') then begin
             SalesInvoiceHeader."BA Actual Posting DateTime" := CurrentDateTime();
             SalesInvoiceHeader.Modify(false);
         end;
