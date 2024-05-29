@@ -136,6 +136,33 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         }
     }
 
+    actions
+    {
+        addlast(Processing)
+        {
+            action("BA Barbados Order")
+            {
+                ApplicationArea = all;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Image = CompareCOA;
+                Caption = 'Mark as Barbados Order';
+                ToolTip = 'Updated the Order No. to have the suffix "-B"';
+
+                trigger OnAction()
+                begin
+                    Rec."BA Allow Rename" := true;
+                    Rec.Modify(false);
+                    Rec.Rename(Rec."Document Type", StrSubstNo('%1-B', Rec."No."));
+                    Rec."BA Allow Rename" := false;
+                    Rec.Modify(false);
+                end;
+            }
+        }
+    }
+
 
 
 

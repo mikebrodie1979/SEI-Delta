@@ -2616,7 +2616,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnAfterOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnAfterRun(var SalesHeader: Record "Sales Header"; var SalesOrderHeader: Record "Sales Header")
     begin
@@ -2710,6 +2709,154 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeRename', '', false, false)]
+    local procedure SalesHeaderOnBeforeRename(var xRec: Record "Sales Header"; var Rec: Record "Sales Header"; var IsHandled: Boolean)
+    var
+        ApprovalEntry: Record "Approval Entry";
+    begin
+        if Rec."BA Allow Rename" then begin
+            ApprovalEntry.SetRange("Record ID to Approve", xRec.RecordId());
+            ApprovalEntry.SetRange(Status, ApprovalEntry.Status::Open);
+            if not ApprovalEntry.IsEmpty() then
+                Error(PendingApprovalErr);
+            RenameSalesHeader(Rec, xRec);
+            IsHandled := true;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeRename', '', false, false)]
+    local procedure SalesLineOnBeforeRename(var Rec: Record "Sales Line"; var IsHandled: Boolean)
+    begin
+        if Rec."BA Allow Rename" then
+            IsHandled := true;
+    end;
+
+    local procedure RenameSalesHeader(var SalesHeader: Record "Sales Header"; var xSalesHeader: Record "Sales Header")
+    var
+        SalesLine: Record "Sales Line";
+        SalesCommentLine: Record "Sales Comment Line";
+        SalesTaxAmountDiff: Record "Sales Tax Amount Difference";
+        AssemblyToOrderLink: Record "Assemble-to-Order Link";
+        PurchLine: Record "Purchase Line";
+        ReservationEntry: Record "Reservation Entry";
+        ItemChargeAssignment: Record "Item Charge Assignment (Sales)";
+        RequisitionLine: Record "Requisition Line";
+        RecIDs: List of [RecordId];
+        RecID: RecordId;
+    begin
+        SalesTaxAmountDiff.SetRange("Document Type", SalesTaxAmountDiff."Document Type"::Order);
+        SalesTaxAmountDiff.SetRange("Document Product Area", SalesTaxAmountDiff."Document Product Area"::Sales);
+        SalesTaxAmountDiff.SetRange("Document No.", xSalesHeader."No.");
+        if SalesTaxAmountDiff.FindSet() then
+            repeat
+                RecIDs.Add(SalesTaxAmountDiff.RecordId);
+            until SalesTaxAmountDiff.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesTaxAmountDiff.Get(RecID);
+            with SalesTaxAmountDiff do
+                Rename("Document Product Area", "Document Type", SalesHeader."No.", "Tax Area Code", "Tax Jurisdiction Code",
+                        "Tax %", "Tax Group Code", "Expense/Capitalize", "Tax Type", "Use Tax");
+        end;
+
+        Clear(RecIDs);
+        SalesCommentLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesCommentLine.SetRange("No.", xSalesHeader."No.");
+        if SalesCommentLine.FindSet() then
+            repeat
+                RecIDs.Add(SalesCommentLine.RecordId);
+            until SalesCommentLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesCommentLine.Get(RecID);
+            with SalesCommentLine do
+                Rename("Document Type", SalesHeader."No.", "Document Line No.", "Line No.");
+        end;
+
+
+        Clear(RecIDs);
+        AssemblyToOrderLink.SetRange(Type, AssemblyToOrderLink.Type::Sale);
+        AssemblyToOrderLink.SetRange("Document Type", AssemblyToOrderLink."Document Type"::Order);
+        AssemblyToOrderLink.SetRange("Document No.", xSalesHeader."No.");
+        if AssemblyToOrderLink.FindSet() then
+            repeat
+                RecIDs.Add(AssemblyToOrderLink.RecordId());
+            until AssemblyToOrderLink.Next() = 0;
+        foreach RecID in RecIDs do begin
+            AssemblyToOrderLink.Get(RecID);
+            AssemblyToOrderLink."Document No." := SalesHeader."No.";
+            AssemblyToOrderLink.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        ReservationEntry.SetRange("Source Type", Database::"Sales Header", Database::"Sales Line");
+        ReservationEntry.SetRange("Source Subtype", SalesHeader."Document Type");
+        ReservationEntry.SetRange("Source ID", xSalesHeader."No.");
+        if ReservationEntry.FindSet() then
+            repeat
+                RecIDs.Add(ReservationEntry.RecordId());
+            until ReservationEntry.Next() = 0;
+        foreach RecID in RecIDs do begin
+            ReservationEntry.Get(RecID);
+            ReservationEntry."Source ID" := SalesHeader."No.";
+            ReservationEntry.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        PurchLine.SetRange("Sales Order No.", xSalesHeader."No.");
+        if PurchLine.FindSet() then
+            repeat
+                RecIDs.Add(PurchLine.RecordId());
+            until PurchLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            PurchLine.Get(RecID);
+            PurchLine."Sales Order No." := SalesHeader."No.";
+            PurchLine.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        RequisitionLine.SetRange("Sales Order No.", xSalesHeader."No.");
+        if RequisitionLine.FindSet() then
+            repeat
+                RecIDs.Add(RequisitionLine.RecordId());
+            until RequisitionLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            RequisitionLine.Get(RecID);
+            RequisitionLine."Sales Order No." := SalesHeader."No.";
+            RequisitionLine.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        ItemChargeAssignment.SetRange("Document Type", SalesHeader."Document Type");
+        ItemChargeAssignment.SetRange("Document No.", xSalesHeader."No.");
+        if ItemChargeAssignment.FindSet() then
+            repeat
+                RecIDs.Add(ItemChargeAssignment.RecordId());
+            until ItemChargeAssignment.Next() = 0;
+        foreach RecID in RecIDs do begin
+            ItemChargeAssignment.Get(RecID);
+            with ItemChargeAssignment do
+                Rename("Document Type", SalesHeader."No.", "Document Line No.", "Line No.");
+        end;
+
+        Clear(RecIDs);
+        SalesLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesLine.SetRange("Document No.", xSalesHeader."No.");
+        if SalesLine.FindSet() then
+            repeat
+                RecIDs.Add(SalesLine.RecordId());
+            until SalesLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesLine.Get(RecID);
+            SalesLine."BA Allow Rename" := true;
+            SalesLine.Modify(false);
+            with SalesLine do
+                Rename("Document Type", SalesHeader."No.", "Line No.");
+            SalesLine."BA Allow Rename" := false;
+            SalesLine.Modify(false);
+        end;
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -2756,4 +2903,5 @@ codeunit 75010 "BA SEI Subscibers"
         UnchangedDescrErr: Label '%1 "%2" on line %3 must be changed.';
         NonServiceCustomerErr: Label '%1 can only be sold to Service Center customers.';
         UpdateItemManfDeptConf: Label 'Would you like to update the %1 listed on the Item Card?';
+        PendingApprovalErr: Label 'Cannot set as Barbados Order as there is one or more pending approval requests.';
 }
