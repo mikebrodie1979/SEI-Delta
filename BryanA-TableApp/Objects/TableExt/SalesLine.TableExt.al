@@ -29,7 +29,7 @@ tableextension 80002 "BA Sales Line" extends "Sales Line"
             FieldClass = FlowField;
             CalcFormula = lookup ("Sales Header"."BA Quote Exch. Rate" where ("Document Type" = field ("Document Type"), "No." = field ("Document No.")));
         }
-        field(80030; "BA Allow Rename"; Boolean)
+        field(80046; "BA Allow Rename"; Boolean)
         {
             DataClassification = CustomerContent;
             Caption = 'Allow Rename';

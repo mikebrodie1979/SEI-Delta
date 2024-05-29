@@ -84,6 +84,12 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             Caption = 'Bill-to Name';
             Description = 'Used for Lookup DropDown';
         }
+        field(80046; "BA SEI Barbados Order"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Barbados Order';
+            Editable = false;
+        }
         field(80060; "BA SEI Int'l Ref. No."; Code[10])
         {
             DataClassification = CustomerContent;

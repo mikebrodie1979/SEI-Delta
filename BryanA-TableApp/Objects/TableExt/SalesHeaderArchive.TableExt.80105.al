@@ -212,5 +212,11 @@ tableextension 80105 "BA Sales Header Archive" extends "Sales Header Archive"
             Caption = 'Web Lead Date';
             Editable = false;
         }
+        field(80046; "BA SEI Barbados Order"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Barbados Order';
+            Editable = false;
+        }
     }
 }
