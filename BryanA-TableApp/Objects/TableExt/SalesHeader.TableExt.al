@@ -63,12 +63,18 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             DataClassification = CustomerContent;
             Caption = 'Web Lead Date';
         }
-        field(80030; "BA Allow Rename"; Boolean)
+        field(80045; "BA Allow Rename"; Boolean)
         {
             DataClassification = CustomerContent;
             Caption = 'Allow Rename';
             Editable = false;
             Description = 'System field to override default rename functionality';
+        }
+        field(80046; "BA SEI Barbados Order"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'SEI Barbados Order';
+            Editable = false;
         }
         field(80060; "BA SEI Int'l Ref. No."; Code[10])
         {

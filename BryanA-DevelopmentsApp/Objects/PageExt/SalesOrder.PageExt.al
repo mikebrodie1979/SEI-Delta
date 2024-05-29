@@ -145,6 +145,9 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
 
                 trigger OnAction()
                 begin
+                    if Rec."BA SEI Barbados Order" then
+                        Error(AlreadyMarkedErr, Rec."No.");
+                    Rec."BA SEI Barbados Order" := true;
                     Rec."BA Allow Rename" := true;
                     Rec.Modify(false);
                     Rec.Rename(Rec."Document Type", StrSubstNo('%1-B', Rec."No."));
@@ -183,4 +186,7 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
             CurrPage.SalesLines.Page.SetExchangeRate(Rec."BA Quote Exch. Rate");
         end
     end;
+
+    var
+        AlreadyMarkedErr: Label 'Order %1 is already marked as a Barbados order.';
 }

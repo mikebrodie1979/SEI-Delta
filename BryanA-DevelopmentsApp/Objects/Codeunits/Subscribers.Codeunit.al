@@ -6,7 +6,10 @@ codeunit 75010 "BA SEI Subscibers"
                   tabledata "Purch. Rcpt. Line" = rimd,
                   tabledata "Sales Shipment Line" = rimd,
                   tabledata "Sales Shipment Header" = rimd,
+                  tabledata "Sales Invoice Line" = m,
                   tabledata "Sales Invoice Header" = rimd,
+                  tabledata "Sales Cr.Memo Line" = m,
+                  tabledata "Sales Cr.Memo Header" = m,
                   tabledata "Service Invoice Header" = rimd,
                   tabledata "Service Cr.Memo Header" = m,
                   tabledata "Transfer Shipment Header" = rimd,
@@ -744,6 +747,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesShptHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesShptHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
         SalesShptHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
+        SalesShptHeader."BA SEI Barbados Order" := SalesHeader."BA SEI Barbados Order";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesInvHeaderInsert', '', false, false)]
@@ -754,6 +758,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesInvHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesInvHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
         SalesInvHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
+        SalesInvHeader."BA SEI Barbados Order" := SalesHeader."BA SEI Barbados Order";
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnBeforeSalesCrMemoHeaderInsert', '', false, false)]
@@ -764,6 +769,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesCrMemoHeader."BA Ship-to County Fullname" := SalesHeader."BA Ship-to County Fullname";
         SalesCrMemoHeader."BA Sell-to County Fullname" := SalesHeader."BA Sell-to County Fullname";
         SalesCrMemoHeader."BA SEI Int'l Ref. No." := SalesHeader."BA SEI Int'l Ref. No.";
+        SalesCrMemoHeader."BA SEI Barbados Order" := SalesHeader."BA SEI Barbados Order";
     end;
 
 
@@ -2087,9 +2093,20 @@ codeunit 75010 "BA SEI Subscibers"
         SalesTaxAmountDiff: Record "Sales Tax Amount Difference";
         AssemblyToOrderLink: Record "Assemble-to-Order Link";
         PurchLine: Record "Purchase Line";
+        TrackingSpec: Record "Tracking Specification";
         ReservationEntry: Record "Reservation Entry";
         ItemChargeAssignment: Record "Item Charge Assignment (Sales)";
         RequisitionLine: Record "Requisition Line";
+        SalesInvHeader: Record "Sales Invoice Header";
+        SalesInvLine: Record "Sales Invoice Line";
+        SalesShptHeader: Record "Sales Shipment Header";
+        SalesShptLine: Record "Sales Shipment Line";
+        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
+        SalesCrMemoLine: Record "Sales Cr.Memo Line";
+        WhseActivityHdr: Record "Warehouse Activity Header";
+        WhseActivityLine: Record "Warehouse Activity Line";
+        WhseRequest: Record "Warehouse Request";
+        RecordLink: Record "Record Link";
         RecIDs: List of [RecordId];
         RecID: RecordId;
     begin
@@ -2150,6 +2167,20 @@ codeunit 75010 "BA SEI Subscibers"
         end;
 
         Clear(RecIDs);
+        TrackingSpec.SetRange("Source Type", Database::"Sales Header", Database::"Sales Line");
+        TrackingSpec.SetRange("Source Subtype", SalesHeader."Document Type");
+        TrackingSpec.SetRange("Source ID", xSalesHeader."No.");
+        if TrackingSpec.FindSet() then
+            repeat
+                RecIDs.Add(TrackingSpec.RecordId());
+            until TrackingSpec.Next() = 0;
+        foreach RecID in RecIDs do begin
+            TrackingSpec.Get(RecID);
+            TrackingSpec."Source ID" := SalesHeader."No.";
+            TrackingSpec.Modify(false);
+        end;
+
+        Clear(RecIDs);
         PurchLine.SetRange("Sales Order No.", xSalesHeader."No.");
         if PurchLine.FindSet() then
             repeat
@@ -2185,6 +2216,117 @@ codeunit 75010 "BA SEI Subscibers"
             with ItemChargeAssignment do
                 Rename("Document Type", SalesHeader."No.", "Document Line No.", "Line No.");
         end;
+
+        Clear(RecIDs);
+        SalesInvHeader.SetRange("Order No.", xSalesHeader."No.");
+        if SalesInvHeader.FindSet() then
+            repeat
+                RecIDs.Add(SalesInvHeader.RecordId());
+            until SalesInvHeader.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesInvHeader.Get(RecID);
+            SalesInvHeader."Order No." := SalesHeader."No.";
+            SalesInvHeader.Modify(false);
+        end;
+        Clear(RecIDs);
+        SalesInvLine.SetRange("Order No.", xSalesHeader."No.");
+        if SalesInvLine.FindSet() then
+            repeat
+                RecIDs.Add(SalesInvLine.RecordId());
+            until SalesInvLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesInvLine.Get(RecID);
+            SalesInvLine."Order No." := SalesHeader."No.";
+            SalesInvLine.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        SalesShptHeader.SetRange("Order No.", xSalesHeader."No.");
+        if SalesShptHeader.FindSet() then
+            repeat
+                RecIDs.Add(SalesShptHeader.RecordId());
+            until SalesShptHeader.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesShptHeader.Get(RecID);
+            SalesShptHeader."Order No." := SalesHeader."No.";
+            SalesShptHeader.Modify(false);
+        end;
+        Clear(RecIDs);
+        SalesShptLine.SetRange("Order No.", xSalesHeader."No.");
+        if SalesShptLine.FindSet() then
+            repeat
+                RecIDs.Add(SalesShptLine.RecordId());
+            until SalesShptLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesShptLine.Get(RecID);
+            SalesShptLine."Order No." := SalesHeader."No.";
+            SalesShptLine.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        SalesCrMemoHeader.SetRange("Return Order No.", xSalesHeader."No.");
+        if SalesCrMemoHeader.FindSet() then
+            repeat
+                RecIDs.Add(SalesCrMemoHeader.RecordId());
+            until SalesCrMemoHeader.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesCrMemoHeader.Get(RecID);
+            SalesCrMemoHeader."Return Order No." := SalesHeader."No.";
+            SalesCrMemoHeader.Modify(false);
+        end;
+        Clear(RecIDs);
+        SalesCrMemoLine.SetRange("Order No.", xSalesHeader."No.");
+        if SalesCrMemoLine.FindSet() then
+            repeat
+                RecIDs.Add(SalesCrMemoLine.RecordId());
+            until SalesCrMemoLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            SalesCrMemoLine.Get(RecID);
+            SalesCrMemoLine."Order No." := SalesHeader."No.";
+            SalesCrMemoLine.Modify(false);
+        end;
+
+
+        Clear(RecIDs);
+        WhseActivityHdr.SetRange("Source Type", Database::"Sales Line");
+        WhseActivityHdr.SetRange("Source Subtype", SalesHeader."Document Type"::Order);
+        WhseActivityHdr.SetRange("Source No.", xSalesHeader."No.");
+        if WhseActivityHdr.FindSet() then
+            repeat
+                RecIDs.Add(WhseActivityHdr.RecordId());
+            until WhseActivityHdr.Next() = 0;
+        foreach RecID in RecIDs do begin
+            WhseActivityHdr.Get(RecID);
+            WhseActivityHdr."Source No." := SalesHeader."No.";
+            WhseActivityHdr.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        WhseActivityLine.SetRange("Source Type", Database::"Sales Line");
+        WhseActivityLine.SetRange("Source Subtype", SalesHeader."Document Type"::Order);
+        WhseActivityLine.SetRange("Source No.", xSalesHeader."No.");
+        if WhseActivityLine.FindSet() then
+            repeat
+                RecIDs.Add(WhseActivityLine.RecordId());
+            until WhseActivityLine.Next() = 0;
+        foreach RecID in RecIDs do begin
+            WhseActivityLine.Get(RecID);
+            WhseActivityLine."Source No." := SalesHeader."No.";
+            WhseActivityLine.Modify(false);
+        end;
+
+        Clear(RecIDs);
+        RecordLink.SetRange("Record ID", xSalesHeader.RecordId());
+        if RecordLink.FindSet() then
+            repeat
+                RecIDs.Add(RecordLink.RecordId());
+            until RecordLink.Next() = 0;
+        foreach RecID in RecIDs do begin
+            RecordLink.Get(RecID);
+            RecordLink."Record ID" := SalesHeader.RecordId();
+            RecordLink.Modify(false);
+        end;
+
 
         Clear(RecIDs);
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
