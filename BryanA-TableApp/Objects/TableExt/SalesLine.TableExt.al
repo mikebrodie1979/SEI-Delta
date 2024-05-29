@@ -22,5 +22,12 @@ tableextension 80002 "BA Sales Line" extends "Sales Line"
             Editable = false;
             OptionMembers = " ","Open","Closed/Lost","Closed/Other","Archive";
         }
+        field(80030; "BA Allow Rename"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Allow Rename';
+            Editable = false;
+            Description = 'System field to override default rename functionality';
+        }
     }
 }
