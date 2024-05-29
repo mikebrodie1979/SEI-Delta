@@ -14,8 +14,10 @@ codeunit 75010 "BA SEI Subscibers"
                   tabledata "Service Cr.Memo Header" = m,
                   tabledata "Transfer Shipment Header" = rimd,
                   tabledata "Item Ledger Entry" = rimd,
-                  tabledata "Approval Entry" = rimd,
-                  tabledata "Posted Deposit Header" = m;
+                  tabledata "Approval Entry" = m,
+                  tabledata "Posted Deposit Header" = m,
+                  tabledata "G/L Entry" = m,
+                  tabledata "Cust. Ledger Entry" = m;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnBeforeOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnBeforeRun(var SalesHeader: Record "Sales Header")
@@ -2759,7 +2761,11 @@ codeunit 75010 "BA SEI Subscibers"
         WhseActivityLine: Record "Warehouse Activity Line";
         WhseRequest: Record "Warehouse Request";
         RecordLink: Record "Record Link";
+        GLEntry: Record "G/L Entry";
+        CustLedgerEntry: Record "Cust. Ledger Entry";
         RecIDs: List of [RecordId];
+        RecIDs2: List of [RecordId];
+        RecIDs3: List of [RecordId];
         RecID: RecordId;
     begin
         SalesTaxAmountDiff.SetRange("Document Type", SalesTaxAmountDiff."Document Type"::Order);
@@ -2871,10 +2877,35 @@ codeunit 75010 "BA SEI Subscibers"
 
         Clear(RecIDs);
         SalesInvHeader.SetRange("Order No.", xSalesHeader."No.");
-        if SalesInvHeader.FindSet() then
+        if SalesInvHeader.FindSet() then begin
+            GLEntry.SetRange("Document Type", GLEntry."Document Type"::Invoice);
+            GLEntry.SetRange(Description, StrSubstNo('Order %1'), xSalesHeader."No.");
+            CustLedgerEntry.SetRange("Document Type", CustLedgerEntry."Document Type"::Invoice);
+            CustLedgerEntry.SetRange(Description, StrSubstNo('Order %1'), xSalesHeader."No.");
             repeat
+                GLEntry.SetRange("Document No.", SalesInvHeader."No.");
+                if GLEntry.FindSet() then
+                    repeat
+                        RecIDs2.Add(GLEntry.RecordId());
+                    until GLEntry.Next() = 0;
+                CustLedgerEntry.SetRange("Document No.", SalesInvHeader."No.");
+                if CustLedgerEntry.FindSet() then
+                    repeat
+                        RecIDs3.Add(CustLedgerEntry.RecordId());
+                    until CustLedgerEntry.Next() = 0;
                 RecIDs.Add(SalesInvHeader.RecordId());
             until SalesInvHeader.Next() = 0;
+            foreach RecID in RecIDs2 do begin
+                GLEntry.Get(RecID);
+                GLEntry.Description := StrSubstNo('Order %1', SalesHeader."No.");
+                GLEntry.Modify(false);
+            end;
+            foreach RecID in RecIDs3 do begin
+                CustLedgerEntry.Get(RecID);
+                CustLedgerEntry.Description := StrSubstNo('Order %1', SalesHeader."No.");
+                CustLedgerEntry.Modify(false);
+            end;
+        end;
         foreach RecID in RecIDs do begin
             SalesInvHeader.Get(RecID);
             SalesInvHeader."Order No." := SalesHeader."No.";
