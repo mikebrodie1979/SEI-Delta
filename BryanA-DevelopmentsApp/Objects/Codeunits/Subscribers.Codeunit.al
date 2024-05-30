@@ -3010,7 +3010,6 @@ codeunit 75010 "BA SEI Subscibers"
             RecordLink.Modify(false);
         end;
 
-
         Clear(RecIDs);
         SalesLine.SetRange("Document Type", SalesHeader."Document Type");
         SalesLine.SetRange("Document No.", xSalesHeader."No.");
@@ -3027,6 +3026,9 @@ codeunit 75010 "BA SEI Subscibers"
             SalesLine."BA Allow Rename" := false;
             SalesLine.Modify(false);
         end;
+
+
+        SalesHeader."Posting Description" := StrSubstNo('%1 %2', SalesHeader."Document Type", SalesHeader."No.");
     end;
 
 
