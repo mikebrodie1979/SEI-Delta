@@ -2380,6 +2380,32 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeValidateWarranty', '', false, false)]
+    local procedure ServiceItemLineOnBeforeValidateWarranty(var ServiceItemLine: Record "Service Item Line"; var IsHandled: Boolean)
+    var
+        ServiceHeader: Record "Service Header";
+        ServiceLine: Record "Service Line";
+        WarrantValue: Boolean;
+    begin
+        IsHandled := true;
+        WarrantValue := ServiceItemLine.Warranty;
+        ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
+        ServiceItemLine.CheckWarranty(ServiceHeader."Order Date");
+        ServiceItemLine.Warranty := WarrantValue;
+        ServiceLine.SetRange("Document Type", ServiceItemLine."Document Type");
+        ServiceLine.SetRange("Document No.", ServiceItemLine."Document No.");
+        ServiceLine.SetRange("Service Item Line No.", ServiceItemLine."Line No.");
+        if ServiceLine.FindSet(true) then
+            repeat
+                ServiceLine.Validate(Warranty, ServiceItemLine.Warranty);
+                ServiceLine.Modify(true);
+            until ServiceLine.Next() = 0;
+    end;
+
+
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
