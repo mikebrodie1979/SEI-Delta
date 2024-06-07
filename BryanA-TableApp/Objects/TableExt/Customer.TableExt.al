@@ -108,5 +108,11 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'EORI No.';
         }
+        field(80060; "BA Segment Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Segment Code';
+            TableRelation = "BA Segment".Code;
+        }
     }
 }
