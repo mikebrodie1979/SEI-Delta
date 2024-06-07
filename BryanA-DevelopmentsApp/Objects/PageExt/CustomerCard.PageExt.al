@@ -283,6 +283,13 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 ApplicationArea = all;
             }
         }
+        addafter("Salesperson Code")
+        {
+            field("BA Segment Code"; "BA Segment Code")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions
