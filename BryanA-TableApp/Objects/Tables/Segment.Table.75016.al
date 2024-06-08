@@ -1,4 +1,4 @@
-table 75014 "BA Segment"
+table 75016 "BA Segment"
 {
     DataClassification = CustomerContent;
     Caption = 'Segment';
