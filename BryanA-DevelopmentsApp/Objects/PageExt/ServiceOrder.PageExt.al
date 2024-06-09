@@ -93,6 +93,13 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         CurrExchRate: Record "Currency Exchange Rate";
         OldCurrFactor: Decimal;
     begin
+        GetUserSetup();
+        if not UserSetup."BA Service Order Open" or (UserSetup."BA Open Service Order No." <> Rec."No.") then begin
+            UserSetup."BA Service Order Open" := true;
+            UserSetup."BA Open Service Order No." := Rec."No.";
+            UserSetup.Modify(false);
+        end;
+
         if Rec."BA Modified Posting Date" or (Rec."Posting Date" = WorkDate()) or not CurrPage.Editable() or (Rec.Status <> Rec.Status::"In Process") then
             exit;
         OldCurrFactor := Rec."Currency Factor";
@@ -110,4 +117,26 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         Rec."BA Skip Sales Line Recreate" := false;
         Rec.Modify(true);
     end;
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    begin
+        GetUserSetup();
+        if UserSetup."BA Service Order Open" then begin
+            UserSetup."BA Service Order Open" := false;
+            UserSetup."BA Open Service Order No." := '';
+            UserSetup.Modify(false);
+        end;
+    end;
+
+    local procedure GetUserSetup()
+    begin
+        if not UserSetup.Get(UserId()) then begin
+            UserSetup.Init();
+            UserSetup.Validate("User ID", UserId());
+            UserSetup.Insert(false);
+        end;
+    end;
+
+    var
+        UserSetup: Record "User Setup";
 }
