@@ -2413,34 +2413,6 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    // [EventSubscriber(ObjectType::Page, Page::"Service Order", on, '', false, false)]
-    // local procedure ServiceHeaderOnValidateShipToCodeBeforeDeleteLines(var Rec: Record "Service Header"; var IsHandled: Boolean)
-    // var
-    //     ServLine: Record "Service Line";
-    //     ServItemLine: Record "Service Item Line";
-    // begin
-    //     IsHandled := true;
-    //     Rec.Modify(true);
-    //     ServLine.SetRange("Document Type", Rec."Document Type");
-    //     ServLine.SetRange("Document No.", Rec."No.");
-    //     if ServLine.FindSet(true) then
-    //         repeat
-    //             ServLine.Validate("Ship-to Code", Rec."Ship-to Code");
-    //             ServLine.Modify(true);
-    //         until ServLine.Next() = 0;
-
-    //     ServItemLine.SetRange("Document Type", Rec."Document Type");
-    //     ServItemLine.SetRange("Document No.", Rec."No.");
-    //     if ServItemLine.FindSet(true) then
-    //         repeat
-    //             ServItemLine.Validate("Ship-to Code", Rec."Ship-to Code");
-    //             ServItemLine.Modify(true);
-    //         until ServItemLine.Next() = 0;
-    // end;
-
-
-
-
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
