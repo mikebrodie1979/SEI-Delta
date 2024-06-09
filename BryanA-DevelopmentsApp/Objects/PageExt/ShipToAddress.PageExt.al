@@ -89,6 +89,19 @@ pageextension 80049 "BA Ship-to Address" extends "Ship-to Address"
         ServiceCode := Rec."Shipping Agent Service Code";
     end;
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    var
+        UserSetup: Record "User Setup";
+        ServiceHeader: Record "Service Header";
+    begin
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Service Order Open" then
+            exit;
+        if not ServiceHeader.Get(ServiceHeader."Document Type"::Order, UserSetup."BA Open Service Order No.") then
+            exit;
+        Rec.Validate("Tax Liable", ServiceHeader."Tax Liable");
+        Rec.Validate("Tax Area Code", ServiceHeader."Tax Area Code");
+    end;
+
     var
         ServiceCode: Code[10];
 }

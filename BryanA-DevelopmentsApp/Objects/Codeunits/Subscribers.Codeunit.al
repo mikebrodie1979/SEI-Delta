@@ -2381,14 +2381,14 @@ codeunit 75010 "BA SEI Subscibers"
 
 
     [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnValidateShipToCodeBeforeConfirmDialog', '', false, false)]
-    local procedure SalesHeaderOnValidateShipToCodeBeforeConfirmDialog(var Rec: Record "Service Header"; var xRec: Record "Service Header"; var IsHandled: Boolean)
+    local procedure ServiceHeaderOnValidateShipToCodeBeforeConfirmDialog(var Rec: Record "Service Header"; var xRec: Record "Service Header"; var IsHandled: Boolean)
     begin
         if Rec."Ship-to Code" <> xRec."Ship-to Code" then
             IsHandled := true;
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnValidateShipToCodeBeforeDeleteLines', '', false, false)]
-    local procedure SalesHeaderOnValidateShipToCodeBeforeDeleteLines(var Rec: Record "Service Header"; var IsHandled: Boolean)
+    local procedure ServiceHeaderOnValidateShipToCodeBeforeDeleteLines(var Rec: Record "Service Header"; var IsHandled: Boolean)
     var
         ServLine: Record "Service Line";
         ServItemLine: Record "Service Item Line";
@@ -2411,6 +2411,32 @@ codeunit 75010 "BA SEI Subscibers"
                 ServItemLine.Modify(true);
             until ServItemLine.Next() = 0;
     end;
+
+
+    // [EventSubscriber(ObjectType::Page, Page::"Service Order", on, '', false, false)]
+    // local procedure ServiceHeaderOnValidateShipToCodeBeforeDeleteLines(var Rec: Record "Service Header"; var IsHandled: Boolean)
+    // var
+    //     ServLine: Record "Service Line";
+    //     ServItemLine: Record "Service Item Line";
+    // begin
+    //     IsHandled := true;
+    //     Rec.Modify(true);
+    //     ServLine.SetRange("Document Type", Rec."Document Type");
+    //     ServLine.SetRange("Document No.", Rec."No.");
+    //     if ServLine.FindSet(true) then
+    //         repeat
+    //             ServLine.Validate("Ship-to Code", Rec."Ship-to Code");
+    //             ServLine.Modify(true);
+    //         until ServLine.Next() = 0;
+
+    //     ServItemLine.SetRange("Document Type", Rec."Document Type");
+    //     ServItemLine.SetRange("Document No.", Rec."No.");
+    //     if ServItemLine.FindSet(true) then
+    //         repeat
+    //             ServItemLine.Validate("Ship-to Code", Rec."Ship-to Code");
+    //             ServItemLine.Modify(true);
+    //         until ServItemLine.Next() = 0;
+    // end;
 
 
 

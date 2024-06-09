@@ -32,5 +32,19 @@ tableextension 80024 "BA User Setup" extends "User Setup"
             DataClassification = CustomerContent;
             Caption = 'Can Edit Dimensions on SQ/SO';
         }
+
+        field(80099; "BA Service Order Open"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Service Order Open';
+            Editable = false;
+        }
+        field(80100; "BA Open Service Order No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Open Service Order No.';
+            Editable = false;
+            TableRelation = "Service Header"."No." where ("Document Type" = const (Order));
+        }
     }
 }
