@@ -1927,6 +1927,46 @@ codeunit 75010 "BA SEI Subscibers"
         ProdOrder.Modify(true);
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post Prepayments", 'OnAfterPostPrepayments', '', false, false)]
+    local procedure SalesPostPrepaymentsOnAfterPostPrepayments(SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"; DocumentType: Option)
+    var
+        ArchiveMgt: Codeunit ArchiveManagement;
+    begin
+        if (DocumentType <> 0) or (SalesInvoiceHeader."No." = '') then
+            exit;
+        ArchiveMgt.StoreSalesDocument(SalesHeader, false);
+        SalesInvoiceHeader."Order No." := SalesHeader."No.";
+        SalesInvoiceHeader."ENC Assigned User ID" := SalesHeader."Assigned User ID";
+        SalesInvoiceHeader.Modify(false);
+    end;
+
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnBeforeInsertEvent', '', false, false)]
+    local procedure OnBeforeSalesHeaderInsert(var Rec: Record "Sales Header")
+    begin
+        if Rec."Document Type" = Rec."Document Type"::Order then begin
+            Rec."Compress Prepayment" := true;
+            Rec."Prepmt. Include Tax" := true;
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales Tax Calculate", 'OnBeforeAddSalesLineGetSalesHeader', '', false, false)]
+    local procedure SalesTaxCalculateOnBeforeAddSalesLineGetSalesHeader(var SalesLine: Record "Sales Line"; var SalesHeader: Record "Sales Header"; var IsHandled: Boolean)
+    var
+        SalesHeaderArchive: Record "Sales Header Archive";
+    begin
+        if not SalesLine."Prepayment Line" and (SalesLine."Prepayment Amount" = 0) then
+            exit;
+        IsHandled := true;
+        if SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.") then
+            exit;
+        SalesHeaderArchive.SetRange("Document Type", SalesLine."Document Type");
+        SalesHeaderArchive.SetRange("No.", SalesLine."Document No.");
+        SalesHeaderArchive.FindLast();
+        SalesHeader.Init();
+        SalesHeader.TransferFields(SalesHeaderArchive, true);
+    end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Inventory Adjustment", 'OnPostItemJnlLineCopyFromValueEntry', '', false, false)]
     local procedure InventoryAdjustmentOnPostItemJnlLineCopyFromValueEntry(var ItemJournalLine: Record "Item Journal Line"; ValueEntry: Record "Value Entry")
