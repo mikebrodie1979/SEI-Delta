@@ -23,6 +23,10 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             {
                 ApplicationArea = all;
             }
+            field("BA Segment Code"; Rec."BA Segment Code")
+            {
+                ApplicationArea = all;
+            }
         }
     }
     actions
