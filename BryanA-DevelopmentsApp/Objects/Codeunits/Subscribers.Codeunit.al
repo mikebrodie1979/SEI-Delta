@@ -2471,6 +2471,31 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterInsertEvent', '', false, false)]
+    local procedure SalesLineOnAfterInsert(var Rec: Record "Sales Line")
+    var
+        ErrorStack: Text;
+        i: Integer;
+    begin
+        if GetErrorStack() then;
+        ErrorStack := GetLastErrorCallStack();
+        i := ErrorStack.LastIndexOf(SEIFuncAppName);
+        if i = 0 then
+            exit;
+        ErrorStack := ErrorStack.Substring(i + StrLen(SEIFuncAppName) + 1);
+        if not ErrorStack.Substring(1, StrLen(ConfigPackageMgtCU)).Contains(ConfigPackageMgtCU) then
+            exit;
+        Rec.SetHideValidationDialog(true);
+        Rec."Shipment Date" := WorkDate();
+    end;
+
+    [TryFunction]
+    local procedure GetErrorStack()
+    begin
+        Error('');
+    end;
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
@@ -2500,4 +2525,7 @@ codeunit 75010 "BA SEI Subscibers"
         NonServiceCustomerErr: Label '%1 can only be sold to Service Center customers.';
         UpdateItemManfDeptConf: Label 'Would you like to update the %1 listed on the Item Card?';
         PendingApprovalErr: Label 'Cannot set as Barbados Order as there is one or more pending approval requests.';
+
+        SEIFuncAppName: Label 'BryanA - SEI Functionality by BryanA BC Developments Inc.';
+        ConfigPackageMgtCU: Label '"Config. Validate Management"(CodeUnit 8617).ValidateFieldRefRelationAgainstCompanyData';
 }
