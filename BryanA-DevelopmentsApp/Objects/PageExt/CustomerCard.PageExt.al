@@ -289,6 +289,14 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             {
                 ApplicationArea = all;
             }
+            field("BA Sub-Segment Code"; "BA Sub-Segment Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Constrained"; "BA Constrained")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 

@@ -114,5 +114,16 @@ tableextension 80030 "BA Customer" extends Customer
             Caption = 'Segment Code';
             TableRelation = "BA Segment".Code;
         }
+        field(80061; "BA Sub-Segment Code"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Sub-Segment Code';
+            TableRelation = "BA Sub-Segment".Code;
+        }
+        field(80062; "BA Constrained"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Constrained';
+        }
     }
 }

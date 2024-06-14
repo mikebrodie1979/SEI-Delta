@@ -2544,7 +2544,8 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeaderArchive: Record "Sales Header Archive";
     begin
         if not SalesLine."Prepayment Line" and (SalesLine."Prepayment Amount" = 0) then
-            exit;
+            if SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.") then
+                exit;
         IsHandled := true;
         if SalesHeader.Get(SalesLine."Document Type", SalesLine."Document No.") then
             exit;
