@@ -3095,6 +3095,8 @@ codeunit 75010 "BA SEI Subscibers"
         ErrorStack: Text;
         i: Integer;
     begin
+        if Rec.IsTemporary() then
+            exit;
         if GetErrorStack() then;
         ErrorStack := GetLastErrorCallStack();
         i := ErrorStack.LastIndexOf(SEIFuncAppName);
