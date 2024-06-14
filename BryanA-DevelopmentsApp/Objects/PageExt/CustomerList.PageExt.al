@@ -27,6 +27,14 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             {
                 ApplicationArea = all;
             }
+            field("BA Sub-Segment Code"; "BA Sub-Segment Code")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Constrained"; "BA Constrained")
+            {
+                ApplicationArea = all;
+            }
         }
     }
     actions
