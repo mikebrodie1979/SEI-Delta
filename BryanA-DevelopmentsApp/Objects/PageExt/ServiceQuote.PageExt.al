@@ -61,19 +61,49 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
                 ApplicationArea = all;
             }
         }
-        // modify(Control1902018507)
-        // {
-        //     Visible = ShowLCYBalances;
-        // }
-        // addafter(Control1902018507)
-        // {
-        //     part("BA Non-LCY Customer Statistics Factbox"; "BA Non-LCY Cust. Stat. Factbox")
-        //     {
-        //         SubPageLink = "No." = Field ("Bill-to Customer No.");
-        //         Visible = not ShowLCYBalances;
-        //         ApplicationArea = all;
-        //     }
-        // }
+        modify("Order Date")
+        {
+            ApplicationArea = all;
+            Editable = false;
+            Visible = false;
+        }
+        addafter("Service Order Type")
+        {
+            field("BA External Document No."; "ENC External Document No.")
+            {
+                ApplicationArea = all;
+                Caption = 'External Document No.';
+            }
+            field("BA Document Date"; Rec."Document Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Sell-To No."; Rec."ENC BBD Sell-To No.")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Sell-To Name"; Rec."ENC BBD Sell-To Name")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Sell-To PO No."; Rec."ENC BBD Sell-To PO No.")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Contact"; Rec."ENC BBD Contact")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Document Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
     }
 
 

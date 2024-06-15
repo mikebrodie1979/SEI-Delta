@@ -85,7 +85,6 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
-            Editable = false;
         }
     }
 }

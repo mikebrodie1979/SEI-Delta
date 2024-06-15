@@ -37,7 +37,9 @@ codeunit 75010 "BA SEI Subscibers"
         case SalesHeader."Document Type" of
             SalesHeader."Document Type"::Quote:
                 begin
-                    SalesHeader.Validate("ENC Stage", SalesHeader."ENC Stage"::Open);
+                    SalesHeader.SetHideValidationDialog(true);
+                    SalesHeader.Validate("Order Date", 0D);
+                    SalesHeader.Validate("BA Quote Date", Today());
                     SalesHeader.Validate("Shipment Date", 0D);
                 end;
             SalesHeader."Document Type"::Order:
@@ -2468,6 +2470,40 @@ codeunit 75010 "BA SEI Subscibers"
                 ServItemLine.Validate("Ship-to Code", Rec."Ship-to Code");
                 ServItemLine.Modify(true);
             until ServItemLine.Next() = 0;
+    end;
+
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnAfterOnRun', '', false, false)]
+    local procedure SalesQuoteToOrderOnAfterOnRun(var SalesOrderHeader: Record "Sales Header")
+    begin
+        SalesOrderHeader.SetHideValidationDialog(true);
+        SalesOrderHeader.Validate("Document Date", Today());
+        SalesOrderHeader.Validate("Order Date", Today());
+        SalesOrderHeader.Validate("Shipment Date", 0D);
+        SalesOrderHeader.Modify(true);
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Quote to Order", 'OnBeforeServLineDeleteAll', '', false, false)]
+    local procedure ServiceQuoteToOrderOnBeforeServLineDeleteAll(var NewServiceHeader: Record "Service Header"; var ServiceHeader: Record "Service Header")
+    begin
+        NewServiceHeader.SetHideValidationDialog(true);
+        NewServiceHeader.Validate("Document Date", Today());
+        NewServiceHeader.Validate("Order Date", Today());
+        NewServiceHeader.Validate("BA Quote Date", ServiceHeader."BA Quote Date");
+        NewServiceHeader.Modify(true);
+        NewServiceHeader.Get(NewServiceHeader.RecordId());
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterInitRecord', '', false, false)]
+    local procedure ServiceHeaderOnAfterInitRecord(var ServiceHeader: Record "Service Header")
+    begin
+        if ServiceHeader."Document Type" = ServiceHeader."Document Type"::Quote then begin
+            ServiceHeader.SetHideValidationDialog(true);
+            ServiceHeader.Validate("Order Date", 0D);
+            ServiceHeader.Validate("BA Quote Date", Today());
+        end;
     end;
 
 

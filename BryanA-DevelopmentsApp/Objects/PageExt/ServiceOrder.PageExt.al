@@ -10,7 +10,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         }
         addbefore("Bill-to Name")
         {
-            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
+            field("BA Bill-to Country/Region Code"; Rec."Bill-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -24,7 +24,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         }
         addfirst("Sell-to")
         {
-            field("BA Country/Region Code"; "Country/Region Code")
+            field("BA Country/Region Code"; Rec."Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -38,7 +38,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
         }
         addbefore("Ship-to Name")
         {
-            field("BA Ship-to Country/Region Code"; "Ship-to Country/Region Code")
+            field("BA Ship-to Country/Region Code"; Rec."Ship-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -60,6 +60,65 @@ pageextension 80050 "BA Service Order" extends "Service Order"
                 Text := Subscribers.LocationListLookup();
                 exit(Text <> '');
             end;
+        }
+
+        modify("Order Date")
+        {
+            ApplicationArea = all;
+            Editable = false;
+            Visible = false;
+        }
+        addafter("Service Order Type")
+        {
+            field("ENC External Document No."; "ENC External Document No.")
+            {
+                ApplicationArea = all;
+                Caption = 'External Document No.';
+            }
+            field("BA Document Date"; Rec."Document Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Posting Date"; Rec."Posting Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+            field("BA Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+            field("ENC BBD Sell-To No."; Rec."ENC BBD Sell-To No.")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Sell-To Name"; Rec."ENC BBD Sell-To Name")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Sell-To PO No."; Rec."ENC BBD Sell-To PO No.")
+            {
+                ApplicationArea = all;
+            }
+            field("ENC BBD Contact"; Rec."ENC BBD Contact")
+            {
+                ApplicationArea = all;
+            }
+        }
+        modify("Document Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
+        }
+        modify("Posting Date")
+        {
+            ApplicationArea = all;
+            Visible = false;
         }
     }
 
