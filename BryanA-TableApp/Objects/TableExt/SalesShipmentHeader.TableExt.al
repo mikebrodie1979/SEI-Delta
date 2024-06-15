@@ -51,6 +51,18 @@ tableextension 80060 "BA Sales Shpt. Header" extends "Sales Shipment Header"
             Caption = 'SEI Barbados Order';
             Editable = false;
         }
+        field(80051; "BA EORI No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'EORI No.';
+            Editable = false;
+        }
+        field(80052; "BA Ship-to EORI No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Ship-to EORI No.';
+            Editable = false;
+        }
         field(80060; "BA SEI Int'l Ref. No."; Code[10])
         {
             DataClassification = CustomerContent;
