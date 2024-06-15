@@ -16,6 +16,14 @@ pageextension 80121 "BA Sales Order List" extends "Sales Order List"
             {
                 ApplicationArea = all;
             }
+            field("Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

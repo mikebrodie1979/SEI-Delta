@@ -53,6 +53,12 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Caption = 'Bill-to Name';
             Description = 'Used for Lookup DropDown';
         }
+        field(80070; "BA Quote Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Quote Date';
+            Editable = false;
+        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;

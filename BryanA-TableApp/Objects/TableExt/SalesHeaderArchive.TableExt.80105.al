@@ -218,5 +218,11 @@ tableextension 80105 "BA Sales Header Archive" extends "Sales Header Archive"
             Caption = 'SEI Barbados Order';
             Editable = false;
         }
+        field(80070; "BA Quote Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Quote Date';
+            Editable = false;
+        }
     }
 }
