@@ -82,7 +82,7 @@ pageextension 80050 "BA Service Order" extends "Service Order"
             {
                 ApplicationArea = all;
 
-                trigger OnAfterValidate()
+                trigger OnValidate()
                 begin
                     Rec."BA Modified Posting Date" := true;
                     Rec.Modify(true);
