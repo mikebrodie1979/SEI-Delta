@@ -53,11 +53,23 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Caption = 'Bill-to Name';
             Description = 'Used for Lookup DropDown';
         }
+        
+        field(80051; "BA EORI No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'EORI No.';
+            Editable = false;
+        }
+        field(80052; "BA Ship-to EORI No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Ship-to EORI No.';
+            Editable = false;
+        }
         field(80070; "BA Quote Date"; Date)
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
-            Editable = false;
         }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {

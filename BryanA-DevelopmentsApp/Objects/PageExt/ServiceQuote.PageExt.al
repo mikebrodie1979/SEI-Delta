@@ -99,6 +99,38 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
                 ApplicationArea = all;
             }
         }
+
+
+        addafter("Tax Area Code")
+        {
+            field("BA Tax Registration No."; Rec."ENC Tax Registration No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA FID No."; Rec."ENC FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA EORI No."; Rec."BA EORI No.")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addlast("Ship-to")
+        {
+            field("BA Ship-To Tax Reg. No."; Rec."ENC Ship-To Tax Reg. No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-To FID No."; Rec."ENC Ship-To FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-to EORI No."; Rec."BA Ship-to EORI No.")
+            {
+                ApplicationArea = all;
+            }
+        }
         modify("Document Date")
         {
             ApplicationArea = all;

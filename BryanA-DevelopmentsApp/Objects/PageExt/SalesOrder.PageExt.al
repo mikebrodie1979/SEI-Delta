@@ -147,6 +147,45 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 Editable = false;
             }
         }
+        addafter("Tax Area Code")
+        {
+            field("BA Tax Registration No."; Rec."ENC Tax Registration No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA FID No."; Rec."ENC FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA EORI No."; Rec."BA EORI No.")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addbefore("Shipment Method")
+        {
+            field("BA Ship-to Phone No."; Rec."ENC Ship-to Phone No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-To Tax Reg. No."; Rec."ENC Ship-To Tax Reg. No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-To FID No."; Rec."ENC Ship-To FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-to EORI No."; Rec."BA Ship-to EORI No.")
+            {
+                ApplicationArea = all;
+            }
+            field("Shipping Advice2"; Rec."Shipping Advice")
+            {
+                ApplicationArea = all;
+                Caption = 'Shipping Advice';
+            }
+        }
     }
 
     actions
