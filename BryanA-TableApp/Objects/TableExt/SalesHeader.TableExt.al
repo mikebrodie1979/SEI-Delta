@@ -81,5 +81,11 @@ tableextension 80001 "BA Sales Header" extends "Sales Header"
             DataClassification = CustomerContent;
             Caption = 'SEI Int''l Ref. No.';
         }
+        field(80070; "BA Quote Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Quote Date';
+            Editable = false;
+        }
     }
 }
