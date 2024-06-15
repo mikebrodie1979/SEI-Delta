@@ -2577,14 +2577,18 @@ codeunit 75010 "BA SEI Subscibers"
     var
         CustPostingGroup: Record "Customer Posting Group";
         CurrExchRate: Record "Currency Exchange Rate";
+        DiffDate: Boolean;
     begin
         if (SalesOrderHeader."Order Date" = WorkDate()) and (SalesOrderHeader."Posting Date" = WorkDate()) then
             exit;
         SalesOrderHeader.SetHideValidationDialog(true);
         SalesOrderHeader."BA Skip Sales Line Recreate" := true;
         SalesOrderHeader.Validate("Posting Date", WorkDate());
-        if ((Date2DMY(WorkDate(), 2) <> Date2DMY(SalesOrderHeader."Order Date", 2)) or (Date2DMY(WorkDate(), 3) <> Date2DMY(SalesOrderHeader."Order Date", 3)))
-                and CustPostingGroup.Get(SalesOrderHeader."Customer Posting Group") and (CustPostingGroup."BA Posting Currency" <> '') then
+        DiffDate := SalesOrderHeader."Order Date" = 0D;
+        if not DiffDate then
+            DiffDate := ((Date2DMY(WorkDate(), 2) <> Date2DMY(SalesOrderHeader."Order Date", 2))
+                or (Date2DMY(WorkDate(), 3) <> Date2DMY(SalesOrderHeader."Order Date", 3)));
+        if DiffDate and CustPostingGroup.Get(SalesOrderHeader."Customer Posting Group") and (CustPostingGroup."BA Posting Currency" <> '') then
             SalesOrderHeader.Validate("Currency Factor", CurrExchRate.GetCurrentCurrencyFactor(SalesOrderHeader."Currency Code"));
         SalesOrderHeader.SetHideValidationDialog(false);
         SalesOrderHeader."BA Skip Sales Line Recreate" := false;
