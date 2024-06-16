@@ -3071,38 +3071,32 @@ codeunit 75010 "BA SEI Subscibers"
     end;
 
 
-    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeValidateWarranty', '', false, false)]
-    local procedure ServiceItemLineOnBeforeValidateWarranty(var ServiceItemLine: Record "Service Item Line"; var IsHandled: Boolean)
-    var
-        ServiceHeader: Record "Service Header";
-        ServiceLine: Record "Service Line";
-        WarrantValue: Boolean;
-    begin
-        IsHandled := true;
-        WarrantValue := ServiceItemLine.Warranty;
-        ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
-        ServiceItemLine.CheckWarranty(ServiceHeader."Order Date");
-        ServiceItemLine.Warranty := WarrantValue;
-        ServiceLine.SetRange("Document Type", ServiceItemLine."Document Type");
-        ServiceLine.SetRange("Document No.", ServiceItemLine."Document No.");
-        ServiceLine.SetRange("Service Item Line No.", ServiceItemLine."Line No.");
-        if ServiceLine.FindSet(true) then
-            repeat
-                ServiceLine.Validate(Warranty, ServiceItemLine.Warranty);
-                ServiceLine.Modify(true);
-            until ServiceLine.Next() = 0;
-    end;
-
-
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterInsertEvent', '', false, false)]
     local procedure SalesLineOnAfterInsert(var Rec: Record "Sales Line")
+    begin
+        if Rec.IsTemporary() then
+            exit;
+        if not CallFromConfigPackage() then
+            exit;
+        Rec.SetHideValidationDialog(true);
+        Rec."Shipment Date" := WorkDate();
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeInitHeaderDefaults', '', false, false)]
+    local procedure SalesLineOnBeforeInitHeaderDefaults(var Rec: Record "Sales Line"; var IsHandled: Boolean)
+    begin
+        if Rec.IsTemporary() then
+            exit;
+        if CallFromConfigPackage() then
+            IsHandled := true;
+    end;
+
+    local procedure CallFromConfigPackage(): Boolean
     var
         ErrorStack: Text;
         i: Integer;
     begin
-        if Rec.IsTemporary() then
-            exit;
         if GetErrorStack() then;
         ErrorStack := GetLastErrorCallStack();
         i := ErrorStack.LastIndexOf(SEIFuncAppName);
@@ -3111,8 +3105,6 @@ codeunit 75010 "BA SEI Subscibers"
         ErrorStack := ErrorStack.Substring(i + StrLen(SEIFuncAppName) + 1);
         if not ErrorStack.Substring(1, StrLen(ConfigPackageMgtCU)).Contains(ConfigPackageMgtCU) then
             exit;
-        Rec.SetHideValidationDialog(true);
-        Rec."Shipment Date" := WorkDate();
     end;
 
     [TryFunction]
