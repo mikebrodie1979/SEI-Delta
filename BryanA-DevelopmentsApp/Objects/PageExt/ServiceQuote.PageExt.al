@@ -81,6 +81,7 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
             field("BA Quote Date"; Rec."BA Quote Date")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
             field("ENC BBD Sell-To No."; Rec."ENC BBD Sell-To No.")
             {
