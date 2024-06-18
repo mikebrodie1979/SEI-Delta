@@ -24,12 +24,12 @@ pageextension 80044 "BA User Setup" extends "User Setup"
             {
                 ApplicationArea = all;
             }
-            field("BA Can Edit Dimensions"; "BA Can Edit Dimensions")
+            field("BA Can Edit Dimensions"; Rec."BA Can Edit Dimensions")
             {
                 ApplicationArea = all;
                 Caption = 'Can Edit Dimensions on SQ/SO';
             }
-            field("BA Allow Changing TDG Cal."; "BA Allow Changing TDG Cal.")
+            field("BA Allow Changing TDG Cal."; Rec."BA Allow Changing TDG Cal.")
             {
                 ApplicationArea = all;
             }
