@@ -80,12 +80,11 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
         }
         addafter("Document Date")
         {
-            field("BA Quote Date"; Rec."BA Quote Date")
+            field("BA Order Date"; Rec."Order Date")
             {
                 ApplicationArea = all;
-                Editable = false;
             }
-            field("Order Date"; Rec."Order Date")
+            field("BA Quote Date"; Rec."BA Quote Date")
             {
                 ApplicationArea = all;
                 Editable = false;

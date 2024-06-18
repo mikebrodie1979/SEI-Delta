@@ -72,6 +72,7 @@ tableextension 80026 "BA Service Header" extends "Service Header"
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
+            Editable = false;
         }
     }
 }

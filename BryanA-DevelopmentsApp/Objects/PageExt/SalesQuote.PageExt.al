@@ -139,6 +139,7 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
             field("BA Quote Date"; Rec."BA Quote Date")
             {
                 ApplicationArea = all;
+                Editable = false;
             }
         }
         addafter("Tax Area Code")

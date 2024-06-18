@@ -20,6 +20,10 @@ pageextension 80123 "BA Posted Sales Invoices" extends "Posted Sales Invoices"
             {
                 ApplicationArea = all;
             }
+            field("BA Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+            }
             field("BA Quote Date"; Rec."BA Quote Date")
             {
                 ApplicationArea = all;
