@@ -3175,6 +3175,17 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeUpdateResponseTimeHours', '', false, false)]
+    local procedure ServiceItemLineOnBeforeUpdateResponseTimeHours(var ServiceItemLine: Record "Service Item Line")
+    var
+        ServiceHeader: Record "Service Header";
+    begin
+        if (ServiceItemLine."Response Time (Hours)" = 0) or (ServiceItemLine."Response Date" <> 0D) then
+            exit;
+        ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
+        ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
+    end;
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
