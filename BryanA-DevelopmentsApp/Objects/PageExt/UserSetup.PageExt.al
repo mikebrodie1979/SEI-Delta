@@ -29,6 +29,10 @@ pageextension 80044 "BA User Setup" extends "User Setup"
                 ApplicationArea = all;
                 Caption = 'Can Edit Dimensions on SQ/SO';
             }
+            field("BA Allow Changing TDG Cal."; "BA Allow Changing TDG Cal.")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 
