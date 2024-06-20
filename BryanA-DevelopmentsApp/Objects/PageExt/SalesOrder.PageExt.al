@@ -126,6 +126,19 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 ApplicationArea = all;
             }
         }
+        modify("Order Date")
+        {
+            ApplicationArea = all;
+            Editable = false;
+        }
+        addbefore("Order Date")
+        {
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+        }
     }
 
     actions

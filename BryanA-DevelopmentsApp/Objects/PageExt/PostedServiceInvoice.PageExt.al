@@ -78,6 +78,19 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
                 ApplicationArea = all;
             }
         }
+        addafter("Document Date")
+        {
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+            field("BA Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()

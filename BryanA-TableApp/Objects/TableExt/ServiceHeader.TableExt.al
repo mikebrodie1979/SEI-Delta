@@ -45,5 +45,11 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             FieldClass = FlowField;
             CalcFormula = sum ("Service Line"."Outstanding Amount (LCY)" where ("Document Type" = field ("Document Type"), "Document No." = field ("No.")));
         }
+        field(80070; "BA Quote Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Quote Date';
+            Editable = false;
+        }
     }
 }

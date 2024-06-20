@@ -14,18 +14,22 @@ pageextension 80093 "BA Serv ice Quotes" extends "Service Quotes"
         }
         addlast(Control1)
         {
-            field("BA Amount"; "BA Amount")
+            field("BA Amount"; Rec."BA Amount")
             {
                 ApplicationArea = all;
             }
-            field("BA Amount Including VAT"; "BA Amount Including Tax")
+            field("BA Amount Including VAT"; Rec."BA Amount Including Tax")
             {
                 ApplicationArea = all;
             }
-            field("BA Amount Including Tax (LCY)"; "BA Amount Including Tax (LCY)")
+            field("BA Amount Including Tax (LCY)"; Rec."BA Amount Including Tax (LCY)")
             {
                 ApplicationArea = all;
                 Visible = false;
+            }
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
             }
         }
     }

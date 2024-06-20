@@ -10,7 +10,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addfirst("Sell-to")
         {
-            field("BA Sell-to Country/Region Code"; "Sell-to Country/Region Code")
+            field("BA Sell-to Country/Region Code"; Rec."Sell-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -25,7 +25,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addbefore("Bill-to Name")
         {
-            field("BA Bill-to Country/Region Code"; "Bill-to Country/Region Code")
+            field("BA Bill-to Country/Region Code"; Rec."Bill-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -40,7 +40,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addbefore("Ship-to Name")
         {
-            field("BA Ship-to Country/Region Code"; "Ship-to Country/Region Code")
+            field("BA Ship-to Country/Region Code"; Rec."Ship-to Country/Region Code")
             {
                 ApplicationArea = all;
                 Caption = 'Country';
@@ -56,14 +56,14 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addafter("Ship-to County")
         {
-            field("BA Ship-to County Fullname"; "BA Ship-to County Fullname")
+            field("BA Ship-to County Fullname"; Rec."BA Ship-to County Fullname")
             {
                 ApplicationArea = all;
             }
         }
         addafter("Bill-to County")
         {
-            field("BA Bill-to County Fullname"; "BA Bill-to County Fullname")
+            field("BA Bill-to County Fullname"; Rec."BA Bill-to County Fullname")
             {
                 ApplicationArea = all;
             }
@@ -96,7 +96,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addafter("External Document No.")
         {
-            field("ENC Assigned User ID"; "ENC Assigned User ID")
+            field("ENC Assigned User ID"; Rec."ENC Assigned User ID")
             {
                 ApplicationArea = all;
                 Caption = 'Assigned User ID';
@@ -109,7 +109,7 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         }
         addafter("Posting Date")
         {
-            field("BA Actual Posting DateTime"; "BA Actual Posting DateTime")
+            field("BA Actual Posting DateTime"; Rec."BA Actual Posting DateTime")
             {
                 ApplicationArea = all;
             }
@@ -119,6 +119,19 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
             field("BA SEI Int'l Ref. No."; Rec."BA SEI Int'l Ref. No.")
             {
                 ApplicationArea = all;
+            }
+        }
+        addafter("Document Date")
+        {
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
+            }
+            field("Order Date"; Rec."Order Date")
+            {
+                ApplicationArea = all;
+                Editable = false;
             }
         }
     }

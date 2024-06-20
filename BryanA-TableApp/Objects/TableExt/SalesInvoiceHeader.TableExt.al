@@ -50,6 +50,12 @@ tableextension 80061 "BA Sales Invoice Header" extends "Sales Invoice Header"
             Caption = 'SEI Int''l Ref. No.';
             Editable = false;
         }
+        field(80070; "BA Quote Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Quote Date';
+            Editable = false;
+        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;
