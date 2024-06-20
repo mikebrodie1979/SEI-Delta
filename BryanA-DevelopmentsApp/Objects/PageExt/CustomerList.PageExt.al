@@ -59,6 +59,26 @@ pageextension 80083 "BA Customer List" extends "Customer List"
                     Subsribers.ImportCustomerList();
                 end;
             }
+            action("BA Delete Customers")
+            {
+                ApplicationArea = all;
+                Image = DeleteAllBreakpoints;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                Caption = 'Delete Customers';
+
+                trigger OnAction()
+                var
+                    Customer: Record Customer;
+                    DeleteCustomers: Report "BA Delete Customers";
+                begin
+                    CurrPage.SetSelectionFilter(Customer);
+                    DeleteCustomers.SetTableView(Customer);
+                    DeleteCustomers.RunModal();
+                end;
+            }
         }
     }
 }
