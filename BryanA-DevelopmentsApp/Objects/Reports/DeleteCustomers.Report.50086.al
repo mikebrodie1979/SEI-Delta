@@ -56,9 +56,12 @@ report 50086 "BA Delete Customers"
 
     [TryFunction]
     local procedure TryToDeleteCust(var Customer: Record Customer)
+    var
+        CustLedgerEntry: Record "Cust. Ledger Entry";
     begin
+        CustLedgerEntry.SetRange("Customer No.", Customer."No.");
         Customer.CalcFields("Sales (LCY)");
-        if Customer."Sales (LCY)" <> 0 then
+        if (Customer."Sales (LCY)" <> 0) or not CustLedgerEntry.IsEmpty() then
             Error(NonZeroSalesCustomer, Customer."No.");
         Customer.Delete(true);
     end;
