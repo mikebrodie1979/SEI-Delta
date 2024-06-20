@@ -142,6 +142,40 @@ pageextension 80005 "BA Sales Quote" extends "Sales Quote"
                 Editable = false;
             }
         }
+        addafter("Tax Area Code")
+        {
+            field("BA Tax Registration No."; Rec."ENC Tax Registration No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA FID No."; Rec."ENC FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA EORI No."; Rec."BA EORI No.")
+            {
+                ApplicationArea = all;
+            }
+        }
+        addafter("Ship-to Contact")
+        {
+            field("BA Ship-to Phone No."; Rec."ENC Ship-to Phone No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-To Tax Reg. No."; Rec."ENC Ship-To Tax Reg. No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-To FID No."; Rec."ENC Ship-To FID No.")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Ship-to EORI No."; Rec."BA Ship-to EORI No.")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     actions

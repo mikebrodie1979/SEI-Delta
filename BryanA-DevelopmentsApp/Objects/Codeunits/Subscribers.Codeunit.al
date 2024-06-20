@@ -2518,6 +2518,36 @@ codeunit 75010 "BA SEI Subscibers"
         ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Bill-to Customer No.', false, false)]
+    local procedure SalesHeaderOnAfterValidateBillToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Bill-to Customer No." <> Rec."Bill-to Customer No.") and Customer.Get(Rec."Bill-to Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Sell-to Customer No.', false, false)]
+    local procedure SalesHeaderOnAfterValidateSellToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Sell-to Customer No." <> Rec."Sell-to Customer No.") and Customer.Get(Rec."Sell-to Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterValidateEvent', 'Customer No.', false, false)]
+    local procedure ServiceHeaderOnAfterValidateCustomerNo(var Rec: Record "Service Header"; var xRec: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Customer No." <> Rec."Customer No.") and Customer.Get(Rec."Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';
