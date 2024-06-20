@@ -57,6 +57,9 @@ report 50086 "BA Delete Customers"
     [TryFunction]
     local procedure TryToDeleteCust(var Customer: Record Customer)
     begin
+        Customer.CalcFields("Sales (LCY)");
+        if Customer."Sales (LCY)" <> 0 then
+            Error(NonZeroSalesCustomer, Customer."No.");
         Customer.Delete(true);
     end;
 
@@ -69,4 +72,5 @@ report 50086 "BA Delete Customers"
         NoFilterErr: Label 'Must specify a filter for the %1 field.';
         DeleteCustQst: Label 'Delete %1 customers?';
         ErrorTextTitle: Label 'Failed to delete %1 customers:\';
+        NonZeroSalesCustomer: Label 'Customer %1 cannot be deleted as it has asscioated posted entries.';
 }
