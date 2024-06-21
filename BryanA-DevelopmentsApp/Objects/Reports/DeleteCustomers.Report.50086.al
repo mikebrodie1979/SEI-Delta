@@ -66,7 +66,7 @@ report 50086 "BA Delete Customers"
         Customer.Delete(true);
     end;
 
-    trigger OnInitReport()
+    trigger OnPreReport()
     begin
         if not IsValidUser() then
             Error('Do you not have permission to run this report.');
