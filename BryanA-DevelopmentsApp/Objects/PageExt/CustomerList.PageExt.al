@@ -68,6 +68,8 @@ pageextension 80083 "BA Customer List" extends "Customer List"
                 PromotedIsBig = true;
                 PromotedOnly = true;
                 Caption = 'Delete Customers';
+                Enabled = EnableCustDeleteReport;
+                Visible = EnableCustDeleteReport;
 
                 trigger OnAction()
                 var
@@ -81,4 +83,15 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             }
         }
     }
+
+    trigger OnOpenPage()
+    var
+        DeleteCustomers: Report "BA Delete Customers";
+    begin
+        EnableCustDeleteReport := DeleteCustomers.IsValidUser();
+    end;
+
+    var
+        [InDataSet]
+        EnableCustDeleteReport: Boolean;
 }
