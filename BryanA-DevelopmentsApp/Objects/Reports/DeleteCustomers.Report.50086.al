@@ -66,6 +66,17 @@ report 50086 "BA Delete Customers"
         Customer.Delete(true);
     end;
 
+    trigger OnInitReport()
+    begin
+        if not IsValidUser() then
+            Error('Do you not have permission to run this report.');
+    end;
+
+    procedure IsValidUser(): Boolean
+    begin
+        exit(UserId() in ['SEI-IND\GREGB', 'SEI-IND\ADMINISTRATOR', 'ENCORE', 'SEI-IND\BRYANBCDEV']);
+    end;
+
     var
         Errors: List of [Text];
         Window: Dialog;
