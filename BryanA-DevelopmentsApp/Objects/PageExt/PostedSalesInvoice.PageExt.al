@@ -121,8 +121,6 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
             }
         }
-
-
         addafter("Document Date")
         {
             field("BA Quote Date"; Rec."BA Quote Date")

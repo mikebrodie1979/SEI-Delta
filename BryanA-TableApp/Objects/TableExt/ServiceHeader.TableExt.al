@@ -58,7 +58,7 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             Editable = false;
             Description = 'System field. Used for the OnBeforeRecreateSalesLinesHandler subscriber.';
         }
-                field(80051; "BA EORI No."; Code[20])
+        field(80051; "BA EORI No."; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'EORI No.';

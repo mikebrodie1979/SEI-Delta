@@ -100,8 +100,6 @@ pageextension 80051 "BA Service Quote" extends "Service Quote"
                 ApplicationArea = all;
             }
         }
-
-
         addafter("Tax Area Code")
         {
             field("BA Tax Registration No."; Rec."ENC Tax Registration No.")

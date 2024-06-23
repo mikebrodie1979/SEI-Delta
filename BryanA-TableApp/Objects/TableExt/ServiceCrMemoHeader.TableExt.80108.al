@@ -2,7 +2,6 @@ tableextension 80108 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header
 {
     fields
     {
-        
         field(80051; "BA EORI No."; Code[20])
         {
             DataClassification = CustomerContent;
@@ -19,6 +18,7 @@ tableextension 80108 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
+            Editable = false;
         }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {

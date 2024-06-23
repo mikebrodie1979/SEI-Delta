@@ -125,5 +125,10 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Constrained';
         }
+        field(80070; "BA Dealer"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Dealer';
+        }
     }
 }

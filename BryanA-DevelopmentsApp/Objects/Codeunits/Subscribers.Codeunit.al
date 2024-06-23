@@ -3072,47 +3072,6 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
-    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnAfterInsertEvent', '', false, false)]
-    local procedure SalesLineOnAfterInsert(var Rec: Record "Sales Line")
-    begin
-        if Rec.IsTemporary() then
-            exit;
-        if not CallFromConfigPackage() then
-            exit;
-        Rec.SetHideValidationDialog(true);
-        Rec."Shipment Date" := WorkDate();
-    end;
-
-    [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeInitHeaderDefaults', '', false, false)]
-    local procedure SalesLineOnBeforeInitHeaderDefaults(var Rec: Record "Sales Line"; var IsHandled: Boolean)
-    begin
-        if Rec.IsTemporary() then
-            exit;
-        if CallFromConfigPackage() then
-            IsHandled := true;
-    end;
-
-    local procedure CallFromConfigPackage(): Boolean
-    var
-        ErrorStack: Text;
-        i: Integer;
-    begin
-        if GetErrorStack() then;
-        ErrorStack := GetLastErrorCallStack();
-        i := ErrorStack.LastIndexOf(SEIFuncAppName);
-        if i = 0 then
-            exit;
-        ErrorStack := ErrorStack.Substring(i + StrLen(SEIFuncAppName) + 1);
-        if not ErrorStack.Substring(1, StrLen(ConfigPackageMgtCU)).Contains(ConfigPackageMgtCU) then
-            exit;
-    end;
-
-    [TryFunction]
-    local procedure GetErrorStack()
-    begin
-        Error('');
-    end;
-
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Quote to Order", 'OnAfterOnRun', '', false, false)]
     local procedure SalesQuoteToOrderOnAfterOnRun(var SalesOrderHeader: Record "Sales Header")
@@ -3185,6 +3144,47 @@ codeunit 75010 "BA SEI Subscibers"
         ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
         ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeUpdateResponseTimeHours', '', false, false)]
+    local procedure ServiceItemLineOnBeforeUpdateResponseTimeHours(var ServiceItemLine: Record "Service Item Line")
+    var
+        ServiceHeader: Record "Service Header";
+    begin
+        if (ServiceItemLine."Response Time (Hours)" = 0) or (ServiceItemLine."Response Date" <> 0D) then
+            exit;
+        ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
+        ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Bill-to Customer No.', false, false)]
+    local procedure SalesHeaderOnAfterValidateBillToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Bill-to Customer No." <> Rec."Bill-to Customer No.") and Customer.Get(Rec."Bill-to Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Sell-to Customer No.', false, false)]
+    local procedure SalesHeaderOnAfterValidateSellToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Sell-to Customer No." <> Rec."Sell-to Customer No.") and Customer.Get(Rec."Sell-to Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterValidateEvent', 'Customer No.', false, false)]
+    local procedure ServiceHeaderOnAfterValidateCustomerNo(var Rec: Record "Service Header"; var xRec: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (xRec."Customer No." <> Rec."Customer No.") and Customer.Get(Rec."Customer No.") then
+            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
+    end;
+
+
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';

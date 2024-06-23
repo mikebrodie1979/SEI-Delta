@@ -70,6 +70,7 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
+            Editable = false;
         }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
