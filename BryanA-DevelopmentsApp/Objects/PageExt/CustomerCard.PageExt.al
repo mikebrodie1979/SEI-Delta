@@ -285,15 +285,19 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         }
         addafter("Salesperson Code")
         {
-            field("BA Segment Code"; "BA Segment Code")
+            field("BA Segment Code"; Rec."BA Segment Code")
             {
                 ApplicationArea = all;
             }
-            field("BA Sub-Segment Code"; "BA Sub-Segment Code")
+            field("BA Sub-Segment Code"; Rec."BA Sub-Segment Code")
             {
                 ApplicationArea = all;
             }
-            field("BA Constrained"; "BA Constrained")
+            field("BA Dealer"; Rec."BA Dealer")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Constrained"; Rec."BA Constrained")
             {
                 ApplicationArea = all;
             }
