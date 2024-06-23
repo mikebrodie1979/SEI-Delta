@@ -3145,43 +3145,6 @@ codeunit 75010 "BA SEI Subscibers"
         ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
     end;
 
-    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeUpdateResponseTimeHours', '', false, false)]
-    local procedure ServiceItemLineOnBeforeUpdateResponseTimeHours(var ServiceItemLine: Record "Service Item Line")
-    var
-        ServiceHeader: Record "Service Header";
-    begin
-        if (ServiceItemLine."Response Time (Hours)" = 0) or (ServiceItemLine."Response Date" <> 0D) then
-            exit;
-        ServiceHeader.Get(ServiceItemLine."Document Type", ServiceItemLine."Document No.");
-        ServiceItemLine.CalculateResponseDateTime(ServiceHeader."Order Date", ServiceHeader."Order Time");
-    end;
-
-    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Bill-to Customer No.', false, false)]
-    local procedure SalesHeaderOnAfterValidateBillToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
-    var
-        Customer: Record Customer;
-    begin
-        if (xRec."Bill-to Customer No." <> Rec."Bill-to Customer No.") and Customer.Get(Rec."Bill-to Customer No.") then
-            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
-    end;
-
-    [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterValidateEvent', 'Sell-to Customer No.', false, false)]
-    local procedure SalesHeaderOnAfterValidateSellToCustomerNo(var Rec: Record "Sales Header"; var xRec: Record "Sales Header")
-    var
-        Customer: Record Customer;
-    begin
-        if (xRec."Sell-to Customer No." <> Rec."Sell-to Customer No.") and Customer.Get(Rec."Sell-to Customer No.") then
-            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
-    end;
-
-    [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterValidateEvent', 'Customer No.', false, false)]
-    local procedure ServiceHeaderOnAfterValidateCustomerNo(var Rec: Record "Service Header"; var xRec: Record "Service Header")
-    var
-        Customer: Record Customer;
-    begin
-        if (xRec."Customer No." <> Rec."Customer No.") and Customer.Get(Rec."Customer No.") then
-            Rec.Validate("BA EORI No.", Customer."BA EORI No.");
-    end;
 
 
 
