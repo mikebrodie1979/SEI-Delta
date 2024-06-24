@@ -32,11 +32,6 @@ tableextension 80024 "BA User Setup" extends "User Setup"
             DataClassification = CustomerContent;
             Caption = 'Can Edit Dimensions on SQ/SO';
         }
-        field(80010; "BA Allow Changing TDG Cal."; Boolean)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Allow Changing TDG Calendar';
-        }
         field(80099; "BA Service Order Open"; Boolean)
         {
             DataClassification = CustomerContent;
