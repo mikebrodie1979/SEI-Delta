@@ -2556,9 +2556,28 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         if ReportUsage <> ReportSelection.Usage::"S.Invoice" then
             exit;
-        RecRef.Get(RecordVariant);
+        RecRef.GetTable(RecordVariant);
         if Format(RecRef.Field(SalesInvHeader.FieldNo("Prepayment Invoice"))) = Format(true) then
             ReportUsage := 50015;
+    end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Report Selections", 'OnGetEmailBodyCustomerTextOnAfterNotFindEmailBodyUsage', '', false, false)]
+    local procedure ReportSelectionsOnGetEmailBodyCustomerTextOnAfterNotFindEmailBodyUsage(var IsHandled: Boolean; var TempBodyReportSelections: Record "Report Selections"; ReportUsage: Integer; RecordVariant: Variant)
+    var
+        ReportLayoutSelection: Record "Report Layout Selection";
+        FileMgt: Codeunit "File Management";
+        RecRef: RecordRef;
+        FilePath: Text;
+    begin
+        if ReportUsage <> 50015 then
+            exit;
+        IsHandled := true;
+        FilePath := CopyStr(FileMgt.ServerTempFileName('html'), 1, 250);
+        ReportLayoutSelection.SetTempLayoutSelected(TempBodyReportSelections."Email Body Layout Code");
+        Report.SaveAsHtml(ReportUsage, FilePath, RecordVariant);
+        ReportLayoutSelection.SetTempLayoutSelected('');
+        Commit();
     end;
 
 
