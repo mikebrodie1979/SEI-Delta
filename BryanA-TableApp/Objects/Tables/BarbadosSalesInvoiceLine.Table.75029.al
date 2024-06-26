@@ -1,7 +1,7 @@
-table 70027 "BA Bar. Sales Cr.Memo Line"
+table 75029 "BA Bar. Sales Invoice Line"
 {
     DataClassification = CustomerContent;
-    Caption = 'BardadosSales Cr.Memo Line';
+    Caption = 'Barbados Sales Invoice Line';
 
     fields
     {
@@ -14,7 +14,7 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
         field(3; "Document No."; Code[20])
         {
             Caption = 'Document No.';
-            TableRelation = "Sales Cr.Memo Header";
+            TableRelation = "Sales Invoice Header";
         }
         field(4; "Line No."; Integer)
         {
@@ -28,6 +28,7 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
         }
         field(6; "No."; Code[20])
         {
+            CaptionClass = GetCaptionClass(FIELDNO("No."));
             Caption = 'No.';
             TableRelation = IF (Type = CONST ("G/L Account")) "G/L Account"
             ELSE
@@ -38,6 +39,18 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
             IF (Type = CONST ("Fixed Asset")) "Fixed Asset"
             ELSE
             IF (Type = CONST ("Charge (Item)")) "Item Charge";
+        }
+        field(8; "Posting Group"; Code[20])
+        {
+            Caption = 'Posting Group';
+            Editable = false;
+            TableRelation = IF (Type = CONST (Item)) "Inventory Posting Group"
+            ELSE
+            IF (Type = CONST ("Fixed Asset")) "FA Posting Group";
+        }
+        field(10; "Shipment Date"; Date)
+        {
+            Caption = 'Shipment Date';
         }
         field(11; Description; Text[50])
         {
@@ -63,6 +76,11 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
             CaptionClass = GetCaptionClass(FIELDNO("Unit Price"));
             Caption = 'Unit Price';
         }
+        field(23; "Unit Cost (LCY)"; Decimal)
+        {
+            AutoFormatType = 2;
+            Caption = 'Unit Cost ($)';
+        }
         field(27; "Line Discount %"; Decimal)
         {
             Caption = 'Line Discount %';
@@ -81,6 +99,25 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
             AutoFormatExpression = GetCurrencyCode;
             AutoFormatType = 1;
             Caption = 'Amount';
+        }
+        field(30; "Amount Including VAT"; Decimal)
+        {
+            AutoFormatExpression = GetCurrencyCode;
+            AutoFormatType = 1;
+            Caption = 'Amount Including Tax';
+        }
+        field(32; "Allow Invoice Disc."; Boolean)
+        {
+            Caption = 'Allow Invoice Disc.';
+            InitValue = true;
+        }
+        field(65; "Order No."; Code[20])
+        {
+            Caption = 'Order No.';
+        }
+        field(66; "Order Line No."; Integer)
+        {
+            Caption = 'Order Line No.';
         }
         field(68; "Bill-to Customer No."; Code[20])
         {
@@ -102,12 +139,24 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
         {
             Caption = 'Tax Liable';
         }
+        field(100; "Unit Cost"; Decimal)
+        {
+            AutoFormatExpression = GetCurrencyCode;
+            AutoFormatType = 2;
+            Caption = 'Unit Cost';
+            Editable = false;
+        }
         field(103; "Line Amount"; Decimal)
         {
             AutoFormatExpression = GetCurrencyCode;
             AutoFormatType = 1;
             CaptionClass = GetCaptionClass(FIELDNO("Line Amount"));
             Caption = 'Line Amount';
+        }
+        field(123; "Prepayment Line"; Boolean)
+        {
+            Caption = 'Prepayment Line';
+            Editable = false;
         }
         field(131; "Posting Date"; Date)
         {
@@ -138,32 +187,46 @@ table 70027 "BA Bar. Sales Cr.Memo Line"
         key(Key1; "Document No.", "Line No.")
         {
             Clustered = true;
-            MaintainSIFTIndex = false;
         }
-        key(Key3; "Sell-to Customer No.") { }
-        key(Key6; "Bill-to Customer No.") { }
-        key(Key7; "Posting Date") { }
+        key(Key3; "Sell-to Customer No.")
+        {
+        }
+        key(Key6; "Bill-to Customer No.")
+        {
+        }
+        key(Key7; "Order No.", "Order Line No.", "Posting Date")
+        {
+        }
     }
+
+    fieldgroups
+    {
+        fieldgroup(Brick; "No.", Description, "Line Amount", Quantity, "Unit of Measure Code")
+        {
+        }
+    }
+
+
 
     local procedure GetCurrencyCode(): Code[10]
     var
-        BarbadosSalesCrMemoHeader: Record "BA Bar. Sales Cr.Memo Header";
+        BarbadosSalesInvHdr: Record "BA Bar. Sales Invoice Header";
     begin
-        BarbadosSalesCrMemoHeader.Get(Rec."Document No.");
-        exit(BarbadosSalesCrMemoHeader."Currency Code");
+        BarbadosSalesInvHdr.Get(Rec."Document No.");
+        exit(BarbadosSalesInvHdr."Currency Code");
     end;
 
     local procedure GetFieldCaption(FieldNumber: Integer): Text[100]
     var
-        FieldRec: Record Field;
+        FieldRec: Record field;
     begin
-        FieldRec.Get(Database::"Sales Cr.Memo Line", FieldNumber);
+        FieldRec.GET(DATABASE::"Sales Invoice Line", FieldNumber);
         exit(FieldRec."Field Caption");
     end;
 
     procedure GetCaptionClass(FieldNumber: Integer): Text[80]
     begin
-        if FieldNumber = FIELDNO("No.") then
+        if FieldNumber = Rec.FieldNo("No.") then
             exit(StrSubstNo('3,%1', GetFieldCaption(FieldNumber)));
         exit('2,0,' + GetFieldCaption(FieldNumber));
     end;

@@ -1,4 +1,4 @@
-table 70026 "BA Bar. Sales Cr.Memo Header"
+table 75026 "BA Bar. Sales Cr.Memo Header"
 {
     DataClassification = CustomerContent;
     Caption = 'Barbados Sales Cr.Memo Header';
