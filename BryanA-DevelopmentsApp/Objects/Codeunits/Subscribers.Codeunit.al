@@ -3133,6 +3133,20 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+    [EventSubscriber(ObjectType::Table, Database::"Document Sending Profile", 'OnBeforeTrySendToEMail', '', false, false)]
+    local procedure DocumentSendingProfileOnBeforeTrySendToEMail(var ReportUsage: Integer; RecordVariant: Variant)
+    var
+        SalesInvHeader: Record "Sales Invoice Header";
+        ReportSelection: Record "Report Selections";
+        RecRef: RecordRef;
+    begin
+        if ReportUsage <> ReportSelection.Usage::"S.Invoice" then
+            exit;
+        RecRef.Get(RecordVariant);
+        if Format(RecRef.Field(SalesInvHeader.FieldNo("Prepayment Invoice"))) = Format(true) then
+            ReportUsage := 50015;
+    end;
+
 
     [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeUpdateResponseTimeHours', '', false, false)]
     local procedure ServiceItemLineOnBeforeUpdateResponseTimeHours(var ServiceItemLine: Record "Service Item Line")
