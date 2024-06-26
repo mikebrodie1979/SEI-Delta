@@ -244,6 +244,10 @@ table 75028 "BA Bar. Sales Invoice Header"
             Editable = false;
             TableRelation = "Cust. Ledger Entry"."Entry No.";
         }
+        field(80000; "Company Data Source"; Text[30])
+        {
+            TableRelation = Company.Name;
+        }
     }
 
     keys

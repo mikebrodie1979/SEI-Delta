@@ -198,6 +198,10 @@ table 75026 "BA Bar. Sales Cr.Memo Header"
             Editable = false;
             TableRelation = "Cust. Ledger Entry"."Entry No.";
         }
+        field(80000; "Company Data Source"; Text[30])
+        {
+            TableRelation = Company.Name;
+        }
     }
 
     keys

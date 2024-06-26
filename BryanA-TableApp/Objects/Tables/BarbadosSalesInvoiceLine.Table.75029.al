@@ -180,6 +180,26 @@ table 75029 "BA Bar. Sales Invoice Line"
             Caption = 'Quantity (Base)';
             DecimalPlaces = 0 : 5;
         }
+        field(80000; "Company Data Source"; Text[30])
+        {
+            TableRelation = Company.Name;
+        }
+        field(80001; "Unit Price After Discount"; Decimal)
+        {
+            DecimalPlaces = 0 : 5;
+        }
+        field(80002; "FX Rate"; Decimal)
+        {
+            DecimalPlaces = 0 : 5;
+        }
+        field(80003; "Unit Price Charged CAD"; Decimal)
+        {
+            DecimalPlaces = 0 : 5;
+        }
+        field(80004; "Line Amount Charged CAD"; Decimal)
+        {
+            DecimalPlaces = 0 : 5;
+        }
     }
 
     keys
