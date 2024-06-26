@@ -1,4 +1,4 @@
-table 70028 "BA Bar. Sales Invoice Header"
+table 75028 "BA Bar. Sales Invoice Header"
 {
     DataClassification = CustomerContent;
     Caption = 'Barbados Sales Invoice Header';
