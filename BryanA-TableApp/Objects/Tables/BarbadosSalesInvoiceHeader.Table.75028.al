@@ -10,7 +10,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         {
             Caption = 'Sell-to Customer No.';
             NotBlank = true;
-            TableRelation = Customer;
         }
         field(3; "No."; Code[20])
         {
@@ -20,7 +19,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         {
             Caption = 'Bill-to Customer No.';
             NotBlank = true;
-            TableRelation = Customer;
         }
         field(5; "Bill-to Name"; Text[50])
         {
@@ -37,8 +35,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(9; "Bill-to City"; Text[30])
         {
             Caption = 'City';
-            TableRelation = "Post Code".City;
-            ValidateTableRelation = false;
         }
         field(13; "Ship-to Name"; Text[50])
         {
@@ -55,8 +51,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(17; "Ship-to City"; Text[30])
         {
             Caption = 'Ship-to City';
-            TableRelation = "Post Code".City;
-            ValidateTableRelation = false;
         }
         field(19; "Order Date"; Date)
         {
@@ -73,19 +67,16 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(23; "Payment Terms Code"; Code[10])
         {
             Caption = 'Payment Terms Code';
-            TableRelation = "Payment Terms";
         }
         field(31; "Customer Posting Group"; Code[20])
         {
             Caption = 'Customer Posting Group';
             Editable = false;
-            TableRelation = "Customer Posting Group";
         }
         field(32; "Currency Code"; Code[10])
         {
             Caption = 'Currency Code';
             Editable = false;
-            TableRelation = Currency;
         }
         field(33; "Currency Factor"; Decimal)
         {
@@ -96,7 +87,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(43; "Salesperson Code"; Code[20])
         {
             Caption = 'Salesperson Code';
-            TableRelation = "Salesperson/Purchaser";
         }
         field(44; "Order No."; Code[20])
         {
@@ -118,14 +108,10 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(83; "Sell-to City"; Text[30])
         {
             Caption = 'Sell-to City';
-            TableRelation = "Post Code".City;
-            ValidateTableRelation = false;
         }
         field(85; "Bill-to Post Code"; Code[20])
         {
             Caption = 'ZIP Code';
-            TableRelation = "Post Code";
-            ValidateTableRelation = false;
         }
         field(86; "Bill-to County"; Text[30])
         {
@@ -135,15 +121,10 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(87; "Bill-to Country/Region Code"; Code[10])
         {
             Caption = 'Country/Region Code';
-            TableRelation = "Country/Region";
         }
         field(88; "Sell-to Post Code"; Code[20])
         {
             Caption = 'Sell-to ZIP Code';
-            TableRelation = "Post Code";
-            //This property is currently not supported
-            //TestTableRelation = false;
-            ValidateTableRelation = false;
         }
         field(89; "Sell-to County"; Text[30])
         {
@@ -153,13 +134,10 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(90; "Sell-to Country/Region Code"; Code[10])
         {
             Caption = 'Sell-to Country/Region Code';
-            TableRelation = "Country/Region";
         }
         field(91; "Ship-to Post Code"; Code[20])
         {
             Caption = 'Ship-to ZIP Code';
-            TableRelation = "Post Code";
-            ValidateTableRelation = false;
         }
         field(92; "Ship-to County"; Text[30])
         {
@@ -169,7 +147,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(93; "Ship-to Country/Region Code"; Code[10])
         {
             Caption = 'Ship-to Country/Region Code';
-            TableRelation = "Country/Region";
         }
         field(94; "Bal. Account Type"; Option)
         {
@@ -189,12 +166,10 @@ table 75028 "BA Bar. Sales Invoice Header"
         {
             Caption = 'No. Series';
             Editable = false;
-            TableRelation = "No. Series";
         }
         field(110; "Order No. Series"; Code[20])
         {
             Caption = 'Order No. Series';
-            TableRelation = "No. Series";
         }
         field(111; "Pre-Assigned No."; Code[20])
         {
@@ -204,17 +179,14 @@ table 75028 "BA Bar. Sales Invoice Header"
         {
             Caption = 'User ID';
             DataClassification = EndUserIdentifiableInformation;
-            TableRelation = User."User Name";
         }
         field(113; "Source Code"; Code[10])
         {
             Caption = 'Source Code';
-            TableRelation = "Source Code";
         }
         field(114; "Tax Area Code"; Code[20])
         {
             Caption = 'Tax Area Code';
-            TableRelation = "Tax Area";
         }
         field(115; "Tax Liable"; Boolean)
         {
@@ -223,7 +195,6 @@ table 75028 "BA Bar. Sales Invoice Header"
         field(131; "Prepayment No. Series"; Code[20])
         {
             Caption = 'Prepayment No. Series';
-            TableRelation = "No. Series";
         }
         field(136; "Prepayment Invoice"; Boolean)
         {
@@ -242,11 +213,10 @@ table 75028 "BA Bar. Sales Invoice Header"
         {
             Caption = 'Cust. Ledger Entry No.';
             Editable = false;
-            TableRelation = "Cust. Ledger Entry"."Entry No.";
         }
         field(80000; "Company Data Source"; Text[30])
         {
-            TableRelation = Company.Name;
+
         }
     }
 

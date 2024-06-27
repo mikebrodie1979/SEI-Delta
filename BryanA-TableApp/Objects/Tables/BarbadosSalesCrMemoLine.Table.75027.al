@@ -9,12 +9,10 @@ table 75027 "BA Bar. Sales Cr.Memo Line"
         {
             Caption = 'Sell-to Customer No.';
             Editable = false;
-            TableRelation = Customer;
         }
         field(3; "Document No."; Code[20])
         {
             Caption = 'Document No.';
-            TableRelation = "Sales Cr.Memo Header";
         }
         field(4; "Line No."; Integer)
         {
@@ -29,15 +27,6 @@ table 75027 "BA Bar. Sales Cr.Memo Line"
         field(6; "No."; Code[20])
         {
             Caption = 'No.';
-            TableRelation = IF (Type = CONST ("G/L Account")) "G/L Account"
-            ELSE
-            IF (Type = CONST (Item)) Item
-            ELSE
-            IF (Type = CONST (Resource)) Resource
-            ELSE
-            IF (Type = CONST ("Fixed Asset")) "Fixed Asset"
-            ELSE
-            IF (Type = CONST ("Charge (Item)")) "Item Charge";
         }
         field(11; Description; Text[50])
         {
@@ -86,17 +75,14 @@ table 75027 "BA Bar. Sales Cr.Memo Line"
         {
             Caption = 'Bill-to Customer No.';
             Editable = false;
-            TableRelation = Customer;
         }
         field(75; "Gen. Prod. Posting Group"; Code[20])
         {
             Caption = 'Gen. Prod. Posting Group';
-            TableRelation = "Gen. Product Posting Group";
         }
         field(85; "Tax Area Code"; Code[20])
         {
             Caption = 'Tax Area Code';
-            TableRelation = "Tax Area";
         }
         field(86; "Tax Liable"; Boolean)
         {
@@ -122,9 +108,6 @@ table 75027 "BA Bar. Sales Cr.Memo Line"
         field(5407; "Unit of Measure Code"; Code[10])
         {
             Caption = 'Unit of Measure Code';
-            TableRelation = IF (Type = CONST (Item)) "Item Unit of Measure".Code WHERE ("Item No." = FIELD ("No."))
-            ELSE
-            "Unit of Measure";
         }
         field(5415; "Quantity (Base)"; Decimal)
         {
@@ -133,7 +116,6 @@ table 75027 "BA Bar. Sales Cr.Memo Line"
         }
         field(80000; "Company Data Source"; Text[30])
         {
-            TableRelation = Company.Name;
         }
         field(80001; "Unit Price After Discount"; Decimal)
         {
