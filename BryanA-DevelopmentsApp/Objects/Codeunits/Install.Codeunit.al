@@ -29,6 +29,7 @@ codeunit 75011 "BA Install Codeunit"
         // DefineNonTaxTaxGroup();
         // InitiateDeptCodesPurchaseLookup();
         // UpdateExchangeRates();
+        PopulatePrepaymentAttachmentLayout();
     end;
 
 
@@ -64,6 +65,25 @@ codeunit 75011 "BA Install Codeunit"
                     until SalesHeader.Next() = 0;
                 end;
             until Currency.Next() = 0;
+        PopulatePrepaymentAttachmentLayout();
+    end;
+
+    local procedure PopulatePrepaymentAttachmentLayout()
+    var
+        ReportSelections: Record "Report Selections";
+        CustRepSelection: Record "Custom Report Selection";
+    begin
+        if ReportSelections.Get(50015, '000001') then
+            exit;
+        ReportSelections.Init();
+        ReportSelections.Validate(Usage, 50015);
+        ReportSelections.Validate(Sequence, '000001');
+        ReportSelections.Validate("Report ID", 50015);
+        ReportSelections.Validate("Use for Email Attachment", true);
+        ReportSelections.Insert(true);
+
+        CustRepSelection.SetRange(Usage, 50015);
+        CustRepSelection.DeleteAll(true);
     end;
 
 
