@@ -189,7 +189,7 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         modify("Promised Delivery Date")
         {
             ApplicationArea = all;
-            ShowMandatory = true;
+            ShowMandatory = MandatoryDeliveryDate;
         }
     }
 
@@ -224,6 +224,10 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
     }
 
 
+    var
+        [InDataSet]
+        MandatoryDeliveryDate: Boolean;
+
 
 
 
@@ -250,7 +254,9 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
     var
         ResetStatus: Boolean;
         SalesLine: Record "Sales Line";
+        Customer: Record Customer;
     begin
+        MandatoryDeliveryDate := Customer.Get(Rec."Bill-to Customer No.") and not Customer."BA Non-Mandatory Delivery Date";
         if Rec."BA Modified Posting Date" or (Rec."Posting Date" = WorkDate()) or not CurrPage.Editable() or (Rec.Status <> Rec.Status::Open) then
             exit;
         Rec.SetHideValidationDialog(true);
