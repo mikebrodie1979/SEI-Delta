@@ -181,7 +181,7 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
         modify("Promised Delivery Date")
         {
             ApplicationArea = all;
-            ShowMandatory = true;
+            ShowMandatory = MandatoryDeliveryDate;
         }
     }
 
@@ -216,16 +216,16 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
     }
 
 
-    // var
-    //     [InDataSet]
-    //     ShowLCYBalances: Boolean;
+    var
+        [InDataSet]
+        MandatoryDeliveryDate: Boolean;
 
-    // trigger OnAfterGetRecord()
-    // var
-    //     CustPostingGroup: Record "Customer Posting Group";
-    // begin
-    //     ShowLCYBalances := CustPostingGroup.Get(Rec."Customer Posting Group") and not CustPostingGroup."BA Show Non-Local Currency";
-    // end;
+    trigger OnAfterGetRecord()
+    var
+        Customer: Record Customer;
+    begin
+        MandatoryDeliveryDate := Customer.Get(Rec."Bill-to Customer No.") and not Customer."BA Non-Mandatory Delivery Date";
+    end;
 
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
