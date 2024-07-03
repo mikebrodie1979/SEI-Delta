@@ -13,5 +13,11 @@ tableextension 80036 "BA Sales & Rec. Setup" extends "Sales & Receivables Setup"
             Caption = 'Single Price Currency';
             TableRelation = Currency.Code;
         }
+        field(80002; "BA Default Reason Code"; Code[10])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Default Reason Code';
+            TableRelation = "Reason Code".Code;
+        }
     }
 }

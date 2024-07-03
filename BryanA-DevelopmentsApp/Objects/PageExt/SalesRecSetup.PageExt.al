@@ -4,6 +4,10 @@ pageextension 80075 "BA Sales & Rec. Setup" extends "Sales & Receivables Setup"
     {
         addlast(General)
         {
+            field("BA Default Reason Code"; "BA Default Reason Code")
+            {
+                ApplicationArea = all;
+            }
             group("Custom Pricing")
             {
                 field("BA Use Single Currency Pricing"; "BA Use Single Currency Pricing")

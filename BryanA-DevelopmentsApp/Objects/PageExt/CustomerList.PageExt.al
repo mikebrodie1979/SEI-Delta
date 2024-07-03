@@ -39,6 +39,10 @@ pageextension 80083 "BA Customer List" extends "Customer List"
             {
                 ApplicationArea = all;
             }
+            field("BA Non-Mandatory Delivery Date"; Rec."BA Non-Mandatory Delivery Date")
+            {
+                ApplicationArea = all;
+            }
         }
     }
     actions

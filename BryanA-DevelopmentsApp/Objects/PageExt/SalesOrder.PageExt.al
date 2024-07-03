@@ -186,6 +186,11 @@ pageextension 80025 "BA Sales Order" extends "Sales Order"
                 Caption = 'Shipping Advice';
             }
         }
+        modify("Promised Delivery Date")
+        {
+            ApplicationArea = all;
+            ShowMandatory = true;
+        }
     }
 
     actions

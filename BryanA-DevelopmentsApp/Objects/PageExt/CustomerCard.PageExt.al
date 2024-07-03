@@ -53,6 +53,10 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 {
                     ApplicationArea = all;
                 }
+                field("BA Non-Mandatory Delivery Date"; Rec."BA Non-Mandatory Delivery Date")
+                {
+                    ApplicationArea = all;
+                }
             }
 
         }

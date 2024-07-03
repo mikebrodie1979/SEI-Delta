@@ -130,5 +130,10 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Dealer';
         }
+        field(80075; "BA Non-Mandatory Delivery Date"; Boolean)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Non-Mandatory Promised Delivery Date';
+        }
     }
 }
