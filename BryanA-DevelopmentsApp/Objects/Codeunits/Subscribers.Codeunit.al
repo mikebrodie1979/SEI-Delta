@@ -2545,7 +2545,18 @@ codeunit 75010 "BA SEI Subscibers"
             Rec.Validate("BA EORI No.", Customer."BA EORI No.");
     end;
 
-
+    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnAfterValidateEvent', 'Response Time (Hours)', false, false)]
+    local procedure ServiceItemLineOnAfterValidateResponseTimeHours(var Rec: Record "Service Item Line"; var xRec: Record "Service Item Line")
+    var
+        ServiceItemLine: Record "Service Item Line";
+    begin
+        Rec.Validate("Response Date", WorkDate());
+        if ServiceItemLine.Get(Rec.RecordId()) then
+            Rec.Modify(true)
+        else
+            Rec.Insert(true);
+        Rec.Get(Rec.RecordId());
+    end;
 
 
     var
