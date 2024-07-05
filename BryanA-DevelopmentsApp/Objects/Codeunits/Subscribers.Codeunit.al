@@ -1921,11 +1921,11 @@ codeunit 75010 "BA SEI Subscibers"
         CheckPromisedDeliveryDate(SalesHeader);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeRun', '', false, false)]
-    local procedure SalesServiceOnBeforeRun(var ServiceHeader: Record "Service Header")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforePostWithLines', '', false, false)]
+    local procedure SalesServiceOnBeforePostWithLines(var PassedServHeader: Record "Service Header")
     begin
-        CheckCustomerCurrency(ServiceHeader);
-        CheckPromisedDeliveryDate(ServiceHeader);
+        CheckCustomerCurrency(PassedServHeader);
+        CheckPromisedDeliveryDate(PassedServHeader);
     end;
 
     local procedure CheckCustomerCurrency(var SalesHeader: Record "Sales Header")
