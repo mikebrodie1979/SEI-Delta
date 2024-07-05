@@ -28,6 +28,10 @@ pageextension 80123 "BA Posted Sales Invoices" extends "Posted Sales Invoices"
             {
                 ApplicationArea = all;
             }
+            field("ENC Promised Delivery Date"; Rec."ENC Promised Delivery Date")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter("Posting Date")
         {

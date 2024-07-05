@@ -24,6 +24,10 @@ pageextension 80121 "BA Sales Order List" extends "Sales Order List"
             {
                 ApplicationArea = all;
             }
+            field("Promised Delivery Date"; Rec."Promised Delivery Date")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 }

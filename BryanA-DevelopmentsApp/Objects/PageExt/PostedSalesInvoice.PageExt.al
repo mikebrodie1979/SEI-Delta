@@ -168,6 +168,13 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
                 ApplicationArea = all;
             }
         }
+        addafter("Shipment Date")
+        {
+            field("ENC Promised Delivery Date"; Rec."ENC Promised Delivery Date")
+            {
+                ApplicationArea = all;
+            }
+        }
     }
 
     trigger OnAfterGetCurrRecord()
