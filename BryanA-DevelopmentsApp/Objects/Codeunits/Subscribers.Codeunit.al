@@ -1925,6 +1925,7 @@ codeunit 75010 "BA SEI Subscibers"
     local procedure SalesServiceOnBeforeRun(var ServiceHeader: Record "Service Header")
     begin
         CheckCustomerCurrency(ServiceHeader);
+        CheckPromisedDeliveryDate(ServiceHeader);
     end;
 
     local procedure CheckCustomerCurrency(var SalesHeader: Record "Sales Header")
@@ -3147,6 +3148,16 @@ codeunit 75010 "BA SEI Subscibers"
             exit;
         if (SalesHeader."Promised Delivery Date" = 0D) and not Customer."BA Non-Mandatory Delivery Date" then
             Error(NoPromDelDateErr, SalesHeader.FieldCaption("Promised Delivery Date"));
+    end;
+
+    local procedure CheckPromisedDeliveryDate(var ServiceHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (ServiceHeader."Document Type" <> ServiceHeader."Document Type"::Order) or not Customer.Get(ServiceHeader."Bill-to Customer No.") then
+            exit;
+        if (ServiceHeader."BA Promised Delivery Date" = 0D) and not Customer."BA Non-Mandatory Delivery Date" then
+            Error(NoPromDelDateErr, ServiceHeader.FieldCaption("BA Promised Delivery Date"));
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Invoice Header", 'OnAfterValidateEvent', 'ENC Physical Ship Date', false, false)]

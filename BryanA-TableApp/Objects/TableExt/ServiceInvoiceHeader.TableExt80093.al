@@ -72,6 +72,12 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Caption = 'Quote Date';
             Editable = false;
         }
+        field(80075; "BA Promised Delivery Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Promised Delivery Date';
+            Editable = false;
+        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;

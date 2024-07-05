@@ -74,5 +74,10 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             Caption = 'Quote Date';
             Editable = false;
         }
+        field(80075; "BA Promised Delivery Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Promised Delivery Date';
+        }
     }
 }

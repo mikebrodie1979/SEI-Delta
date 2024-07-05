@@ -25,6 +25,10 @@ pageextension 80092 "BA Service Orders" extends "Service Orders"
             {
                 ApplicationArea = all;
             }
+            field("BA Promised Delivery Date"; "BA Promised Delivery Date")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 
