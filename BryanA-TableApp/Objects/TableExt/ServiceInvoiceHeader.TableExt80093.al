@@ -14,7 +14,7 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
             Caption = 'Package Tracking No. Last Modified';
             Editable = false;
         }
-                field(80051; "BA EORI No."; Code[20])
+        field(80051; "BA EORI No."; Code[20])
         {
             DataClassification = CustomerContent;
             Caption = 'EORI No.';
@@ -30,6 +30,12 @@ tableextension 80093 "BA Service Inv. Header" extends "Service Invoice Header"
         {
             DataClassification = CustomerContent;
             Caption = 'Quote Date';
+            Editable = false;
+        }
+        field(80075; "BA Promised Delivery Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Promised Delivery Date';
             Editable = false;
         }
         field(80100; "BA Actual Posting DateTime"; DateTime)

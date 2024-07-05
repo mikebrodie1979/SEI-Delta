@@ -93,6 +93,11 @@ pageextension 80050 "BA Service Order" extends "Service Order"
                 ApplicationArea = all;
                 Editable = false;
             }
+            field("BA Promised Delivery Date"; "BA Promised Delivery Date")
+            {
+                ApplicationArea = all;
+                ShowMandatory = MandatoryDeliveryDate;
+            }
             field("ENC BBD Sell-To No."; Rec."ENC BBD Sell-To No.")
             {
                 ApplicationArea = all;
@@ -153,6 +158,12 @@ pageextension 80050 "BA Service Order" extends "Service Order"
     }
 
 
+    var
+        [InDataSet]
+        MandatoryDeliveryDate: Boolean;
+
+
+
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     var
@@ -169,7 +180,10 @@ pageextension 80050 "BA Service Order" extends "Service Order"
     end;
 
     trigger OnAfterGetRecord()
+    var
+        Customer: Record Customer;
     begin
+        MandatoryDeliveryDate := Customer.Get(Rec."Bill-to Customer No.") and not Customer."BA Non-Mandatory Delivery Date";
         GetUserSetup();
         if not UserSetup."BA Service Order Open" or (UserSetup."BA Open Service Order No." <> Rec."No.") then begin
             UserSetup."BA Service Order Open" := true;

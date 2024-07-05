@@ -16,6 +16,14 @@ pageextension 80157 "BA Posted Service Invoices" extends "Posted Service Invoice
             {
                 ApplicationArea = all;
             }
+            field("ENC Physical Ship Date"; "ENC Physical Ship Date")
+            {
+                ApplicationArea = all;
+            }
+            field("BA Promised Delivery Date"; "BA Promised Delivery Date")
+            {
+                ApplicationArea = all;
+            }
         }
         addafter("Posting Date")
         {
