@@ -3104,11 +3104,19 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterInitRecord', '', false, false)]
     local procedure ServiceHeaderOnAfterInitRecord(var ServiceHeader: Record "Service Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
     begin
-        if ServiceHeader."Document Type" = ServiceHeader."Document Type"::Quote then begin
-            ServiceHeader.SetHideValidationDialog(true);
-            ServiceHeader.Validate("Order Date", 0D);
-            ServiceHeader.Validate("BA Quote Date", Today());
+        case ServiceHeader."Document Type" of
+            ServiceHeader."Document Type"::Quote:
+                begin
+                    ServiceHeader.SetHideValidationDialog(true);
+                    ServiceHeader.Validate("Order Date", 0D);
+                    ServiceHeader.Validate("BA Quote Date", Today());
+                end;
+            ServiceHeader."Document Type"::Order:
+                if SalesRecSetup.Get() and (SalesRecSetup."BA Default Reason Code" <> '') then
+                    ServiceHeader.Validate("Reason Code", SalesRecSetup."BA Default Reason Code");
         end;
     end;
 
@@ -3173,6 +3181,18 @@ codeunit 75010 "BA SEI Subscibers"
             Message(UpdateReasonCodeMsg, Rec.FieldCaption("Reason Code"));
     end;
 
+    [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterValidateEvent', 'ENC Physical Ship Date', false, false)]
+    local procedure ServiceInvoiceHeaderOnAfterValdiatePhysicalShipDate(var Rec: Record "Service Invoice Header"; var xRec: Record "Service Invoice Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+    begin
+        if Rec."ENC Physical Ship Date" <= Rec."BA Promised Delivery Date" then
+            exit;
+        SalesRecSetup.Get();
+        SalesRecSetup.TestField("BA Default Reason Code");
+        if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
+            Message(UpdateReasonCodeMsg, Rec.FieldCaption("Reason Code"));
+    end;
 
 
     [EventSubscriber(ObjectType::Table, Database::"Document Sending Profile", 'OnBeforeTrySendToEMail', '', false, false)]
