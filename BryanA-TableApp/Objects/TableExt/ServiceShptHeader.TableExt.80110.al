@@ -1,7 +1,12 @@
-tableextension 80108 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header"
+tableextension 80110 "BA Service Shpt. Header" extends "Service Shipment Header"
 {
     fields
     {
+        field(80005; "BA Package Tracking No. Date"; DateTime)
+        {
+            Caption = 'Package Tracking No. Last Modified';
+            Editable = false;
+        }
         field(80051; "BA EORI No."; Code[20])
         {
             DataClassification = CustomerContent;

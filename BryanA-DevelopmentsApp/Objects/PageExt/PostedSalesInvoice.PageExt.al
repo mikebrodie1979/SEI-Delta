@@ -177,9 +177,24 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
         Editable := CurrPage.Editable();
     end;
 
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+    begin
+        if Rec."ENC Physical Ship Date" <= Rec."ENC Promised Delivery Date" then
+            exit(true);
+        SalesRecSetup.Get();
+        if SalesRecSetup."BA Default Reason Code" = '' then
+            exit(true);
+        if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
+            Error(ReasonCodeErr, Rec.FieldCaption("Reason Code"));
+    end;
+
     var
         SalesSource: Text[30];
         WebLeadDate: Date;
         [InDataSet]
         Editable: Boolean;
+
+        ReasonCodeErr: Label '%1 must be a different value.';
 }

@@ -131,4 +131,20 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
     begin
         Rec.CalcFields("BA Shipment No.");
     end;
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+    begin
+        if Rec."ENC Physical Ship Date" <= Rec."BA Promised Delivery Date" then
+            exit(true);
+        SalesRecSetup.Get();
+        if SalesRecSetup."BA Default Reason Code" = '' then
+            exit(true);
+        if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
+            Error(ReasonCodeErr, Rec.FieldCaption("Reason Code"));
+    end;
+
+    var
+        ReasonCodeErr: Label '%1 must be a different value.';
 }

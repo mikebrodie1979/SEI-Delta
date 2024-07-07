@@ -33,6 +33,8 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Table, Database::"Sales Header", 'OnAfterInitRecord', '', false, false)]
     local procedure SalesHeaderOnAfterInitRecord(var SalesHeader: Record "Sales Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
     begin
         case SalesHeader."Document Type" of
             SalesHeader."Document Type"::Quote:
@@ -43,7 +45,11 @@ codeunit 75010 "BA SEI Subscibers"
                     SalesHeader.Validate("Shipment Date", 0D);
                 end;
             SalesHeader."Document Type"::Order:
-                SalesHeader.Validate("Shipment Date", 0D);
+                begin
+                    SalesHeader.Validate("Shipment Date", 0D);
+                    if SalesRecSetup.Get() and (SalesRecSetup."BA Default Reason Code" <> '') then
+                        SalesHeader.Validate("Reason Code", SalesRecSetup."BA Default Reason Code");
+                end;
         end;
     end;
 
@@ -1340,12 +1346,14 @@ codeunit 75010 "BA SEI Subscibers"
     begin
         CheckIfLinesHaveValidLocationCode(SalesHeader);
         CheckCustomerCurrency(SalesHeader);
+        CheckPromisedDeliveryDate(SalesHeader);
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforeRun', '', false, false)]
-    local procedure SalesServiceOnBeforeRun(var ServiceHeader: Record "Service Header")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnBeforePostWithLines', '', false, false)]
+    local procedure SalesServiceOnBeforePostWithLines(var PassedServHeader: Record "Service Header")
     begin
-        CheckCustomerCurrency(ServiceHeader);
+        CheckCustomerCurrency(PassedServHeader);
+        CheckPromisedDeliveryDate(PassedServHeader);
     end;
 
     local procedure CheckCustomerCurrency(var SalesHeader: Record "Sales Header")
@@ -2498,11 +2506,19 @@ codeunit 75010 "BA SEI Subscibers"
 
     [EventSubscriber(ObjectType::Table, Database::"Service Header", 'OnAfterInitRecord', '', false, false)]
     local procedure ServiceHeaderOnAfterInitRecord(var ServiceHeader: Record "Service Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
     begin
-        if ServiceHeader."Document Type" = ServiceHeader."Document Type"::Quote then begin
-            ServiceHeader.SetHideValidationDialog(true);
-            ServiceHeader.Validate("Order Date", 0D);
-            ServiceHeader.Validate("BA Quote Date", Today());
+        case ServiceHeader."Document Type" of
+            ServiceHeader."Document Type"::Quote:
+                begin
+                    ServiceHeader.SetHideValidationDialog(true);
+                    ServiceHeader.Validate("Order Date", 0D);
+                    ServiceHeader.Validate("BA Quote Date", Today());
+                end;
+            ServiceHeader."Document Type"::Order:
+                if SalesRecSetup.Get() and (SalesRecSetup."BA Default Reason Code" <> '') then
+                    ServiceHeader.Validate("Reason Code", SalesRecSetup."BA Default Reason Code");
         end;
     end;
 
@@ -2558,6 +2574,53 @@ codeunit 75010 "BA SEI Subscibers"
         Rec.Get(Rec.RecordId());
     end;
 
+    local procedure CheckPromisedDeliveryDate(var SalesHeader: Record "Sales Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (SalesHeader."Document Type" <> SalesHeader."Document Type"::Order) or not Customer.Get(SalesHeader."Bill-to Customer No.") then
+            exit;
+        if (SalesHeader."Promised Delivery Date" = 0D) and not Customer."BA Non-Mandatory Delivery Date" then
+            Error(NoPromDelDateErr, SalesHeader.FieldCaption("Promised Delivery Date"));
+    end;
+
+    local procedure CheckPromisedDeliveryDate(var ServiceHeader: Record "Service Header")
+    var
+        Customer: Record Customer;
+    begin
+        if (ServiceHeader."Document Type" <> ServiceHeader."Document Type"::Order) or not Customer.Get(ServiceHeader."Bill-to Customer No.") then
+            exit;
+        if (ServiceHeader."BA Promised Delivery Date" = 0D) and not Customer."BA Non-Mandatory Delivery Date" then
+            Error(NoPromDelDateErr, ServiceHeader.FieldCaption("BA Promised Delivery Date"));
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Invoice Header", 'OnAfterValidateEvent', 'ENC Physical Ship Date', false, false)]
+    local procedure SalesInvoiceHeaderOnAfterValdiatePhysicalShipDate(var Rec: Record "Sales Invoice Header"; var xRec: Record "Sales Invoice Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+    begin
+        if Rec."ENC Physical Ship Date" <= Rec."ENC Promised Delivery Date" then
+            exit;
+        SalesRecSetup.Get();
+        SalesRecSetup.TestField("BA Default Reason Code");
+        if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
+            Message(UpdateReasonCodeMsg, Rec.FieldCaption("Reason Code"));
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Service Invoice Header", 'OnAfterValidateEvent', 'ENC Physical Ship Date', false, false)]
+    local procedure ServiceInvoiceHeaderOnAfterValdiatePhysicalShipDate(var Rec: Record "Service Invoice Header"; var xRec: Record "Service Invoice Header")
+    var
+        SalesRecSetup: Record "Sales & Receivables Setup";
+    begin
+        if Rec."ENC Physical Ship Date" <= Rec."BA Promised Delivery Date" then
+            exit;
+        SalesRecSetup.Get();
+        SalesRecSetup.TestField("BA Default Reason Code");
+        if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
+            Message(UpdateReasonCodeMsg, Rec.FieldCaption("Reason Code"));
+    end;
+
+
 
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
@@ -2588,4 +2651,6 @@ codeunit 75010 "BA SEI Subscibers"
         NonServiceCustomerErr: Label '%1 can only be sold to Service Center customers.';
         UpdateItemManfDeptConf: Label 'Would you like to update the %1 listed on the Item Card?';
         PendingApprovalErr: Label 'Cannot set as Barbados Order as there is one or more pending approval requests.';
+        NoPromDelDateErr: Label '%1 must be assigned before invoicing.\Please have the sales staff fill in the %1.';
+        UpdateReasonCodeMsg: Label 'Please update the %1 field to a new value.';
 }
