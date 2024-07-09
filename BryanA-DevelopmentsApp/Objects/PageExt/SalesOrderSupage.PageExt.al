@@ -62,6 +62,22 @@ pageextension 80078 "BA Sales Order Subpage" extends "Sales Order Subform"
                 exit(Text <> '');
             end;
         }
+        addafter(Description)
+        {
+            field("Gen. Bus. Posting Group"; "Gen. Bus. Posting Group")
+            {
+                ApplicationArea = all;
+            }
+            field("Gen. Prod. Posting Group"; "Gen. Prod. Posting Group")
+            {
+                ApplicationArea = all;
+
+                trigger OnValidate()
+                begin
+                    Rec.UpdateUnitPrice(Rec.FieldNo("Gen. Prod. Posting Group"));
+                end;
+            }
+        }
     }
 
     trigger OnOpenPage()
