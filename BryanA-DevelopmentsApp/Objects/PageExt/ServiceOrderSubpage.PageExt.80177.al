@@ -1,4 +1,4 @@
-pageextension 80177 "BA Service ORder Subpage" extends "Service Order Subform"
+pageextension 80177 "BA Service Order Subpage" extends "Service Order Subform"
 {
     layout
     {
