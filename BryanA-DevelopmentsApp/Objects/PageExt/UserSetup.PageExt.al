@@ -33,6 +33,10 @@ pageextension 80044 "BA User Setup" extends "User Setup"
             {
                 ApplicationArea = all;
             }
+            field("BA Force Reason Code Entry"; Rec."BA Force Reason Code Entry")
+            {
+                ApplicationArea = all;
+            }
         }
     }
 
