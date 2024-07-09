@@ -604,23 +604,22 @@ codeunit 75010 "BA SEI Subscibers"
     var
         SalesHeader: Record "Sales Header";
         SalesPrice: Record "Sales Price";
-        SalesRecSetup: Record "Sales & Receivables Setup";
         GLSetup: Record "General Ledger Setup";
         ExchangeRate: Record "Currency Exchange Rate";
+        GenProdPostingGroup: Record "Gen. Product Posting Group";
         CurrencyCode: Code[10];
         RateValue: Decimal;
     begin
-        if not SalesRecSetup.Get() or not SalesRecSetup."BA Use Single Currency Pricing" then
-            exit;
-        SalesRecSetup.TestField("BA Single Price Currency");
         if not FoundSalesPrice and (SalesLine."Unit Price" <> 0) then begin
             TempSalesPrice."Unit Price" := SalesLine."Unit Price";
             exit;
         end;
+        if not GenProdPostingGroup.Get(SalesLine."Gen. Prod. Posting Group") then
+            exit;
         GLSetup.Get();
         GLSetup.TestField("LCY Code");
-        if SalesRecSetup."BA Single Price Currency" <> GLSetup."LCY Code" then
-            CurrencyCode := SalesRecSetup."BA Single Price Currency";
+        if GenProdPostingGroup."BA Division Currency" <> GLSetup."LCY Code" then
+            CurrencyCode := GenProdPostingGroup."BA Division Currency";
         SalesPrice.SetRange("Item No.", SalesLine."No.");
         SalesPrice.SetRange("Currency Code", CurrencyCode);
         SalesPrice.SetRange("Starting Date", 0D, WorkDate());
@@ -642,6 +641,7 @@ codeunit 75010 "BA SEI Subscibers"
         SalesHeader."BA Quote Exch. Rate" := RateValue;
         SalesHeader.Modify(true);
     end;
+
 
 
 
