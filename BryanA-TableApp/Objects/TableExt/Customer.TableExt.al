@@ -135,5 +135,11 @@ tableextension 80030 "BA Customer" extends Customer
             DataClassification = CustomerContent;
             Caption = 'Non-Mandatory Promised Delivery Date';
         }
+        field(80080; "BA Block Reason"; Code[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Block Reason';
+            TableRelation = "BA Block Reason";
+        }
     }
 }
