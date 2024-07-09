@@ -3229,6 +3229,30 @@ codeunit 75010 "BA SEI Subscibers"
 
 
 
+
+    // [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeInsertEvent', '', false, false)]
+    // local procedure ServiceItemLineOnBeforeInsert(var Rec: Record "Service Item Line")
+    // var
+    //     ServiceItemLine: Record "Service Item Line";
+    //     LineNo: Integer;
+    // begin
+    //     if not Confirm('before insert') then
+    //         Error('');
+
+    //     if Rec.IsTemporary or (Rec."Line No." <> 0) then
+    //         exit;
+    //     ServiceItemLine.SetRange("Document Type", Rec."Document Type");
+    //     ServiceItemLine.SetRange("Document No.", Rec."Document No.");
+    //     if ServiceItemLine.FindLast() then
+    //         LineNo := ServiceItemLine."Line No.";
+    //     LineNo += 10000;
+    //     while ServiceItemLine.Get(Rec."Document Type", Rec."Document No.", LineNo) do
+    //         LineNo += 10000;
+    //     Rec."Line No." := LineNo;
+    // end;
+
+
+
     var
         UnblockItemMsg: Label 'You have assigned a valid Product ID, do you want to unblock the Item?';
         DefaultBlockReason: Label 'Product Dimension ID must be updated, the default Product ID cannot be used!';

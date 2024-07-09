@@ -16,6 +16,18 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
                 field(Blocked2; Rec.Blocked)
                 {
                     ApplicationArea = all;
+
+                    trigger OnValidate()
+                    begin
+                        MandatoryBlockReason := Rec.Blocked <> Rec.Blocked::" ";
+                        if MandatoryBlockReason and (Rec."BA Block Reason" = '') then
+                            Message(BlockedCustMsg);
+                    end;
+                }
+                field("BA Block Reason"; "BA Block Reason")
+                {
+                    ApplicationArea = all;
+                    ShowMandatory = MandatoryBlockReason;
                 }
                 field("Privacy Blocked2"; Rec."Privacy Blocked")
                 {
@@ -340,6 +352,13 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         [InDataSet]
         StyleTxt: Text;
         NonLCYCustomerStatistics: Page "BA Non-LCY Cust. Stat. Factbox";
+        MandatoryBlockReason: Boolean;
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    begin
+        if (Rec.Blocked <> Rec.Blocked::" ") and (Rec."BA Block Reason" = '') then
+            Error(BlockedCustMsg);
+    end;
 
 
     trigger OnAfterGetRecord()
@@ -401,4 +420,6 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         CustPayments: Decimal;
         CustSales: Decimal;
         CustProfit: Decimal;
+
+        BlockedCustMsg: Label 'Block Reason must specified if customer is blocked.';
 }
