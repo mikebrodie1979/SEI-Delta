@@ -2561,18 +2561,6 @@ codeunit 75010 "BA SEI Subscibers"
             Rec.Validate("BA EORI No.", Customer."BA EORI No.");
     end;
 
-    [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnAfterValidateEvent', 'Response Time (Hours)', false, false)]
-    local procedure ServiceItemLineOnAfterValidateResponseTimeHours(var Rec: Record "Service Item Line"; var xRec: Record "Service Item Line")
-    var
-        ServiceItemLine: Record "Service Item Line";
-    begin
-        Rec.Validate("Response Date", WorkDate());
-        if ServiceItemLine.Get(Rec.RecordId()) then
-            Rec.Modify(true)
-        else
-            Rec.Insert(true);
-        Rec.Get(Rec.RecordId());
-    end;
 
     local procedure CheckPromisedDeliveryDate(var SalesHeader: Record "Sales Header")
     var
@@ -2619,6 +2607,30 @@ codeunit 75010 "BA SEI Subscibers"
         if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
             Message(UpdateReasonCodeMsg, Rec.FieldCaption("Reason Code"));
     end;
+
+
+
+
+    // [EventSubscriber(ObjectType::Table, Database::"Service Item Line", 'OnBeforeInsertEvent', '', false, false)]
+    // local procedure ServiceItemLineOnBeforeInsert(var Rec: Record "Service Item Line")
+    // var
+    //     ServiceItemLine: Record "Service Item Line";
+    //     LineNo: Integer;
+    // begin
+    //     if not Confirm('before insert') then
+    //         Error('');
+
+    //     if Rec.IsTemporary or (Rec."Line No." <> 0) then
+    //         exit;
+    //     ServiceItemLine.SetRange("Document Type", Rec."Document Type");
+    //     ServiceItemLine.SetRange("Document No.", Rec."Document No.");
+    //     if ServiceItemLine.FindLast() then
+    //         LineNo := ServiceItemLine."Line No.";
+    //     LineNo += 10000;
+    //     while ServiceItemLine.Get(Rec."Document Type", Rec."Document No.", LineNo) do
+    //         LineNo += 10000;
+    //     Rec."Line No." := LineNo;
+    // end;
 
 
 
