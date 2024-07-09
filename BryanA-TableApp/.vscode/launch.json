@@ -10,6 +10,7 @@
             "serverInstance": "Dev",
             "authentication": "UserPassword",
             // "schemaUpdateMode":"Recreate"
+            "schemaUpdateMode": "ForceSync"
         }
         ,
         {
