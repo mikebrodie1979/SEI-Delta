@@ -180,7 +180,10 @@ pageextension 80052 "BA Posted Sales Invoice" extends "Posted Sales Invoice"
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         SalesRecSetup: Record "Sales & Receivables Setup";
+        UserSetup: Record "User Setup";
     begin
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Force Reason Code Entry" then
+            exit;
         if Rec."ENC Physical Ship Date" <= Rec."ENC Promised Delivery Date" then
             exit(true);
         SalesRecSetup.Get();
