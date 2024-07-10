@@ -304,10 +304,12 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             field("BA Segment Code"; Rec."BA Segment Code")
             {
                 ApplicationArea = all;
+                ShowMandatory = true;
             }
             field("BA Sub-Segment Code"; Rec."BA Sub-Segment Code")
             {
                 ApplicationArea = all;
+                ShowMandatory = true;
             }
             field("BA Dealer"; Rec."BA Dealer")
             {
@@ -354,10 +356,23 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         NonLCYCustomerStatistics: Page "BA Non-LCY Cust. Stat. Factbox";
         MandatoryBlockReason: Boolean;
 
+
+
     trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+        RecVar: Variant;
+        FieldsToCheck: List of [Integer];
     begin
+        if Rec."No." = '' then
+            exit;
         if (Rec.Blocked <> Rec.Blocked::" ") and (Rec."BA Block Reason" = '') then
             Error(BlockedCustMsg);
+        FieldsToCheck.Add(Rec.FieldNo(Rec."BA Segment Code"));
+        FieldsToCheck.Add(Rec.FieldNo(Rec."BA Sub-Segment Code"));
+        FieldsToCheck.Add(Rec.FieldNo(Rec."Global Dimension 1 Code"));
+        FieldsToCheck.Add(Rec.FieldNo(Rec."Global Dimension 2 Code"));
+        RecVar := Rec;
+        CheckMandatoryFields(RecVar, FieldsToCheck);
     end;
 
 
@@ -371,7 +386,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
             StyleTxt := Rec.SetStyle()
         else
             if CustomDetailsFactbox.CalcAvailableCreditNonLCY(Rec) < 0 then
-                StyleTxt := 'Unfavorable';
+                StyleTxt := UnfavorableStyle;
         GetTotalSales();
     end;
 
@@ -411,6 +426,37 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
     end;
 
 
+    procedure CheckMandatoryFields(var RecVar: Variant; var FieldsToCheck: List of [Integer])
+    var
+        RecRef: RecordRef;
+        EmptyFields: List of [Integer];
+        FldNo: Integer;
+        ErrorString: TextBuilder;
+    begin
+        if FieldsToCheck.Count() = 0 then
+            exit;
+        RecRef.GetTable(RecVar);
+        foreach FldNo in FieldsToCheck do
+            if Format(RecRef.Field(FldNo).Value()) = '' then
+                EmptyFields.Add(FldNo);
+
+        case EmptyFields.Count() of
+            0:
+                exit;
+            1:
+                begin
+                    EmptyFields.Get(1, FldNo);
+                    Error(SingleMissingValueErr, RecRef.Field(FldNo).Caption());
+                end;
+            else begin
+                    ErrorString.AppendLine(MultiMissingValueErr);
+                    foreach FldNo in EmptyFields do
+                        ErrorString.AppendLine(RecRef.Field(FldNo).Caption());
+                    Error(ErrorString.ToText());
+                end;
+        end;
+    end;
+
 
     var
         AdjmtCost: Decimal;
@@ -422,4 +468,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
         CustProfit: Decimal;
 
         BlockedCustMsg: Label 'Block Reason must specified if customer is blocked.';
+        UnfavorableStyle: Label 'Unfavorable';
+        SingleMissingValueErr: Label '%1 must be given a value before the page can be closed.';
+        MultiMissingValueErr: Label 'The following fields must be given a value before the page can be closed:';
 }
