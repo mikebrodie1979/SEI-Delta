@@ -79,5 +79,16 @@ tableextension 80026 "BA Service Header" extends "Service Header"
             DataClassification = CustomerContent;
             Caption = 'Promised Delivery Date';
         }
+        field(80076; "BA Shipment Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shipment Date';
+
+            trigger OnValidate()
+            begin
+                Rec.Validate("BA Promised Delivery Date", Rec."BA Shipment Date");
+                Rec.Modify(true);
+            end;
+        }
     }
 }
