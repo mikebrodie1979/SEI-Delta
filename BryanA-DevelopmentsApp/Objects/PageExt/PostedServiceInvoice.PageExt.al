@@ -135,7 +135,10 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         SalesRecSetup: Record "Sales & Receivables Setup";
+        UserSetup: Record "User Setup";
     begin
+        if not UserSetup.Get(UserId()) or not UserSetup."BA Force Reason Code Entry" then
+            exit;
         if Rec."ENC Physical Ship Date" <= Rec."BA Promised Delivery Date" then
             exit(true);
         SalesRecSetup.Get();
@@ -144,6 +147,7 @@ pageextension 80055 "BA Posted Service Invoice" extends "Posted Service Invoice"
         if Rec."Reason Code" in ['', SalesRecSetup."BA Default Reason Code"] then
             Error(ReasonCodeErr, Rec.FieldCaption("Reason Code"));
     end;
+
 
     var
         ReasonCodeErr: Label '%1 must be a different value.';

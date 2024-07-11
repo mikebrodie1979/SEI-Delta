@@ -358,6 +358,7 @@ pageextension 80045 "BA Customer Card" extends "Customer Card"
 
 
 
+
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
         RecVar: Variant;
