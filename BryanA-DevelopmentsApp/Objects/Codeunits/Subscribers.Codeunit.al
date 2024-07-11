@@ -1191,10 +1191,9 @@ codeunit 75010 "BA SEI Subscibers"
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Service-Post", 'OnAfterPostServiceDoc', '', false, false)]
-    local procedure ServicePostOnAfterPostServiceDoc(var ServiceHeader: Record "Service Header"; ServInvoiceNo: Code[20])
+    local procedure ServicePostOnAfterPostServiceDoc(var ServiceHeader: Record "Service Header")
     var
         Customer: Record Customer;
-        Ser: Record "Service Invoice Header";
     begin
         if Customer.Get(ServiceHeader."Bill-to Customer No.") then begin
             Customer."BA Last Sales Activity" := Today();
