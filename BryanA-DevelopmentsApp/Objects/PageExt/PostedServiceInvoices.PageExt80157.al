@@ -8,11 +8,15 @@ pageextension 80157 "BA Posted Service Invoices" extends "Posted Service Invoice
             {
                 ApplicationArea = all;
             }
+            field("BA Quote Date"; Rec."BA Quote Date")
+            {
+                ApplicationArea = all;
+            }
             field("BA Order Date"; Rec."Order Date")
             {
                 ApplicationArea = all;
             }
-            field("BA Quote Date"; Rec."BA Quote Date")
+            field("BA Shipment Date"; Rec."BA Shipment Date")
             {
                 ApplicationArea = all;
             }

@@ -26,6 +26,12 @@ tableextension 80108 "BA Service Cr.Memo Header" extends "Service Cr.Memo Header
             Caption = 'Promised Delivery Date';
             Editable = false;
         }
+        field(80076; "BA Shipment Date"; Date)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Shipment Date';
+            Editable = false;
+        }
         field(80100; "BA Actual Posting DateTime"; DateTime)
         {
             DataClassification = CustomerContent;

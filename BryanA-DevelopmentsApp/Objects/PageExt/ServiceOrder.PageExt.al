@@ -93,6 +93,10 @@ pageextension 80050 "BA Service Order" extends "Service Order"
                 ApplicationArea = all;
                 Editable = false;
             }
+            field("BA Shipment Date"; Rec."BA Shipment Date")
+            {
+                ApplicationArea = all;
+            }
             field("BA Promised Delivery Date"; "BA Promised Delivery Date")
             {
                 ApplicationArea = all;
