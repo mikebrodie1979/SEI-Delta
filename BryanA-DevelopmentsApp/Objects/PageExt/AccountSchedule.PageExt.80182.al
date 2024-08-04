@@ -1,4 +1,4 @@
-pageextension 80181 "BA Account Schedule" extends "Account Schedule"
+pageextension 80182 "BA Account Schedule" extends "Account Schedule"
 {
     layout
     {
